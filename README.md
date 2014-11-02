@@ -8,6 +8,5 @@ Planned releases
   * 18 January 2015 - Version 1.0 (only essential LaTeX editor functionalities)
   * 10 July 2015 - Version 2.0
 
-Keywords
-########
+### Keywords
 LaTeX, Open Source, Java, NetBeans Platform, remote collaboration
