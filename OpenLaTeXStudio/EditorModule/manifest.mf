@@ -1,0 +1,7 @@
+Manifest-Version: 1.0
+OpenIDE-Module: latexstudio.editor
+OpenIDE-Module-Layer: latexstudio/editor/layer.xml
+OpenIDE-Module-Localizing-Bundle: latexstudio/editor/Bundle.properties
+OpenIDE-Module-Requires: org.openide.windows.WindowManager
+OpenIDE-Module-Specification-Version: 1.0
+
