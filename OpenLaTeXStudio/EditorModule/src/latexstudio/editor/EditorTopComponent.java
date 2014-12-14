@@ -32,6 +32,8 @@ import org.openide.windows.TopComponent;
     "HINT_EditorTopComponent=This is a Editor window"
 })
 public final class EditorTopComponent extends TopComponent {
+    
+    private boolean dirty = false;
 
     public EditorTopComponent() {
         initComponents();
@@ -52,6 +54,11 @@ public final class EditorTopComponent extends TopComponent {
         jScrollPane1 = new javax.swing.JScrollPane();
         codeEditorPane = new javax.swing.JEditorPane();
 
+        codeEditorPane.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                codeEditorPaneKeyReleased(evt);
+            }
+        });
         jScrollPane1.setViewportView(codeEditorPane);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
@@ -71,6 +78,10 @@ public final class EditorTopComponent extends TopComponent {
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
+
+    private void codeEditorPaneKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_codeEditorPaneKeyReleased
+        dirty = true;
+    }//GEN-LAST:event_codeEditorPaneKeyReleased
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JEditorPane codeEditorPane;
@@ -94,7 +105,15 @@ public final class EditorTopComponent extends TopComponent {
     public void setEditorContent(String text) {
         codeEditorPane.setText(text);
     }
-    
+
+    public boolean isDirty() {
+        return dirty;
+    }
+
+    public void setDirty(boolean dirty) {
+        this.dirty = dirty;
+    }
+
     void writeProperties(java.util.Properties p) {
         // better to version settings since initial version as advocated at
         // http://wiki.apidesign.org/wiki/PropertyFiles

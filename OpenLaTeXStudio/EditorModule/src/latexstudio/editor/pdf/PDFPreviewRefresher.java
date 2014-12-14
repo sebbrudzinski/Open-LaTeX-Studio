@@ -29,10 +29,14 @@ public class PDFPreviewRefresher implements Runnable {
     @Override
     public void run() {
         while(true) {
-            compileTemporaryFile();
-            drawPreview();
+            if (etc.isDirty()) {
+                compileTemporaryFile();
+                drawPreview();
+                etc.setDirty(false);
+            }
+            
             try {
-                Thread.sleep(5000);
+                Thread.sleep(4000);
             } catch (InterruptedException ex) {
                 Exceptions.printStackTrace(ex);
             }
