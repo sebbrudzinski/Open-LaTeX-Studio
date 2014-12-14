@@ -52,14 +52,17 @@ public final class EditorTopComponent extends TopComponent {
     private void initComponents() {
 
         jScrollPane1 = new javax.swing.JScrollPane();
-        codeEditorPane = new javax.swing.JEditorPane();
+        rSyntaxTextArea = new org.fife.ui.rsyntaxtextarea.RSyntaxTextArea();
 
-        codeEditorPane.addKeyListener(new java.awt.event.KeyAdapter() {
+        rSyntaxTextArea.setColumns(20);
+        rSyntaxTextArea.setRows(5);
+        rSyntaxTextArea.setSyntaxEditingStyle(org.openide.util.NbBundle.getMessage(EditorTopComponent.class, "EditorTopComponent.rSyntaxTextArea.syntaxEditingStyle")); // NOI18N
+        rSyntaxTextArea.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyReleased(java.awt.event.KeyEvent evt) {
-                codeEditorPaneKeyReleased(evt);
+                rSyntaxTextAreaKeyReleased(evt);
             }
         });
-        jScrollPane1.setViewportView(codeEditorPane);
+        jScrollPane1.setViewportView(rSyntaxTextArea);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -72,20 +75,20 @@ public final class EditorTopComponent extends TopComponent {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+            .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 278, Short.MAX_VALUE)
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
 
-    private void codeEditorPaneKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_codeEditorPaneKeyReleased
+    private void rSyntaxTextAreaKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_rSyntaxTextAreaKeyReleased
         dirty = true;
-    }//GEN-LAST:event_codeEditorPaneKeyReleased
+    }//GEN-LAST:event_rSyntaxTextAreaKeyReleased
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JEditorPane codeEditorPane;
     private javax.swing.JScrollPane jScrollPane1;
+    private org.fife.ui.rsyntaxtextarea.RSyntaxTextArea rSyntaxTextArea;
     // End of variables declaration//GEN-END:variables
     
 
@@ -99,11 +102,11 @@ public final class EditorTopComponent extends TopComponent {
     }
     
     public String getEditorContent() {
-        return codeEditorPane.getText();
+        return rSyntaxTextArea.getText();
     }
     
     public void setEditorContent(String text) {
-        codeEditorPane.setText(text);
+        rSyntaxTextArea.setText(text);
     }
 
     public boolean isDirty() {

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://www.netbeans.org/ns/project/1">
+    <type>org.netbeans.modules.apisupport.project</type>
+    <configuration>
+        <data xmlns="http://www.netbeans.org/ns/nb-module-project/3">
+            <code-name-base>RSyntaxTextArea</code-name-base>
+            <suite-component/>
+            <module-dependencies/>
+            <public-packages>
+                <package>org.fife.io</package>
+                <package>org.fife.print</package>
+                <package>org.fife.ui.rsyntaxtextarea</package>
+                <package>org.fife.ui.rsyntaxtextarea.focusabletip</package>
+                <package>org.fife.ui.rsyntaxtextarea.folding</package>
+                <package>org.fife.ui.rsyntaxtextarea.modes</package>
+                <package>org.fife.ui.rsyntaxtextarea.parser</package>
+                <package>org.fife.ui.rsyntaxtextarea.templates</package>
+                <package>org.fife.ui.rtextarea</package>
+                <package>org.fife.util</package>
+            </public-packages>
+            <class-path-extension>
+                <runtime-relative-path>ext/rsyntaxtextarea-2.5.6.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/rsyntaxtextarea-2.5.6.jar</binary-origin>
+            </class-path-extension>
+        </data>
+    </configuration>
+</project>
