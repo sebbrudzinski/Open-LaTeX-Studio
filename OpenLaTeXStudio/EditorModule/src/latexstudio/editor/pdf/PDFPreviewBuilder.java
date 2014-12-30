@@ -18,37 +18,24 @@ public class PDFPreviewBuilder {
     private static final int SCALE_FACTOR = 3;
     private static final int SCALE_TYPE = Image.SCALE_SMOOTH;
 
-    public static Image buildPDFPreview(List<PDPage> pdfPages) {
-        if (pdfPages == null || pdfPages.isEmpty()) {
+    public static Image buildPDFPreview(PDPage pdfPage) {
+        if (pdfPage == null) {
             return null;
         }
-        
-        PDPage firstPage = pdfPages.get(0);
-        
-        BufferedImage firstPageImage = null;
+         
+        BufferedImage pageImage = null;
         try {
-            firstPageImage = pdfPages.get(0).convertToImage();
+            pageImage = pdfPage.convertToImage();
+            int width = pageImage.getWidth() / SCALE_FACTOR;
+            int height = pageImage.getHeight() / SCALE_FACTOR;
+            int type = pageImage.getType();
+            
+            return pageImage.getScaledInstance(width, height, SCALE_TYPE);
+            
         } catch (IOException ex) {
             Exceptions.printStackTrace(ex);
         }
         
-        int width = firstPageImage.getWidth() / SCALE_FACTOR;
-        int height = firstPageImage.getHeight() / SCALE_FACTOR;
-        int type = firstPageImage.getType();
-
-        BufferedImage finalImg = new BufferedImage(width, height * pdfPages.size(), type); 
-        Graphics2D graphics = finalImg.createGraphics();
-  
-        for (int i = 0; i < pdfPages.size(); i++) {  
-            try {
-                BufferedImage image = pdfPages.get(i).convertToImage();
-                
-                graphics.drawImage(image.getScaledInstance(width, height, SCALE_TYPE), 0, height * i, null);  
-            } catch (IOException ex) {
-                Exceptions.printStackTrace(ex);
-            }
-        }
-        
-        return finalImg;
+        return null;
     }
 }

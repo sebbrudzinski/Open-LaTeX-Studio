@@ -18,20 +18,23 @@ public class PDFService {
     private static PDDocument inputPDF;
     private static final String PDF_PATH = ApplicationUtils.getTempPDFFile();
 
-    public static List<PDPage> getPDFPages() {
-        List<PDPage> allPages = new ArrayList<PDPage>();
+    public static PDPage getPDFPage(int number) {
+        PDPage page = null;
         
         try {
             File pdfFile = new File(PDF_PATH);
             if (pdfFile.exists()) {
                 inputPDF = PDDocument.load(pdfFile);
-                allPages = inputPDF.getDocumentCatalog().getAllPages();
+                List<PDPage> allPages = inputPDF.getDocumentCatalog().getAllPages();
+                if (allPages != null && !allPages.isEmpty() && allPages.size() >= number && number > 0) {
+                    page = allPages.get(number - 1);
+                }
             }
         } catch (IOException ex) {
             Exceptions.printStackTrace(ex);
         }
         
-        return allPages;
+        return page;
     }
     
     public static void closeDocument() {

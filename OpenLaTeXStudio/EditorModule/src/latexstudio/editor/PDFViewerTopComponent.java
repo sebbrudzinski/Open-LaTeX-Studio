@@ -1,10 +1,8 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package latexstudio.editor;
 
+import java.awt.Color;
+import javax.swing.JPanel;
+import latexstudio.editor.pdf.PDFDisplay;
 import latexstudio.editor.pdf.PDFPreviewRefresher;
 import latexstudio.editor.pdf.PDFService;
 import org.netbeans.api.settings.ConvertAsProperties;
@@ -35,8 +33,8 @@ import org.openide.windows.WindowManager;
 )
 @Messages({
     "CTL_PDFViewerAction=PDFViewer",
-    "CTL_PDFViewerTopComponent=PDFViewer Window",
-    "HINT_PDFViewerTopComponent=This is a PDFViewer window"
+    "CTL_PDFViewerTopComponent=PDF Preview",
+    "HINT_PDFViewerTopComponent=This is a window that displays the preview"
 })
 public final class PDFViewerTopComponent extends TopComponent {
 
@@ -44,6 +42,7 @@ public final class PDFViewerTopComponent extends TopComponent {
         initComponents();
         setName(Bundle.CTL_PDFViewerTopComponent());
         setToolTipText(Bundle.HINT_PDFViewerTopComponent());
+        pdfDisplay = new PDFDisplay();
     }
 
     /**
@@ -55,6 +54,30 @@ public final class PDFViewerTopComponent extends TopComponent {
     private void initComponents() {
 
         jScrollPane1 = new javax.swing.JScrollPane();
+        jTextField1 = new javax.swing.JTextField();
+        jButton1 = new javax.swing.JButton();
+        jButton2 = new javax.swing.JButton();
+
+        jTextField1.setText(org.openide.util.NbBundle.getMessage(PDFViewerTopComponent.class, "PDFViewerTopComponent.jTextField1.text")); // NOI18N
+        jTextField1.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                jTextField1KeyReleased(evt);
+            }
+        });
+
+        org.openide.awt.Mnemonics.setLocalizedText(jButton1, org.openide.util.NbBundle.getMessage(PDFViewerTopComponent.class, "PDFViewerTopComponent.jButton1.text")); // NOI18N
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+
+        org.openide.awt.Mnemonics.setLocalizedText(jButton2, org.openide.util.NbBundle.getMessage(PDFViewerTopComponent.class, "PDFViewerTopComponent.jButton2.text")); // NOI18N
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -62,27 +85,65 @@ public final class PDFViewerTopComponent extends TopComponent {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 380, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 380, Short.MAX_VALUE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jTextField1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 278, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE, false)
+                    .addComponent(jButton2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 259, Short.MAX_VALUE)
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
 
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        pdfDisplay.nextPage();
+        refreshDisplayPane();
+    }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        pdfDisplay.previousPage();
+        refreshDisplayPane();
+    }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void jTextField1KeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextField1KeyReleased
+        try {
+            int selectedPage = Integer.parseInt(jTextField1.getText());
+            jTextField1.setBackground(Color.WHITE);
+            pdfDisplay.setPage(selectedPage);
+            refreshDisplayPane();
+        } catch (NumberFormatException e) {
+            jTextField1.setBackground(Color.PINK);
+        }
+    }//GEN-LAST:event_jTextField1KeyReleased
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButton2;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JTextField jTextField1;
     // End of variables declaration//GEN-END:variables
+    
+    private PDFDisplay pdfDisplay;
     
     @Override
     public void componentOpened() {       
         TopComponent tc = WindowManager.getDefault().findTopComponent("EditorTopComponent");
         EditorTopComponent etc = (EditorTopComponent) tc;
-        Thread refresher = new Thread(new PDFPreviewRefresher(jScrollPane1, etc));
+        Thread refresher = new Thread(new PDFPreviewRefresher(jScrollPane1, etc, pdfDisplay));
         refresher.start();
     }
 
@@ -91,6 +152,15 @@ public final class PDFViewerTopComponent extends TopComponent {
         PDFService.closeDocument();
     }
     
+    private void refreshDisplayPane() {
+        JPanel pdfImagePanel = pdfDisplay.drawPreviewOnJPanel();
+       
+        if (pdfImagePanel != null) {
+            jScrollPane1.setViewportView(pdfImagePanel);
+        }
+        
+        jTextField1.setText(String.valueOf(pdfDisplay.getSelectedPage()));
+    }
 
     void writeProperties(java.util.Properties p) {
         // better to version settings since initial version as advocated at

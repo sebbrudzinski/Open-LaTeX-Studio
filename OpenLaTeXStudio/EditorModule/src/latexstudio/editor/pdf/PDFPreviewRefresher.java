@@ -1,15 +1,12 @@
 package latexstudio.editor.pdf;
 
-import latexstudio.editor.files.FileService;
-import java.awt.Image;
-import java.util.List;
-import javax.swing.ImageIcon;
-import javax.swing.JLabel;
+import java.util.logging.Logger;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import latexstudio.editor.util.ApplicationUtils;
+import javax.swing.JTextField;
 import latexstudio.editor.EditorTopComponent;
-import org.apache.pdfbox.pdmodel.PDPage;
+import latexstudio.editor.files.FileService;
+import latexstudio.editor.util.ApplicationUtils;
 import org.openide.util.Exceptions;
 
 /**
@@ -20,10 +17,14 @@ public class PDFPreviewRefresher implements Runnable {
     
     private final JScrollPane jScrollPane;
     private final EditorTopComponent etc;
+    private final PDFDisplay pdfDisplay;
     
-    public PDFPreviewRefresher(JScrollPane jScrollPane, EditorTopComponent etc) {
+    private static final Logger LOGGER = Logger.getLogger(PDFPreviewRefresher.class.getName());
+    
+    public PDFPreviewRefresher(JScrollPane jScrollPane, EditorTopComponent etc, PDFDisplay pdfDisplay) {
         this.jScrollPane = jScrollPane;
         this.etc = etc;
+        this.pdfDisplay = pdfDisplay;
     }
 
     @Override
@@ -44,20 +45,11 @@ public class PDFPreviewRefresher implements Runnable {
     }
     
     private void drawPreview() {
-        JPanel pdfImagePanel = new JPanel();
-        
-        List<PDPage> allPages = PDFService.getPDFPages();
-        Image generatedImage = PDFPreviewBuilder.buildPDFPreview(allPages);
-        
-        if (generatedImage != null) {
-            ImageIcon icon = new ImageIcon(generatedImage);
-            JLabel picLabel = new JLabel(icon);
-            pdfImagePanel.add(picLabel);
-
+        JPanel pdfImagePanel = pdfDisplay.drawPreviewOnJPanel();
+       
+        if (pdfImagePanel != null) {
             jScrollPane.setViewportView(pdfImagePanel);
         }
-        
-        PDFService.closeDocument();
     }
 
     private void compileTemporaryFile() {        
