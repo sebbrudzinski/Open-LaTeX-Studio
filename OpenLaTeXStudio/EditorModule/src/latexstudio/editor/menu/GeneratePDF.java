@@ -31,13 +31,12 @@ public final class GeneratePDF implements ActionListener {
         EditorTopComponent etc = (EditorTopComponent) tc;
         
         String content = etc.getEditorContent();
-        File file = FileChooserService.getSelectedFile("pdf", "PDF files");
+        File file = FileChooserService.getSelectedFile("pdf", "PDF files", false);
         if (file != null) {
             String filename = file.getName();
-            String jobname = filename.endsWith(".pdf") ? 
-                    filename.substring(0, filename.length() - 5) : filename;
+
             CommandLineExecutor.executeGeneratePDF(ApplicationUtils.getTempSourceFile(),
-                    file.getParentFile().getAbsolutePath(), jobname);
+                    file.getParentFile().getAbsolutePath(), filename);
         }
     }
 }

@@ -30,7 +30,7 @@ public final class SaveFile implements ActionListener {
         EditorTopComponent etc = (EditorTopComponent) tc;
         
         String content = etc.getEditorContent();
-        File file = FileChooserService.getSelectedFile("tex", "TeX files");
+        File file = FileChooserService.getSelectedFile("tex", "TeX files", true);
         if (file != null) {
             FileService.writeToFile(file.getAbsolutePath(), content);
         }
