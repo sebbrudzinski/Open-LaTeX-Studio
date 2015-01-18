@@ -1,4 +1,3 @@
-
 package latexstudio.editor.pdf;
 
 import java.io.IOException;
@@ -21,18 +20,18 @@ public final class CommandLineExecutor {
     }
     
     public static void executeGeneratePDF(String pathToSource, String outputDir, String jobname) {
-        String opts = " --output-directory=" + outputDir + " --output-format=pdf";
+        String outputDirectory = "--output-directory=" + outputDir;
+        String outputFormat = "--output-format=pdf";
         
-        if (jobname != null) {
-            opts = opts.concat(" --jobname=".concat(jobname));
-        }
+        String job = jobname == null ? "" : "--jobname=" + jobname;
         
         try {           
-            String command = ApplicationUtils.PATH_TO_TEX + opts + " " + pathToSource ;
+            String[] command =  new String[] {ApplicationUtils.PATH_TO_TEX, 
+                outputDirectory, outputFormat, job, pathToSource};
          
             Process p = Runtime.getRuntime().exec(command);
-            LOGGER.log(Level.INFO, "Executing: {0}", command);          
-            
+            LOGGER.log(Level.INFO, "Executing: {0} {1} {2} {3} {4}", command);        
+
             p.waitFor(3, TimeUnit.SECONDS);
         } catch (IOException e) {
             Exceptions.printStackTrace(e);
