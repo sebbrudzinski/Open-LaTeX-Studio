@@ -133,6 +133,14 @@ public final class EditorTopComponent extends TopComponent {
     public void setDirty(boolean dirty) {
         this.dirty = dirty;
     }
+    
+    public void undoAction() {
+        rSyntaxTextArea.undoLastAction();
+    }
+    
+    public void redoAction() {
+        rSyntaxTextArea.redoLastAction();
+    }
 
     void writeProperties(java.util.Properties p) {
         // better to version settings since initial version as advocated at

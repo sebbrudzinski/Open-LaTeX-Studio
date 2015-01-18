@@ -9,6 +9,7 @@ import latexstudio.editor.files.FileChooserService;
 import latexstudio.editor.files.FileService;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
+import org.openide.awt.ActionReferences;
 import org.openide.awt.ActionRegistration;
 import org.openide.util.NbBundle.Messages;
 import org.openide.windows.TopComponent;
@@ -19,9 +20,13 @@ import org.openide.windows.WindowManager;
         id = "latexstudio.editor.SaveFile"
 )
 @ActionRegistration(
+        iconBase = "latexstudio/editor/resources/icons/save.png",
         displayName = "#CTL_SaveFile"
 )
-@ActionReference(path = "Menu/File", position = 1300)
+@ActionReferences({
+    @ActionReference(path = "Menu/File", position = 1300),
+    @ActionReference(path = "Toolbars/File", position = 2222)
+})
 @Messages("CTL_SaveFile=Save File")
 public final class SaveFile implements ActionListener {
 
