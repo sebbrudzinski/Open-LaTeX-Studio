@@ -3,10 +3,11 @@ package latexstudio.editor.menu;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
-import latexstudio.editor.util.ApplicationUtils;
-import latexstudio.editor.pdf.CommandLineExecutor;
 import latexstudio.editor.EditorTopComponent;
+import latexstudio.editor.OutputTopComponent;
 import latexstudio.editor.files.FileChooserService;
+import latexstudio.editor.runtime.CommandLineExecutor;
+import latexstudio.editor.util.ApplicationUtils;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.awt.ActionRegistration;
@@ -30,13 +31,17 @@ public final class GeneratePDF implements ActionListener {
         TopComponent tc = WindowManager.getDefault().findTopComponent("EditorTopComponent");
         EditorTopComponent etc = (EditorTopComponent) tc;
         
+        tc = WindowManager.getDefault().findTopComponent("OutputTopComponent");
+        OutputTopComponent otc = (OutputTopComponent) tc;
+        
         String content = etc.getEditorContent();
         File file = FileChooserService.getSelectedFile("pdf", "PDF files", false);
         if (file != null) {
             String filename = file.getName();
-
+            
+            otc.logToOutput("[Open LaTeX Studio] Invoking pdflatex");
             CommandLineExecutor.executeGeneratePDF(ApplicationUtils.getTempSourceFile(),
-                    file.getParentFile().getAbsolutePath(), filename);
+                    file.getParentFile().getAbsolutePath(), filename, otc);
         }
     }
 }

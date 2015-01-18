@@ -4,6 +4,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import latexstudio.editor.EditorTopComponent;
+import latexstudio.editor.OutputTopComponent;
 import latexstudio.editor.files.FileChooserService;
 import latexstudio.editor.files.FileService;
 import org.openide.awt.ActionID;
@@ -29,10 +30,14 @@ public final class SaveFile implements ActionListener {
         TopComponent tc = WindowManager.getDefault().findTopComponent("EditorTopComponent");
         EditorTopComponent etc = (EditorTopComponent) tc;
         
+        tc = WindowManager.getDefault().findTopComponent("OutputTopComponent");
+        OutputTopComponent otc = (OutputTopComponent) tc;
+        
         String content = etc.getEditorContent();
         File file = FileChooserService.getSelectedFile("tex", "TeX files", true);
         if (file != null) {
             FileService.writeToFile(file.getAbsolutePath(), content);
+            otc.logToOutput("[Open LaTeX Studio] Saving file " + file.getAbsolutePath());
         }
     }
 }

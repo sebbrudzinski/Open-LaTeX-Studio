@@ -1,9 +1,9 @@
 package latexstudio.editor.pdf;
 
+import latexstudio.editor.runtime.CommandLineExecutor;
 import java.util.logging.Logger;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JTextField;
 import latexstudio.editor.EditorTopComponent;
 import latexstudio.editor.files.FileService;
 import latexstudio.editor.util.ApplicationUtils;

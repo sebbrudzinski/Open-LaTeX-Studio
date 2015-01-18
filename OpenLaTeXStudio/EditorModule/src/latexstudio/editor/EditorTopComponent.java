@@ -103,12 +103,10 @@ public final class EditorTopComponent extends TopComponent {
     private org.fife.ui.rsyntaxtextarea.RSyntaxTextArea rSyntaxTextArea;
     // End of variables declaration//GEN-END:variables
     
-
     @Override
     public void componentOpened() {
         ApplicationUtils.deleteTempFiles();
         CompletionProvider provider = createCompletionProvider();
-
         AutoCompletion ac = new AutoCompletion(provider);
         ac.setAutoActivationDelay(AUTO_COMPLETE_DELAY);
         ac.setAutoActivationEnabled(true);
