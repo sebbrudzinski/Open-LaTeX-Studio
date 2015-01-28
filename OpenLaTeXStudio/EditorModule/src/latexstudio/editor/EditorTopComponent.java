@@ -6,7 +6,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
 import latexstudio.editor.util.ApplicationUtils;
-import org.apache.pdfbox.io.IOUtils;
+import org.apache.commons.io.IOUtils;
 import org.fife.ui.autocomplete.AutoCompletion;
 import org.fife.ui.autocomplete.BasicCompletion;
 import org.fife.ui.autocomplete.CompletionProvider;
@@ -112,6 +112,18 @@ public final class EditorTopComponent extends TopComponent {
         ac.setAutoActivationEnabled(true);
         ac.setAutoCompleteEnabled(true);
         ac.install(rSyntaxTextArea);
+        
+        InputStream is = null;
+        try {
+            is = getClass().getResource("/latexstudio/editor/resources/welcome.tex").openStream();
+            String welcomeMessage = IOUtils.toString(is);
+            rSyntaxTextArea.setText(welcomeMessage);
+            setDirty(true);
+        } catch (IOException ex) {
+            Exceptions.printStackTrace(ex);
+        } finally {
+            IOUtils.closeQuietly(is);
+        }
     }
 
     @Override
