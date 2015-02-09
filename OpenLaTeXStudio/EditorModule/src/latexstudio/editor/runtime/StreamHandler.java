@@ -7,6 +7,7 @@ import java.io.InputStreamReader;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import latexstudio.editor.OutputTopComponent;
+import org.apache.pdfbox.io.IOUtils;
 
 /**
  *
@@ -40,9 +41,10 @@ public class StreamHandler implements Runnable {
                 if (s == null) break;
                 outputComponent.logToOutput("[" + name + "] " + s);
             }
-            is.close();    
         } catch (IOException ex) {
             LOGGER.log(Level.WARNING, "Problem reading stream {0}... :{1}", new Object[]{name, ex});
+        } finally {
+            IOUtils.closeQuietly(is);
         }
     }
 }

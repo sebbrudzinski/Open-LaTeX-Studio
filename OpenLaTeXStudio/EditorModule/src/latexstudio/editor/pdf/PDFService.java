@@ -2,7 +2,6 @@ package latexstudio.editor.pdf;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import latexstudio.editor.util.ApplicationUtils;
 import org.apache.pdfbox.pdmodel.PDDocument;
@@ -21,8 +20,9 @@ public class PDFService {
     public static PDPage getPDFPage(int number) {
         PDPage page = null;
         
+        File pdfFile = null;
         try {
-            File pdfFile = new File(PDF_PATH);
+            pdfFile = new File(PDF_PATH);
             if (pdfFile.exists()) {
                 inputPDF = PDDocument.load(pdfFile);
                 List<PDPage> allPages = inputPDF.getDocumentCatalog().getAllPages();
@@ -31,7 +31,7 @@ public class PDFService {
                 }
             }
         } catch (IOException ex) {
-            Exceptions.printStackTrace(ex);
+            closeDocument();
         }
         
         return page;
