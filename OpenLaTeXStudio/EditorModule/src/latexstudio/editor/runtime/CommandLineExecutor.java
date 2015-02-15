@@ -1,12 +1,15 @@
 package latexstudio.editor.runtime;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-import java.util.concurrent.TimeUnit;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 import latexstudio.editor.OutputTopComponent;
 import latexstudio.editor.util.ApplicationUtils;
+import org.apache.commons.exec.CommandLine;
+import org.apache.commons.exec.DefaultExecutor;
+import org.apache.commons.exec.ExecuteWatchdog;
+import org.apache.commons.exec.PumpStreamHandler;
 import org.apache.commons.io.IOUtils;
 import org.openide.util.Exceptions;
 
@@ -20,45 +23,51 @@ public final class CommandLineExecutor {
     
     private static final Logger LOGGER = Logger.getLogger(CommandLineExecutor.class.getName());
     
-    public static void executeGeneratePDF(String pathToSource, String outputDir) {
-        executeGeneratePDF(pathToSource, outputDir, null);
+    public static void executeGeneratePDF(String pathToSource, String outputDir, File workingFile) {
+        executeGeneratePDF(pathToSource, outputDir, null, workingFile);
     }
     
-    public static void executeGeneratePDF(String pathToSource, String outputDir, String jobname) {
-        executeGeneratePDF(pathToSource, outputDir, jobname, null);
+    public static void executeGeneratePDF(String pathToSource, String outputDir, String jobname, File workingFile) {
+        executeGeneratePDF(pathToSource, outputDir, jobname, workingFile, null);
     }
     
-    public static void executeGeneratePDF(String pathToSource, String outputDir, String jobname, OutputTopComponent outputComponent) {
+    public static void executeGeneratePDF(String pathToSource, String outputDir, String jobname, File workingFile, OutputTopComponent outputComponent) {
         String outputDirectory = "--output-directory=" + outputDir;
         String outputFormat = "--output-format=pdf";
         
-        String job = jobname == null ? "" : "--jobname=" + jobname;
+        String job = jobname == null ? "" : "--jobname=" + jobname.replaceAll(" ", "_");
+        String includeDir = workingFile == null ? "" : "--include-directory=" + workingFile.getParentFile().getAbsolutePath();
         
-        InputStream es = null;
-        InputStream is = null;
+        ByteArrayOutputStream outputStream = null;
         
         try {           
-            String[] command =  new String[] {ApplicationUtils.PATH_TO_TEX, 
-                outputDirectory, outputFormat, job, pathToSource};
+            String[] command =  new String[] {
+                outputDirectory, outputFormat, job, includeDir, pathToSource};
          
-            Process p = Runtime.getRuntime().exec(command);
-            LOGGER.log(Level.INFO, "Executing: {0} {1} {2} {3} {4}", command);        
+            CommandLine cmdLine = new CommandLine(ApplicationUtils.PATH_TO_TEX);
+            //For windows, we set handling quoting to true
+            cmdLine.addArguments(command, ApplicationUtils.isWindows());
+            
+            DefaultExecutor executor = new DefaultExecutor();
+            ExecuteWatchdog watchdog = new ExecuteWatchdog(8000);
+            
+            outputStream = new ByteArrayOutputStream();
+            PumpStreamHandler streamHandler = new PumpStreamHandler(outputStream);
+            executor.setStreamHandler(streamHandler);
+            
+            // generating pdf returns code 1, so we add it to the accepted values
+            executor.setExitValues(new int[] {0,1});
+            executor.setWatchdog(watchdog);
+            executor.execute(cmdLine);      
 
             if (outputComponent != null) {
-                /* Output is handled in separate thread, due to the possibility 
-                   to one stream blocking another */
-                new StreamHandler("pdflatex", p.getInputStream(), outputComponent).start();
-                new StreamHandler("ERROR", p.getErrorStream(), outputComponent).start();
+                outputComponent.logToOutput(outputStream.toString());
             }
                         
-            p.waitFor(3, TimeUnit.SECONDS);
         } catch (IOException e) {
             Exceptions.printStackTrace(e);
-        } catch (InterruptedException ex) {
-            Exceptions.printStackTrace(ex);
         } finally {
-            IOUtils.closeQuietly(is);
-            IOUtils.closeQuietly(es);
+            IOUtils.closeQuietly(outputStream);
         }
     }
 }

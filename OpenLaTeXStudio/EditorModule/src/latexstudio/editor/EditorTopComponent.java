@@ -1,6 +1,7 @@
 package latexstudio.editor;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -45,11 +46,13 @@ import org.openide.windows.TopComponent;
 public final class EditorTopComponent extends TopComponent {
     
     private boolean dirty = false;
+    private File currentFile; 
     private static final int AUTO_COMPLETE_DELAY = 700;
 
     public EditorTopComponent() {
         initComponents();
         setName(Bundle.CTL_EditorTopComponent());
+        setDisplayName("welcome.tex");
         setToolTipText(Bundle.HINT_EditorTopComponent());
         putClientProperty(TopComponent.PROP_CLOSING_DISABLED, Boolean.TRUE);
         putClientProperty(TopComponent.PROP_UNDOCKING_DISABLED, Boolean.TRUE);
@@ -152,6 +155,15 @@ public final class EditorTopComponent extends TopComponent {
     
     public void redoAction() {
         rSyntaxTextArea.redoLastAction();
+    }
+
+    public File getCurrentFile() {
+        return currentFile;
+    }
+
+    public void setCurrentFile(File currentFile) {
+        this.currentFile = currentFile;
+        setDisplayName(currentFile.getName());
     }
 
     void writeProperties(java.util.Properties p) {

@@ -39,6 +39,7 @@ public final class OpenFile implements ActionListener {
             String content = FileService.readFromFile(file.getAbsolutePath());
             etc.setEditorContent(content);
             etc.setDirty(true);
+            etc.setCurrentFile(file);
         }
     }
 }

@@ -57,7 +57,9 @@ public class PDFPreviewRefresher implements Runnable {
         String content = etc.getEditorContent();
         
         FileService.writeToFile(fileLocation, content);
-        CommandLineExecutor.executeGeneratePDF(ApplicationUtils.getTempSourceFile(), ApplicationUtils.getAppTempDirectory());
+        CommandLineExecutor.executeGeneratePDF(ApplicationUtils.getTempSourceFile(), 
+                ApplicationUtils.getAppTempDirectory(),
+                etc.getCurrentFile());
     }
 
 }

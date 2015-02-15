@@ -46,7 +46,10 @@ public final class GeneratePDF implements ActionListener {
             
             otc.logToOutput("[Open LaTeX Studio] Invoking pdflatex");
             CommandLineExecutor.executeGeneratePDF(ApplicationUtils.getTempSourceFile(),
-                    file.getParentFile().getAbsolutePath(), filename, otc);
+                    file.getParentFile().getAbsolutePath(), 
+                    filename, 
+                    etc.getCurrentFile(), 
+                    otc);
         }
     }
 }

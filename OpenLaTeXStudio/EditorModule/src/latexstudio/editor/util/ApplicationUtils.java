@@ -12,6 +12,7 @@ import java.io.File;
 public final class ApplicationUtils {
     
     private static final String HOME = System.getProperty("user.home");
+    private static final String OS = System.getProperty("os.name");
     private static final String APP_DIR_NAME = ".OpenLaTeXStudio";
     private static final String PREVIEW_SOURCE_FILENAME = "preview.tex";
     private static final String PREVIEW_PDF_FILENAME = "preview.pdf";
@@ -43,5 +44,9 @@ public final class ApplicationUtils {
         if (tmpPdf.exists()) {
             tmpPdf.delete();
         }
+    }
+    
+    public static boolean isWindows() {
+        return OS.startsWith("Windows");
     }
 }
