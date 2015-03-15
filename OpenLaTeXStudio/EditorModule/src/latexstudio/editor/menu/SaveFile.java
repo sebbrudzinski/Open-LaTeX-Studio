@@ -1,3 +1,8 @@
+/* 
+ * Copyright (c) 2015 Sebastian Brudzinski
+ * 
+ * See the file LICENSE for copying permission.
+ */
 package latexstudio.editor.menu;
 
 import java.awt.event.ActionEvent;

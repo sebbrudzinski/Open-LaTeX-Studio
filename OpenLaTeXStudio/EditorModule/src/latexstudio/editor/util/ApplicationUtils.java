@@ -1,4 +1,8 @@
-
+/* 
+ * Copyright (c) 2015 Sebastian Brudzinski
+ * 
+ * See the file LICENSE for copying permission.
+ */
 package latexstudio.editor.util;
 
 import java.io.File;

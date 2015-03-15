@@ -1,4 +1,8 @@
-
+/* 
+ * Copyright (c) 2015 Sebastian Brudzinski
+ * 
+ * See the file LICENSE for copying permission.
+ */
 package latexstudio.editor.pdf;
 
 import java.awt.Graphics2D;
