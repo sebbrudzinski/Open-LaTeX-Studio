@@ -13,6 +13,9 @@
             <file name="org-openide-actions-SaveAllAction.shadow_hidden"/>
             <file name="org-openide-actions-SaveAsAction.shadow_hidden"/>
         </folder>
+        <folder name="Dropbox">
+            <attr name="position" intvalue="250"/> 
+        </folder>
     </folder>
     <folder name="Toolbars">
         <folder name="File">

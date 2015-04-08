@@ -1,0 +1,5 @@
+Manifest-Version: 1.0
+OpenIDE-Module: latexstudio.jackson
+OpenIDE-Module-Localizing-Bundle: latexstudio/jackson/Bundle.properties
+OpenIDE-Module-Specification-Version: 1.0
+

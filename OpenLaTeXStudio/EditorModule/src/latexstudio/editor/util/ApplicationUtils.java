@@ -6,6 +6,8 @@
 package latexstudio.editor.util;
 
 import java.io.File;
+import java.io.IOException;
+import org.openide.util.Exceptions;
 
 /**
  * This is a helper class, that resolves the location of certain files, used
@@ -20,18 +22,33 @@ public final class ApplicationUtils {
     private static final String APP_DIR_NAME = ".OpenLaTeXStudio";
     private static final String PREVIEW_SOURCE_FILENAME = "preview.tex";
     private static final String PREVIEW_PDF_FILENAME = "preview.pdf";
+    private static final String SETTINGS_FILENAME = "settings.properties";
     
     public static final String PATH_TO_TEX = "pdflatex";
     
     public static final String getTempSourceFile() {
-        return getAppTempDirectory().concat(File.separator).concat(PREVIEW_SOURCE_FILENAME);
+        return getAppDirectory().concat(File.separator).concat(PREVIEW_SOURCE_FILENAME);
     }
     
     public static final String getTempPDFFile() {
-        return getAppTempDirectory().concat(File.separator).concat(PREVIEW_PDF_FILENAME);
+        return getAppDirectory().concat(File.separator).concat(PREVIEW_PDF_FILENAME);
     }
     
-    public static String getAppTempDirectory() {
+    public static final String getSettingsFile() {
+        String settingsFileName = getAppDirectory().concat(File.separator).concat(SETTINGS_FILENAME);
+        File file = new File(settingsFileName);
+        if (!file.exists()) {
+            try {
+                file.createNewFile();
+            } catch (IOException ex) {
+                Exceptions.printStackTrace(ex);
+            }
+        }
+        
+        return settingsFileName;
+    }
+    
+    public static String getAppDirectory() {
         File tempDir = new File(HOME + File.separator + APP_DIR_NAME);
         if (!tempDir.exists()) {
             tempDir.mkdir();

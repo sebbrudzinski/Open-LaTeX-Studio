@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://www.netbeans.org/ns/project/1">
+    <type>org.netbeans.modules.apisupport.project</type>
+    <configuration>
+        <data xmlns="http://www.netbeans.org/ns/nb-module-project/3">
+            <code-name-base>latexstudio.dropbox</code-name-base>
+            <suite-component/>
+            <module-dependencies>
+                <dependency>
+                    <code-name-base>latexstudio.jackson</code-name-base>
+                    <build-prerequisite/>
+                    <compile-dependency/>
+                    <run-dependency>
+                        <specification-version>1.0</specification-version>
+                    </run-dependency>
+                </dependency>
+            </module-dependencies>
+            <public-packages>
+                <package>com.dropbox.core</package>
+                <package>com.dropbox.core.http</package>
+                <package>com.dropbox.core.json</package>
+                <package>com.dropbox.core.util</package>
+            </public-packages>
+            <class-path-extension>
+                <runtime-relative-path>ext/dropbox-core-sdk-1.7.7.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/dropbox-core-sdk-1.7.7.jar</binary-origin>
+            </class-path-extension>
+        </data>
+    </configuration>
+</project>
