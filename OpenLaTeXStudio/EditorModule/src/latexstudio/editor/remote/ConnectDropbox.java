@@ -29,13 +29,13 @@ import org.openide.util.Exceptions;
 import org.openide.util.NbBundle.Messages;
 
 @ActionID(
-        category = "Dropbox",
+        category = "Remote",
         id = "latexstudio.editor.remote.ConnectDropbox"
 )
 @ActionRegistration(
         displayName = "#CTL_ConnectDropbox"
 )
-@ActionReference(path = "Menu/Dropbox", position = 3333, separatorAfter = 3383)
+@ActionReference(path = "Menu/Remote", position = 3333, separatorAfter = 3383)
 @Messages("CTL_ConnectDropbox=Connect to Dropbox")
 public final class ConnectDropbox implements ActionListener {
     

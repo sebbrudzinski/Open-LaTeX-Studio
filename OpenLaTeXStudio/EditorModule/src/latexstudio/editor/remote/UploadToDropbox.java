@@ -28,13 +28,13 @@ import org.openide.windows.TopComponent;
 import org.openide.windows.WindowManager;
 
 @ActionID(
-        category = "Dropbox",
+        category = "Remote",
         id = "latexstudio.editor.remote.UploadToDropbox"
 )
 @ActionRegistration(
         displayName = "#CTL_UploadToDropbox"
 )
-@ActionReference(path = "Menu/Dropbox", position = 3433)
+@ActionReference(path = "Menu/Remote", position = 3433)
 @Messages("CTL_UploadToDropbox=Upload to Dropbox")
 public final class UploadToDropbox implements ActionListener {
 
