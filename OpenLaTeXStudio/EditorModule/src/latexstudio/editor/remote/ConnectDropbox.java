@@ -49,10 +49,7 @@ public final class ConnectDropbox implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         DbxAppInfo appInfo = new DbxAppInfo(APP_KEY, APP_SECRET);
-
-        DbxRequestConfig config = new DbxRequestConfig("Open LaTex Studio",
-            Locale.getDefault().toString());
-        DbxWebAuthNoRedirect webAuth = new DbxWebAuthNoRedirect(config, appInfo);
+        DbxWebAuthNoRedirect webAuth = new DbxWebAuthNoRedirect(DbxUtil.getDbxConfig(), appInfo);
         final String authorizeUrl = webAuth.start();
 
         class OpenUrlAction implements ActionListener {
