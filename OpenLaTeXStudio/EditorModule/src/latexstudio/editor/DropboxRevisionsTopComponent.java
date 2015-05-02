@@ -5,7 +5,9 @@
  */
 package latexstudio.editor;
 
-import javax.swing.text.DefaultCaret;
+import javax.swing.DefaultListModel;
+import javax.swing.JList;
+import latexstudio.editor.remote.DbxEntryRevision;
 import org.netbeans.api.settings.ConvertAsProperties;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
@@ -13,36 +15,37 @@ import org.openide.util.NbBundle.Messages;
 import org.openide.windows.TopComponent;
 
 /**
- * Top component which displays something.
+ * Top component that displays Dropbox file revisions.
  */
 @ConvertAsProperties(
-        dtd = "-//latexstudio.editor//Output//EN",
+        dtd = "-//latexstudio.editor//DropboxRevisions//EN",
         autostore = false
 )
 @TopComponent.Description(
-        preferredID = "OutputTopComponent",
+        preferredID = "DropboxRevisionsTopComponent",
         //iconBase="SET/PATH/TO/ICON/HERE", 
         persistenceType = TopComponent.PERSISTENCE_ALWAYS
 )
-@TopComponent.Registration(mode = "output", openAtStartup = true)
-@ActionID(category = "Window", id = "latexstudio.editor.OutputTopComponent")
+@TopComponent.Registration(mode = "output", openAtStartup = false)
+@ActionID(category = "Window", id = "latexstudio.editor.DropboxRevisionsTopComponent")
 @ActionReference(path = "Menu/Window" /*, position = 333 */)
 @TopComponent.OpenActionRegistration(
-        displayName = "#CTL_OutputAction",
-        preferredID = "OutputTopComponent"
+        displayName = "#CTL_DropboxRevisionsAction",
+        preferredID = "DropboxRevisionsTopComponent"
 )
 @Messages({
-    "CTL_OutputAction=Logs",
-    "CTL_OutputTopComponent=Logs",
-    "HINT_OutputTopComponent=This is an Output window, that shows pdflatex and application logs"
+    "CTL_DropboxRevisionsAction=DropboxRevisions",
+    "CTL_DropboxRevisionsTopComponent=Dropbox Revisions",
+    "HINT_DropboxRevisionsTopComponent=This is a Dropbox Revisions window"
 })
-public final class OutputTopComponent extends TopComponent {
+public final class DropboxRevisionsTopComponent extends TopComponent {
+    
+    private DefaultListModel<DbxEntryRevision> dlm = new DefaultListModel<DbxEntryRevision>();
 
-    public OutputTopComponent() {
+    public DropboxRevisionsTopComponent() {
         initComponents();
-        setName(Bundle.CTL_OutputTopComponent());
-        setToolTipText(Bundle.HINT_OutputTopComponent());
-
+        setName(Bundle.CTL_DropboxRevisionsTopComponent());
+        setToolTipText(Bundle.HINT_DropboxRevisionsTopComponent());
     }
 
     /**
@@ -54,12 +57,11 @@ public final class OutputTopComponent extends TopComponent {
     private void initComponents() {
 
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTextArea1 = new javax.swing.JTextArea();
+        jList1 = new javax.swing.JList();
 
-        jTextArea1.setEditable(false);
-        jTextArea1.setColumns(20);
-        jTextArea1.setRows(5);
-        jScrollPane1.setViewportView(jTextArea1);
+        jList1.setModel(dlm);
+        jList1.setToolTipText(org.openide.util.NbBundle.getMessage(DropboxRevisionsTopComponent.class, "DropboxRevisionsTopComponent.jList1.toolTipText")); // NOI18N
+        jScrollPane1.setViewportView(jList1);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -80,22 +82,17 @@ public final class OutputTopComponent extends TopComponent {
     }// </editor-fold>//GEN-END:initComponents
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JList jList1;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTextArea jTextArea1;
     // End of variables declaration//GEN-END:variables
     @Override
     public void componentOpened() {
-        DefaultCaret caret = (DefaultCaret) jTextArea1.getCaret();
-        caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
+        // TODO add custom code on component opening
     }
 
     @Override
     public void componentClosed() {
         // TODO add custom code on component closing
-    }
-    
-    public void logToOutput(String toOutput) {
-        jTextArea1.setText(jTextArea1.getText().concat("\n").concat(toOutput));
     }
 
     void writeProperties(java.util.Properties p) {
@@ -109,4 +106,21 @@ public final class OutputTopComponent extends TopComponent {
         String version = p.getProperty("version");
         // TODO read your settings according to their version
     }
+
+    public JList getjList1() {
+        return jList1;
+    }
+
+    public void setjList1(JList jList1) {
+        this.jList1 = jList1;
+    }
+
+    public DefaultListModel<DbxEntryRevision> getDlm() {
+        return dlm;
+    }
+
+    public void setDlm(DefaultListModel<DbxEntryRevision> dlm) {
+        this.dlm = dlm;
+    }
+    
 }

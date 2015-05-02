@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
+import latexstudio.editor.remote.DbxState;
 import latexstudio.editor.util.ApplicationUtils;
 import org.apache.commons.io.IOUtils;
 import org.fife.ui.autocomplete.AutoCompletion;
@@ -52,6 +53,7 @@ public final class EditorTopComponent extends TopComponent {
     
     private boolean dirty = false;
     private File currentFile; 
+    private DbxState dbxState;
     private static final int AUTO_COMPLETE_DELAY = 700;
 
     public EditorTopComponent() {
@@ -171,6 +173,14 @@ public final class EditorTopComponent extends TopComponent {
         setDisplayName(currentFile.getName());
     }
 
+    public DbxState getDbxState() {
+        return dbxState;
+    }
+
+    public void setDbxState(DbxState dbxState) {
+        this.dbxState = dbxState;
+    }
+    
     void writeProperties(java.util.Properties p) {
         // better to version settings since initial version as advocated at
         // http://wiki.apidesign.org/wiki/PropertyFiles

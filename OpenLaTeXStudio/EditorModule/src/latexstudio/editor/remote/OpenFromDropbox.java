@@ -19,6 +19,7 @@ import java.util.List;
 import javax.swing.DefaultListSelectionModel;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
+import latexstudio.editor.DropboxRevisionsTopComponent;
 import latexstudio.editor.EditorTopComponent;
 import latexstudio.editor.files.FileService;
 import latexstudio.editor.util.ApplicationUtils;
@@ -80,10 +81,26 @@ public final class OpenFromDropbox implements ActionListener {
                 
         TopComponent tc = WindowManager.getDefault().findTopComponent("EditorTopComponent");
         EditorTopComponent etc = (EditorTopComponent) tc; 
+        
+        tc = WindowManager.getDefault().findTopComponent("DropboxRevisionsTopComponent");
+        DropboxRevisionsTopComponent drtc = (DropboxRevisionsTopComponent) tc; 
+        
+        List<DbxEntry.File> entries = null;
+        try {
+            entries = client.getRevisions(entry.getPath());
+        } catch (DbxException ex) {
+            Exceptions.printStackTrace(ex);
+        }
+        
+        drtc.getDlm().clear();
+        for (DbxEntry.File dbxEntry : entries) {
+            drtc.getDlm().addElement(new DbxEntryRevision(dbxEntry));
+        }
 
         String content = FileService.readFromFile(outputFile.getAbsolutePath());
         etc.setEditorContent(content);
         etc.setDirty(true);
-        etc.setCurrentFile(outputFile);
+        etc.setCurrentFile(outputFile); 
+        etc.setDbxState(new DbxState(entry.getPath(), entry.getRevision()));
     }
 }
