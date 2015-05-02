@@ -8,8 +8,9 @@ package latexstudio.editor.menu;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import latexstudio.editor.ApplicationLogger;
 import latexstudio.editor.EditorTopComponent;
-import latexstudio.editor.OutputTopComponent;
+import latexstudio.editor.TopComponentFactory;
 import latexstudio.editor.files.FileChooserService;
 import latexstudio.editor.runtime.CommandLineExecutor;
 import latexstudio.editor.util.ApplicationUtils;
@@ -18,8 +19,6 @@ import org.openide.awt.ActionReference;
 import org.openide.awt.ActionReferences;
 import org.openide.awt.ActionRegistration;
 import org.openide.util.NbBundle.Messages;
-import org.openide.windows.TopComponent;
-import org.openide.windows.WindowManager;
 
 @ActionID(
         category = "File",
@@ -35,26 +34,23 @@ import org.openide.windows.WindowManager;
 })
 @Messages("CTL_GeneratePDF=Generate PDF")
 public final class GeneratePDF implements ActionListener {
+    
+    private final EditorTopComponent etc = new TopComponentFactory<EditorTopComponent>()
+            .getTopComponent(EditorTopComponent.class.getSimpleName());
+    private final ApplicationLogger LOGGER = new ApplicationLogger("Open LaTeX Studio");
 
     @Override
-    public void actionPerformed(ActionEvent e) {
-        TopComponent tc = WindowManager.getDefault().findTopComponent("EditorTopComponent");
-        EditorTopComponent etc = (EditorTopComponent) tc;
-        
-        tc = WindowManager.getDefault().findTopComponent("OutputTopComponent");
-        OutputTopComponent otc = (OutputTopComponent) tc;
-        
-        String content = etc.getEditorContent();
+    public void actionPerformed(ActionEvent e) {        
         File file = FileChooserService.getSelectedFile("pdf", "PDF files", false);
         if (file != null) {
             String filename = file.getName();
             
-            otc.logToOutput("[Open LaTeX Studio] Invoking pdflatex");
+            LOGGER.log("Invoking pdflatex");
             CommandLineExecutor.executeGeneratePDF(ApplicationUtils.getTempSourceFile(),
                     file.getParentFile().getAbsolutePath(), 
                     filename, 
                     etc.getCurrentFile(), 
-                    otc);
+                    new ApplicationLogger("pdflatex"));
         }
     }
 }

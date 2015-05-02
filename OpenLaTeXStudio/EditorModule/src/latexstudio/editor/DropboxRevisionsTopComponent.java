@@ -5,12 +5,24 @@
  */
 package latexstudio.editor;
 
+import com.dropbox.core.DbxClient;
+import com.dropbox.core.DbxException;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 import javax.swing.DefaultListModel;
 import javax.swing.JList;
 import latexstudio.editor.remote.DbxEntryRevision;
+import latexstudio.editor.remote.DbxUtil;
+import latexstudio.editor.util.ApplicationUtils;
+import org.apache.commons.io.FileUtils;
+import org.apache.pdfbox.io.IOUtils;
 import org.netbeans.api.settings.ConvertAsProperties;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
+import org.openide.util.Exceptions;
 import org.openide.util.NbBundle.Messages;
 import org.openide.windows.TopComponent;
 
@@ -41,6 +53,10 @@ import org.openide.windows.TopComponent;
 public final class DropboxRevisionsTopComponent extends TopComponent {
     
     private DefaultListModel<DbxEntryRevision> dlm = new DefaultListModel<DbxEntryRevision>();
+    private final ApplicationLogger LOGGER = new ApplicationLogger("Dropbox");
+    
+    private final RevisionDisplayTopComponent revtc = new TopComponentFactory<RevisionDisplayTopComponent>()
+            .getTopComponent(RevisionDisplayTopComponent.class.getSimpleName());
 
     public DropboxRevisionsTopComponent() {
         initComponents();
@@ -61,6 +77,11 @@ public final class DropboxRevisionsTopComponent extends TopComponent {
 
         jList1.setModel(dlm);
         jList1.setToolTipText(org.openide.util.NbBundle.getMessage(DropboxRevisionsTopComponent.class, "DropboxRevisionsTopComponent.jList1.toolTipText")); // NOI18N
+        jList1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jList1MouseClicked(evt);
+            }
+        });
         jScrollPane1.setViewportView(jList1);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
@@ -80,6 +101,39 @@ public final class DropboxRevisionsTopComponent extends TopComponent {
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
+
+    private void jList1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jList1MouseClicked
+        if (evt.getClickCount() == 2) {
+            DbxEntryRevision entry = (DbxEntryRevision) jList1.getSelectedValue();
+            DbxClient client = DbxUtil.getDbxClient();
+            
+            FileOutputStream outputStream = null;
+            File outputFile = new File(ApplicationUtils.getAppDirectory() + File.separator + entry.getName() + entry.getRevision());
+
+            try {
+                outputStream = new FileOutputStream(outputFile);
+                client.getFile(entry.getPath(), entry.getRevision(), outputStream);
+                LOGGER.log("Loaded revision " + entry.getRevision() + " from Dropbox");
+            } catch (FileNotFoundException ex) {
+                Exceptions.printStackTrace(ex);
+            } catch (DbxException ex) {
+                Exceptions.printStackTrace(ex);
+            } catch (IOException ex) {
+                Exceptions.printStackTrace(ex);
+            } finally {
+                IOUtils.closeQuietly(outputStream);
+            }
+
+            revtc.open();
+            revtc.requestActive();
+            revtc.setName(entry.getName() + " (rev: " + entry.getRevision() + ")");
+            try {
+                revtc.setText(FileUtils.readFileToString(outputFile));
+            } catch (IOException ex) {
+                Exceptions.printStackTrace(ex);
+            }
+        }
+    }//GEN-LAST:event_jList1MouseClicked
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JList jList1;

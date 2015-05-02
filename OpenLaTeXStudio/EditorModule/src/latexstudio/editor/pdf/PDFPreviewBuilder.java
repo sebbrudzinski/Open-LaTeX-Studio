@@ -5,11 +5,9 @@
  */
 package latexstudio.editor.pdf;
 
-import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-import java.util.List;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.openide.util.Exceptions;
 

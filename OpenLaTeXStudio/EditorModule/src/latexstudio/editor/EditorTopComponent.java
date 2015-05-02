@@ -26,7 +26,7 @@ import org.openide.util.NbBundle.Messages;
 import org.openide.windows.TopComponent;
 
 /**
- * Top component which displays something.
+ * Top component which displays the editor window.
  */
 @ConvertAsProperties(
         dtd = "-//latexstudio.editor//Editor//EN",

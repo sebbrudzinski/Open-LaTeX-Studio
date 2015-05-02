@@ -17,6 +17,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import javax.swing.JOptionPane;
 import latexstudio.editor.EditorTopComponent;
+import latexstudio.editor.TopComponentFactory;
 import latexstudio.editor.util.ApplicationUtils;
 import org.apache.commons.io.IOUtils;
 import org.openide.awt.ActionID;
@@ -24,8 +25,6 @@ import org.openide.awt.ActionReference;
 import org.openide.awt.ActionRegistration;
 import org.openide.util.Exceptions;
 import org.openide.util.NbBundle.Messages;
-import org.openide.windows.TopComponent;
-import org.openide.windows.WindowManager;
 
 @ActionID(
         category = "Remote",
@@ -37,13 +36,13 @@ import org.openide.windows.WindowManager;
 @ActionReference(path = "Menu/Remote", position = 3420)
 @Messages("CTL_SaveProgress=Save Progress")
 public final class SaveProgress implements ActionListener {
+    
+    private final EditorTopComponent etc = new TopComponentFactory<EditorTopComponent>()
+            .getTopComponent(EditorTopComponent.class.getSimpleName());
 
     @Override
     public void actionPerformed(ActionEvent e) {
         DbxClient client = DbxUtil.getDbxClient();
-
-        TopComponent tc = WindowManager.getDefault().findTopComponent("EditorTopComponent");
-        EditorTopComponent etc = (EditorTopComponent) tc; 
 
         String sourceFileName = ApplicationUtils.getTempSourceFile();
         File file = new File(sourceFileName);

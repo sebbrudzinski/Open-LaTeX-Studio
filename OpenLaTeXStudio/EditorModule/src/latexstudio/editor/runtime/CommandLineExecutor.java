@@ -8,8 +8,7 @@ package latexstudio.editor.runtime;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
-import java.util.logging.Logger;
-import latexstudio.editor.OutputTopComponent;
+import latexstudio.editor.ApplicationLogger;
 import latexstudio.editor.util.ApplicationUtils;
 import org.apache.commons.exec.CommandLine;
 import org.apache.commons.exec.DefaultExecutor;
@@ -26,8 +25,6 @@ import org.openide.util.Exceptions;
  */
 public final class CommandLineExecutor {
     
-    private static final Logger LOGGER = Logger.getLogger(CommandLineExecutor.class.getName());
-    
     public static void executeGeneratePDF(String pathToSource, String outputDir, File workingFile) {
         executeGeneratePDF(pathToSource, outputDir, null, workingFile);
     }
@@ -36,7 +33,7 @@ public final class CommandLineExecutor {
         executeGeneratePDF(pathToSource, outputDir, jobname, workingFile, null);
     }
     
-    public static void executeGeneratePDF(String pathToSource, String outputDir, String jobname, File workingFile, OutputTopComponent outputComponent) {
+    public static void executeGeneratePDF(String pathToSource, String outputDir, String jobname, File workingFile, ApplicationLogger logger) {
         String outputDirectory = "--output-directory=" + outputDir;
         String outputFormat = "--output-format=pdf";
         
@@ -65,8 +62,8 @@ public final class CommandLineExecutor {
             executor.setWatchdog(watchdog);
             executor.execute(cmdLine);      
 
-            if (outputComponent != null) {
-                outputComponent.logToOutput(outputStream.toString());
+            if (logger != null) {
+                logger.log(outputStream.toString());
             }
                         
         } catch (IOException e) {

@@ -8,7 +8,6 @@ package latexstudio.editor.remote;
 import com.dropbox.core.DbxAppInfo;
 import com.dropbox.core.DbxAuthFinish;
 import com.dropbox.core.DbxException;
-import com.dropbox.core.DbxRequestConfig;
 import com.dropbox.core.DbxWebAuthNoRedirect;
 import java.awt.Desktop;
 import java.awt.event.ActionEvent;
@@ -16,9 +15,9 @@ import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.Locale;
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
+import latexstudio.editor.ApplicationLogger;
 import latexstudio.editor.settings.ApplicationSettings;
 import latexstudio.editor.settings.SettingsService;
 import latexstudio.editor.util.PropertyService;
@@ -45,6 +44,8 @@ public final class ConnectDropbox implements ActionListener {
             readProperties(PROPETIES).getProperty("dropbox.appKey");
     private final static String APP_SECRET = PropertyService.
             readProperties(PROPETIES).getProperty("dropbox.appSecret");
+    
+    private final ApplicationLogger LOGGER = new ApplicationLogger("Dropbox");
 
     @Override
     public void actionPerformed(ActionEvent e) {
@@ -82,6 +83,7 @@ public final class ConnectDropbox implements ActionListener {
                 ApplicationSettings appSettings = SettingsService.loadApplicationSettings();
                 appSettings.setDropboxToken(userToken);
                 SettingsService.saveApplicationSettings(appSettings);
+                LOGGER.log("Successfully connected application with Dropbox account.");
             } catch (DbxException ex) {
                 JOptionPane.showMessageDialog(null,
                         "Invalid access token! Open LaTeX Studio has NOT been connected with Dropbox.\n Please try again and provide correct access token.",

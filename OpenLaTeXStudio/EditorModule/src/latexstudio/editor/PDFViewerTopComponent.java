@@ -15,7 +15,6 @@ import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.util.NbBundle.Messages;
 import org.openide.windows.TopComponent;
-import org.openide.windows.WindowManager;
 
 /**
  * Top component which displays something.
@@ -42,6 +41,9 @@ import org.openide.windows.WindowManager;
     "HINT_PDFViewerTopComponent=This is a window that displays the preview"
 })
 public final class PDFViewerTopComponent extends TopComponent {
+    
+    private final EditorTopComponent etc = new TopComponentFactory<EditorTopComponent>()
+            .getTopComponent(EditorTopComponent.class.getSimpleName());
 
     public PDFViewerTopComponent() {
         initComponents();
@@ -146,8 +148,6 @@ public final class PDFViewerTopComponent extends TopComponent {
     
     @Override
     public void componentOpened() {       
-        TopComponent tc = WindowManager.getDefault().findTopComponent("EditorTopComponent");
-        EditorTopComponent etc = (EditorTopComponent) tc;
         Thread refresher = new Thread(new PDFPreviewRefresher(jScrollPane1, etc, pdfDisplay));
         refresher.start();
     }

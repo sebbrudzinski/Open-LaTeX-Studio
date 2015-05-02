@@ -19,8 +19,10 @@ import java.util.List;
 import javax.swing.DefaultListSelectionModel;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
+import latexstudio.editor.ApplicationLogger;
 import latexstudio.editor.DropboxRevisionsTopComponent;
 import latexstudio.editor.EditorTopComponent;
+import latexstudio.editor.TopComponentFactory;
 import latexstudio.editor.files.FileService;
 import latexstudio.editor.util.ApplicationUtils;
 import org.apache.pdfbox.io.IOUtils;
@@ -29,8 +31,6 @@ import org.openide.awt.ActionReference;
 import org.openide.awt.ActionRegistration;
 import org.openide.util.Exceptions;
 import org.openide.util.NbBundle.Messages;
-import org.openide.windows.TopComponent;
-import org.openide.windows.WindowManager;
 
 @ActionID(
         category = "Remote",
@@ -42,6 +42,12 @@ import org.openide.windows.WindowManager;
 @ActionReference(path = "Menu/Remote", position = 3408)
 @Messages("CTL_OpenFromDropbox=Open from Dropbox")
 public final class OpenFromDropbox implements ActionListener {
+    
+    private final EditorTopComponent etc = new TopComponentFactory<EditorTopComponent>()
+            .getTopComponent(EditorTopComponent.class.getSimpleName());
+    private final DropboxRevisionsTopComponent drtc = new TopComponentFactory<DropboxRevisionsTopComponent>()
+            .getTopComponent(DropboxRevisionsTopComponent.class.getSimpleName());
+    private final ApplicationLogger LOGGER = new ApplicationLogger("Dropbox");
 
     @Override
     public void actionPerformed(ActionEvent e) {
@@ -69,6 +75,7 @@ public final class OpenFromDropbox implements ActionListener {
         try {
             outputStream = new FileOutputStream(outputFile);
             client.getFile(entry.getPath(), entry.getRevision(), outputStream);
+            LOGGER.log("Loaded file " + entry.toString() + " from Dropbox");
         } catch (FileNotFoundException ex) {
             Exceptions.printStackTrace(ex);
         } catch (DbxException ex) {
@@ -78,13 +85,7 @@ public final class OpenFromDropbox implements ActionListener {
         } finally {
             IOUtils.closeQuietly(outputStream);
         }
-                
-        TopComponent tc = WindowManager.getDefault().findTopComponent("EditorTopComponent");
-        EditorTopComponent etc = (EditorTopComponent) tc; 
-        
-        tc = WindowManager.getDefault().findTopComponent("DropboxRevisionsTopComponent");
-        DropboxRevisionsTopComponent drtc = (DropboxRevisionsTopComponent) tc; 
-        
+
         List<DbxEntry.File> entries = null;
         try {
             entries = client.getRevisions(entry.getPath());

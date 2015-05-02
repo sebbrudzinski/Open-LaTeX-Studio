@@ -1,47 +1,47 @@
-/* 
- * Copyright (c) 2015 Sebastian Brudzinski
- * 
- * See the file LICENSE for copying permission.
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
  */
 package latexstudio.editor;
 
-import javax.swing.text.DefaultCaret;
+import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 import org.netbeans.api.settings.ConvertAsProperties;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
-import org.openide.util.NbBundle.Messages;
 import org.openide.windows.TopComponent;
+import org.openide.util.NbBundle.Messages;
 
 /**
  * Top component which displays something.
  */
 @ConvertAsProperties(
-        dtd = "-//latexstudio.editor//Output//EN",
+        dtd = "-//latexstudio.editor//RevisionDisplay//EN",
         autostore = false
 )
 @TopComponent.Description(
-        preferredID = "OutputTopComponent",
+        preferredID = "RevisionDisplayTopComponent",
         //iconBase="SET/PATH/TO/ICON/HERE", 
         persistenceType = TopComponent.PERSISTENCE_ALWAYS
 )
-@TopComponent.Registration(mode = "output", openAtStartup = true)
-@ActionID(category = "Window", id = "latexstudio.editor.OutputTopComponent")
+@TopComponent.Registration(mode = "editor", openAtStartup = false)
+@ActionID(category = "Window", id = "latexstudio.editor.RevisionDisplayTopComponent")
 @ActionReference(path = "Menu/Window" /*, position = 333 */)
 @TopComponent.OpenActionRegistration(
-        displayName = "#CTL_OutputAction",
-        preferredID = "OutputTopComponent"
+        displayName = "#CTL_RevisionDisplayAction",
+        preferredID = "RevisionDisplayTopComponent"
 )
 @Messages({
-    "CTL_OutputAction=Logs",
-    "CTL_OutputTopComponent=Logs",
-    "HINT_OutputTopComponent=This is an Output window, that shows pdflatex and application logs"
+    "CTL_RevisionDisplayAction=RevisionDisplay",
+    "CTL_RevisionDisplayTopComponent=RevisionDisplay Window",
+    "HINT_RevisionDisplayTopComponent=This is a RevisionDisplay window"
 })
-public final class OutputTopComponent extends TopComponent {
+public final class RevisionDisplayTopComponent extends TopComponent {
 
-    public OutputTopComponent() {
+    public RevisionDisplayTopComponent() {
         initComponents();
-        setName(Bundle.CTL_OutputTopComponent());
-        setToolTipText(Bundle.HINT_OutputTopComponent());
+        setName(Bundle.CTL_RevisionDisplayTopComponent());
+        setToolTipText(Bundle.HINT_RevisionDisplayTopComponent());
     }
 
     /**
@@ -53,12 +53,14 @@ public final class OutputTopComponent extends TopComponent {
     private void initComponents() {
 
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTextArea1 = new javax.swing.JTextArea();
+        rSyntaxTextArea = new org.fife.ui.rsyntaxtextarea.RSyntaxTextArea();
 
-        jTextArea1.setEditable(false);
-        jTextArea1.setColumns(20);
-        jTextArea1.setRows(5);
-        jScrollPane1.setViewportView(jTextArea1);
+        rSyntaxTextArea.setEditable(false);
+        rSyntaxTextArea.setBackground(new java.awt.Color(204, 204, 204));
+        rSyntaxTextArea.setColumns(20);
+        rSyntaxTextArea.setRows(5);
+        rSyntaxTextArea.setSyntaxEditingStyle(org.openide.util.NbBundle.getMessage(RevisionDisplayTopComponent.class, "RevisionDisplayTopComponent.rSyntaxTextArea.syntaxEditingStyle")); // NOI18N
+        jScrollPane1.setViewportView(rSyntaxTextArea);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -80,21 +82,16 @@ public final class OutputTopComponent extends TopComponent {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTextArea jTextArea1;
+    private org.fife.ui.rsyntaxtextarea.RSyntaxTextArea rSyntaxTextArea;
     // End of variables declaration//GEN-END:variables
     @Override
     public void componentOpened() {
-        DefaultCaret caret = (DefaultCaret) jTextArea1.getCaret();
-        caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
+        // TODO add custom code on component opening
     }
 
     @Override
     public void componentClosed() {
         // TODO add custom code on component closing
-    }
-    
-    public void logToOutput(String toOutput) {
-        jTextArea1.setText(jTextArea1.getText().concat("\n").concat(toOutput));
     }
 
     void writeProperties(java.util.Properties p) {
@@ -108,4 +105,9 @@ public final class OutputTopComponent extends TopComponent {
         String version = p.getProperty("version");
         // TODO read your settings according to their version
     }
+
+    public void setText(String text) {
+        rSyntaxTextArea.setText(text);
+    }
+    
 }
