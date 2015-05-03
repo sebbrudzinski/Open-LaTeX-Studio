@@ -5,12 +5,22 @@
  */
 package latexstudio.editor;
 
-import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
+import com.dropbox.core.DbxClient;
+import com.dropbox.core.DbxEntry;
+import com.dropbox.core.DbxException;
+import java.io.File;
+import java.io.IOException;
+import latexstudio.editor.remote.DbxEntryDto;
+import latexstudio.editor.remote.DbxState;
+import latexstudio.editor.remote.DbxUtil;
+import latexstudio.editor.util.ApplicationUtils;
+import org.apache.commons.io.FileUtils;
 import org.netbeans.api.settings.ConvertAsProperties;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
-import org.openide.windows.TopComponent;
+import org.openide.util.Exceptions;
 import org.openide.util.NbBundle.Messages;
+import org.openide.windows.TopComponent;
 
 /**
  * Top component which displays something.
@@ -37,6 +47,10 @@ import org.openide.util.NbBundle.Messages;
     "HINT_RevisionDisplayTopComponent=This is a RevisionDisplay window"
 })
 public final class RevisionDisplayTopComponent extends TopComponent {
+    
+    private final EditorTopComponent etc = new TopComponentFactory<EditorTopComponent>()
+            .getTopComponent(EditorTopComponent.class.getSimpleName());
+    private DbxState displayedRevision;
 
     public RevisionDisplayTopComponent() {
         initComponents();
@@ -54,6 +68,7 @@ public final class RevisionDisplayTopComponent extends TopComponent {
 
         jScrollPane1 = new javax.swing.JScrollPane();
         rSyntaxTextArea = new org.fife.ui.rsyntaxtextarea.RSyntaxTextArea();
+        jButton1 = new javax.swing.JButton();
 
         rSyntaxTextArea.setEditable(false);
         rSyntaxTextArea.setBackground(new java.awt.Color(204, 204, 204));
@@ -62,25 +77,55 @@ public final class RevisionDisplayTopComponent extends TopComponent {
         rSyntaxTextArea.setSyntaxEditingStyle(org.openide.util.NbBundle.getMessage(RevisionDisplayTopComponent.class, "RevisionDisplayTopComponent.rSyntaxTextArea.syntaxEditingStyle")); // NOI18N
         jScrollPane1.setViewportView(rSyntaxTextArea);
 
+        org.openide.awt.Mnemonics.setLocalizedText(jButton1, org.openide.util.NbBundle.getMessage(RevisionDisplayTopComponent.class, "RevisionDisplayTopComponent.jButton1.text")); // NOI18N
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 380, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 380, Short.MAX_VALUE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 170, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 278, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 249, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jButton1)
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
 
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        DbxClient client = DbxUtil.getDbxClient();
+
+        try {
+            DbxEntry.File restoredFile = client.restoreFile(displayedRevision.getPath(), displayedRevision.getRevision());
+            File restored = DbxUtil.downloadRemoteFile(new DbxEntryDto(restoredFile), ApplicationUtils.getTempSourceFile());
+            etc.setEditorContent(FileUtils.readFileToString(restored));
+            etc.requestActive();
+        } catch (DbxException e) {
+            Exceptions.printStackTrace(e);
+        } catch (IOException e) {
+            Exceptions.printStackTrace(e);
+        }
+        
+    }//GEN-LAST:event_jButton1ActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton jButton1;
     private javax.swing.JScrollPane jScrollPane1;
     private org.fife.ui.rsyntaxtextarea.RSyntaxTextArea rSyntaxTextArea;
     // End of variables declaration//GEN-END:variables
@@ -109,5 +154,13 @@ public final class RevisionDisplayTopComponent extends TopComponent {
     public void setText(String text) {
         rSyntaxTextArea.setText(text);
     }
-    
+
+    public DbxState getDisplayedRevision() {
+        return displayedRevision;
+    }
+
+    public void setDisplayedRevision(DbxState displayedRevision) {
+        this.displayedRevision = displayedRevision;
+    }
+   
 }

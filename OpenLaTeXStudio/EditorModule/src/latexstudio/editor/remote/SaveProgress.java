@@ -16,6 +16,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import javax.swing.JOptionPane;
+import latexstudio.editor.DropboxRevisionsTopComponent;
 import latexstudio.editor.EditorTopComponent;
 import latexstudio.editor.TopComponentFactory;
 import latexstudio.editor.util.ApplicationUtils;
@@ -39,6 +40,8 @@ public final class SaveProgress implements ActionListener {
     
     private final EditorTopComponent etc = new TopComponentFactory<EditorTopComponent>()
             .getTopComponent(EditorTopComponent.class.getSimpleName());
+    private final DropboxRevisionsTopComponent drtc = new TopComponentFactory<DropboxRevisionsTopComponent>()
+            .getTopComponent(DropboxRevisionsTopComponent.class.getSimpleName());
 
     @Override
     public void actionPerformed(ActionEvent e) {
@@ -64,6 +67,8 @@ public final class SaveProgress implements ActionListener {
                         "Successfuly updated file " + uploadedFile.name + " (" + uploadedFile.humanSize + ")",
                         "File updated in Dropbox",
                         JOptionPane.INFORMATION_MESSAGE);
+                drtc.updateRevisionsList(uploadedFile.path);
+                etc.setDbxState(new DbxState(uploadedFile.path, uploadedFile.rev));
             } catch (DbxException ex) {
                 Exceptions.printStackTrace(ex);
             } catch (IOException ex) {

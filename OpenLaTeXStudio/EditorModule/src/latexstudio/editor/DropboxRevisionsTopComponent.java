@@ -6,15 +6,18 @@
 package latexstudio.editor;
 
 import com.dropbox.core.DbxClient;
+import com.dropbox.core.DbxEntry;
 import com.dropbox.core.DbxException;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.List;
 import javax.swing.DefaultListModel;
 import javax.swing.JList;
 import latexstudio.editor.remote.DbxEntryRevision;
+import latexstudio.editor.remote.DbxState;
 import latexstudio.editor.remote.DbxUtil;
 import latexstudio.editor.util.ApplicationUtils;
 import org.apache.commons.io.FileUtils;
@@ -127,11 +130,13 @@ public final class DropboxRevisionsTopComponent extends TopComponent {
             revtc.open();
             revtc.requestActive();
             revtc.setName(entry.getName() + " (rev: " + entry.getRevision() + ")");
+            revtc.setDisplayedRevision(new DbxState(entry.getPath(), entry.getRevision()));
             try {
                 revtc.setText(FileUtils.readFileToString(outputFile));
             } catch (IOException ex) {
                 Exceptions.printStackTrace(ex);
             }
+            updateRevisionsList(entry.getPath());
         }
     }//GEN-LAST:event_jList1MouseClicked
 
@@ -159,6 +164,22 @@ public final class DropboxRevisionsTopComponent extends TopComponent {
     void readProperties(java.util.Properties p) {
         String version = p.getProperty("version");
         // TODO read your settings according to their version
+    }
+    
+    public void updateRevisionsList(String path) {
+        DbxClient client = DbxUtil.getDbxClient();
+        List<DbxEntry.File> entries = null;
+         
+        try {
+            entries = client.getRevisions(path);
+        } catch (DbxException ex) {
+            Exceptions.printStackTrace(ex);
+        }
+        
+        dlm.clear();
+        for (DbxEntry.File dbxEntry : entries) {
+            dlm.addElement(new DbxEntryRevision(dbxEntry));
+        }
     }
 
     public JList getjList1() {

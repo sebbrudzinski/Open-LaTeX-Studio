@@ -146,6 +146,7 @@ public final class EditorTopComponent extends TopComponent {
     
     public void setEditorContent(String text) {
         rSyntaxTextArea.setText(text);
+        dirty = true;
     }
 
     public boolean isDirty() {

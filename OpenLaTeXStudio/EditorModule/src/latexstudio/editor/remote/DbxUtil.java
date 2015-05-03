@@ -6,9 +6,16 @@
 package latexstudio.editor.remote;
 
 import com.dropbox.core.DbxClient;
+import com.dropbox.core.DbxException;
 import com.dropbox.core.DbxRequestConfig;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.Locale;
 import latexstudio.editor.settings.SettingsService;
+import org.apache.pdfbox.io.IOUtils;
+import org.openide.util.Exceptions;
 
 /**
  *
@@ -24,5 +31,27 @@ public final class DbxUtil {
     public static DbxRequestConfig getDbxConfig() {
         return new DbxRequestConfig("Open LaTex Studio",
             Locale.getDefault().toString());
+    }
+    
+    public static File downloadRemoteFile(DbxEntryDto remoteEntry, String localPath) {
+        DbxClient client = getDbxClient();
+        
+        FileOutputStream outputStream = null;
+        File outputFile = new File(localPath);
+        
+        try {
+            outputStream = new FileOutputStream(outputFile);
+            client.getFile(remoteEntry.getPath(), remoteEntry.getRevision(), outputStream);
+        } catch (FileNotFoundException ex) {
+            Exceptions.printStackTrace(ex);
+        } catch (DbxException ex) {
+            Exceptions.printStackTrace(ex);
+        } catch (IOException ex) {
+            Exceptions.printStackTrace(ex);
+        } finally {
+            IOUtils.closeQuietly(outputStream);
+        }
+        
+        return outputFile;
     }
 }
