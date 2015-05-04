@@ -26,6 +26,14 @@ public final class DbxUtil {
        
     public static DbxClient getDbxClient() {
         String accessToken = SettingsService.loadApplicationSettings().getDropboxToken();
+        if (accessToken == null) {
+            JOptionPane.showMessageDialog(null, 
+                "The authentication token has not been set.\n"
+                        + "Please connect the application to your Dropbox account first!", 
+                "Dropbox authentication token not found", JOptionPane.ERROR_MESSAGE
+            );
+            return null;
+        }
         return new DbxClient(getDbxConfig(), accessToken); 
     }
     

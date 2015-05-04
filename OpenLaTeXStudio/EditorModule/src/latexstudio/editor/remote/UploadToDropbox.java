@@ -43,6 +43,10 @@ public final class UploadToDropbox implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         DbxClient client = DbxUtil.getDbxClient();
+        
+        if (client == null) {
+            return;
+        }
 
         String sourceFileName = ApplicationUtils.getTempSourceFile();
         File file = new File(sourceFileName);

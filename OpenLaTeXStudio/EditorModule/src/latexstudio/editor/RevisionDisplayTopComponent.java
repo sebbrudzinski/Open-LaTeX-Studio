@@ -110,6 +110,10 @@ public final class RevisionDisplayTopComponent extends TopComponent {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         DbxClient client = DbxUtil.getDbxClient();
+        
+        if (client == null) {
+            return;
+        }
 
         if (displayedRevision != null) {
             try {

@@ -48,6 +48,10 @@ public final class OpenFromDropbox implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         DbxClient client = DbxUtil.getDbxClient();
         
+        if (client == null) {
+            return;
+        }
+        
         List<DbxEntryDto> dbxEntries = new ArrayList<DbxEntryDto>();
                              
         try {
