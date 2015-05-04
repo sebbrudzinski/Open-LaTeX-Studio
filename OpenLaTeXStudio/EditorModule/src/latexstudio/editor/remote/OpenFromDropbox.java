@@ -25,7 +25,6 @@ import latexstudio.editor.util.ApplicationUtils;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.awt.ActionRegistration;
-import org.openide.util.Exceptions;
 import org.openide.util.NbBundle.Messages;
 
 @ActionID(
@@ -56,7 +55,8 @@ public final class OpenFromDropbox implements ActionListener {
                 dbxEntries.add(new DbxEntryDto(entry));
             } 
         } catch (DbxException ex) {
-            Exceptions.printStackTrace(ex);
+            DbxUtil.showDbxAccessDeniedPrompt();
+            return; //No point continuing
         }
         
         JList list = new JList(dbxEntries.toArray());

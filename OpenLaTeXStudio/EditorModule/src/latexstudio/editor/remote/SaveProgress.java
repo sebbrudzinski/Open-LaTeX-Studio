@@ -70,7 +70,7 @@ public final class SaveProgress implements ActionListener {
                 drtc.updateRevisionsList(uploadedFile.path);
                 etc.setDbxState(new DbxState(uploadedFile.path, uploadedFile.rev));
             } catch (DbxException ex) {
-                Exceptions.printStackTrace(ex);
+                DbxUtil.showDbxAccessDeniedPrompt();
             } catch (IOException ex) {
                 Exceptions.printStackTrace(ex);
             } finally {

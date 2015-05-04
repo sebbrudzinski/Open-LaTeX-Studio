@@ -42,9 +42,9 @@ import org.openide.windows.TopComponent;
         preferredID = "RevisionDisplayTopComponent"
 )
 @Messages({
-    "CTL_RevisionDisplayAction=RevisionDisplay",
-    "CTL_RevisionDisplayTopComponent=RevisionDisplay Window",
-    "HINT_RevisionDisplayTopComponent=This is a RevisionDisplay window"
+    "CTL_RevisionDisplayAction=Revision Display",
+    "CTL_RevisionDisplayTopComponent=Dropbox revision display",
+    "HINT_RevisionDisplayTopComponent=This is a Revision display window"
 })
 public final class RevisionDisplayTopComponent extends TopComponent {
     
@@ -111,17 +111,18 @@ public final class RevisionDisplayTopComponent extends TopComponent {
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         DbxClient client = DbxUtil.getDbxClient();
 
-        try {
-            DbxEntry.File restoredFile = client.restoreFile(displayedRevision.getPath(), displayedRevision.getRevision());
-            File restored = DbxUtil.downloadRemoteFile(new DbxEntryDto(restoredFile), ApplicationUtils.getTempSourceFile());
-            etc.setEditorContent(FileUtils.readFileToString(restored));
-            etc.requestActive();
-        } catch (DbxException e) {
-            Exceptions.printStackTrace(e);
-        } catch (IOException e) {
-            Exceptions.printStackTrace(e);
+        if (displayedRevision != null) {
+            try {
+                DbxEntry.File restoredFile = client.restoreFile(displayedRevision.getPath(), displayedRevision.getRevision());
+                File restored = DbxUtil.downloadRemoteFile(new DbxEntryDto(restoredFile), ApplicationUtils.getTempSourceFile());
+                etc.setEditorContent(FileUtils.readFileToString(restored));
+                etc.requestActive();
+            } catch (DbxException e) {
+                DbxUtil.showDbxAccessDeniedPrompt();
+            } catch (IOException e) {
+                Exceptions.printStackTrace(e);
+            }
         }
-        
     }//GEN-LAST:event_jButton1ActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

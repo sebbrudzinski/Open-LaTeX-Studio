@@ -36,7 +36,7 @@ import org.openide.util.NbBundle.Messages;
 @ActionReference(path = "Menu/Remote", position = 3433)
 @Messages("CTL_UploadToDropbox=Upload to Dropbox")
 public final class UploadToDropbox implements ActionListener {
-    
+
     private final EditorTopComponent etc = new TopComponentFactory<EditorTopComponent>()
             .getTopComponent(EditorTopComponent.class.getSimpleName());
 
@@ -67,7 +67,7 @@ public final class UploadToDropbox implements ActionListener {
                         "File uploaded to Dropbox",
                         JOptionPane.INFORMATION_MESSAGE);
             } catch (DbxException ex) {
-                Exceptions.printStackTrace(ex);
+                DbxUtil.showDbxAccessDeniedPrompt();
             } catch (IOException ex) {
                 Exceptions.printStackTrace(ex);
             } finally {

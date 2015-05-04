@@ -13,6 +13,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Locale;
+import javax.swing.JOptionPane;
 import latexstudio.editor.settings.SettingsService;
 import org.apache.pdfbox.io.IOUtils;
 import org.openide.util.Exceptions;
@@ -53,5 +54,13 @@ public final class DbxUtil {
         }
         
         return outputFile;
+    }
+    
+    public static void showDbxAccessDeniedPrompt() {
+        JOptionPane.showMessageDialog(null, 
+            "The application failed to connect to your Dropbox account.\nThis might mean that "
+                    + "your access token is no longer valid or you are not connected to the Internet.", 
+            "Could not connect to Dropbox", JOptionPane.ERROR_MESSAGE
+        );
     }
 }

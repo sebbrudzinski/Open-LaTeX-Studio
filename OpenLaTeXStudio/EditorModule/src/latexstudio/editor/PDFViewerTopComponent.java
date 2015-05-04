@@ -36,7 +36,7 @@ import org.openide.windows.TopComponent;
         preferredID = "PDFViewerTopComponent"
 )
 @Messages({
-    "CTL_PDFViewerAction=PDFViewer",
+    "CTL_PDFViewerAction=PDF Preview",
     "CTL_PDFViewerTopComponent=PDF Preview",
     "HINT_PDFViewerTopComponent=This is a window that displays the preview"
 })

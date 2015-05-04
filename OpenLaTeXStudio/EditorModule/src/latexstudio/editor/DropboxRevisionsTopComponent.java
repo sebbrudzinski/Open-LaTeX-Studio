@@ -12,7 +12,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.util.List;
 import javax.swing.DefaultListModel;
 import javax.swing.JList;
@@ -49,7 +48,7 @@ import org.openide.windows.TopComponent;
         preferredID = "DropboxRevisionsTopComponent"
 )
 @Messages({
-    "CTL_DropboxRevisionsAction=DropboxRevisions",
+    "CTL_DropboxRevisionsAction=Dropbox Revisions",
     "CTL_DropboxRevisionsTopComponent=Dropbox Revisions",
     "HINT_DropboxRevisionsTopComponent=This is a Dropbox Revisions window"
 })
