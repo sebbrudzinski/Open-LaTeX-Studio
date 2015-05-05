@@ -18,7 +18,7 @@ public final class PropertyService {
     
     public static Properties readProperties(String propertyFileName) {
         Properties properties = new Properties();
-        InputStream is = PropertyService.class.getClassLoader().getResourceAsStream("/latexstudio/editor/resources/" + propertyFileName);
+        InputStream is = PropertyService.class.getClassLoader().getResourceAsStream("latexstudio/editor/resources/" + propertyFileName);
         try {
             properties.load(is);
         } catch (IOException ex) {

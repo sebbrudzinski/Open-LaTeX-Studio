@@ -20,6 +20,7 @@ import javax.swing.JOptionPane;
 import latexstudio.editor.ApplicationLogger;
 import latexstudio.editor.settings.ApplicationSettings;
 import latexstudio.editor.settings.SettingsService;
+import latexstudio.editor.util.ApplicationUtils;
 import latexstudio.editor.util.PropertyService;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
@@ -95,9 +96,36 @@ public final class ConnectDropbox implements ActionListener {
     
     private static void open(URI uri) {
         try {
-            Desktop.getDesktop().browse(uri);
+            if (Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE)) {
+                Desktop.getDesktop().browse(uri);
+            } else {
+                // Desktop API does not support various platforms - try different approach
+                runtimeCommandOpen(uri);
+            }
         } catch (IOException e) {
             Exceptions.printStackTrace(e);
         }
+    }
+    
+    private static void runtimeCommandOpen(URI uri) {
+        Runtime rt = Runtime.getRuntime();
+        
+        try {
+            if (ApplicationUtils.isWindows()) {
+                rt.exec("rundll32 url.dll,FileProtocolHandler " + uri.toString());
+            } else {
+                String[] browsers = { "epiphany", "firefox", "mozilla", "konqueror",
+                                             "netscape", "opera", "links", "lynx" };
+
+                StringBuilder cmd = new StringBuilder();
+                for (int i = 0 ; i < browsers.length; i++) {
+                    cmd.append((i == 0  ? "" : " || " )).append(browsers[i]).append(" \"").append(uri.toString()).append("\" ");
+                }
+
+                rt.exec(new String[] { "sh", "-c", cmd.toString() });
+            }
+        } catch (IOException e) {
+            Exceptions.printStackTrace(e);
+        }  
     }
 }
