@@ -65,17 +65,21 @@ public final class OpenFromDropbox implements ActionListener {
         
         JList list = new JList(dbxEntries.toArray());
         list.setSelectionMode(DefaultListSelectionModel.SINGLE_SELECTION);
-        JOptionPane.showMessageDialog(null, list, "Open file from Dropbox", JOptionPane.PLAIN_MESSAGE);
+        int option = JOptionPane.showConfirmDialog(null, list, "Open file from Dropbox", JOptionPane.OK_CANCEL_OPTION);
         
-        DbxEntryDto entry = (DbxEntryDto) list.getSelectedValue();
-        String localPath = ApplicationUtils.getAppDirectory() + File.separator + entry.getName();
-        File outputFile = DbxUtil.downloadRemoteFile(entry, localPath);
-        
-        drtc.updateRevisionsList(entry.getPath());
-        
-        String content = FileService.readFromFile(outputFile.getAbsolutePath());
-        etc.setEditorContent(content);
-        etc.setCurrentFile(outputFile); 
-        etc.setDbxState(new DbxState(entry.getPath(), entry.getRevision()));
+        if (option == JOptionPane.OK_OPTION && !list.isSelectionEmpty()) {
+            DbxEntryDto entry = (DbxEntryDto) list.getSelectedValue();
+            String localPath = ApplicationUtils.getAppDirectory() + File.separator + entry.getName();
+            File outputFile = DbxUtil.downloadRemoteFile(entry, localPath);
+
+            drtc.updateRevisionsList(entry.getPath());
+            drtc.open();
+            drtc.requestActive();
+
+            String content = FileService.readFromFile(outputFile.getAbsolutePath());
+            etc.setEditorContent(content);
+            etc.setCurrentFile(outputFile); 
+            etc.setDbxState(new DbxState(entry.getPath(), entry.getRevision()));
+        }
     }
 }

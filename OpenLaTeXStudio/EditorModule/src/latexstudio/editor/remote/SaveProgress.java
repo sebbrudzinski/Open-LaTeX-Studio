@@ -80,6 +80,9 @@ public final class SaveProgress implements ActionListener {
             } finally {
                 IOUtils.closeQuietly(inputStream);
             }
+        } else {
+            JOptionPane.showMessageDialog(null, "No Dropbox file has been loaded.\n"
+                    + "You must open Dropbox file, before you save it.", "Cannot save progress", JOptionPane.WARNING_MESSAGE);
         }
     }
 }
