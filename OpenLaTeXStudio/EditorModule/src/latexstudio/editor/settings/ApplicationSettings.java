@@ -8,7 +8,7 @@ package latexstudio.editor.settings;
 import java.util.Properties;
 
 /**
- *
+ * A class representing settings of the application.
  * @author Sebastian
  */
 public class ApplicationSettings extends Properties {

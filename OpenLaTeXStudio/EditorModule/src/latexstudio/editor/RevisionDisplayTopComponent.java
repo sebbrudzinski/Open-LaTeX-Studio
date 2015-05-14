@@ -23,7 +23,8 @@ import org.openide.util.NbBundle.Messages;
 import org.openide.windows.TopComponent;
 
 /**
- * Top component which displays something.
+ * Top component which displays the past revision of a Dropbox file. The code
+ * within this component is not editable and grayed out.
  */
 @ConvertAsProperties(
         dtd = "-//latexstudio.editor//RevisionDisplay//EN",
