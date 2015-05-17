@@ -12,6 +12,7 @@ import latexstudio.editor.ApplicationLogger;
 import latexstudio.editor.EditorTopComponent;
 import latexstudio.editor.TopComponentFactory;
 import latexstudio.editor.files.FileChooserService;
+import latexstudio.editor.runtime.CommandLineBuilder;
 import latexstudio.editor.runtime.CommandLineExecutor;
 import latexstudio.editor.util.ApplicationUtils;
 import org.openide.awt.ActionID;
@@ -46,11 +47,14 @@ public final class GeneratePDF implements ActionListener {
             String filename = file.getName();
             
             LOGGER.log("Invoking pdflatex");
-            CommandLineExecutor.executeGeneratePDF(ApplicationUtils.getTempSourceFile(),
-                    file.getParentFile().getAbsolutePath(), 
-                    filename, 
-                    etc.getCurrentFile(), 
-                    new ApplicationLogger("pdflatex"));
+  
+            CommandLineExecutor.executeGeneratePDF(new CommandLineBuilder()
+                .withPathToSource(ApplicationUtils.getTempSourceFile())
+                .withOutputDirectory(file.getParentFile().getAbsolutePath())
+                .withJobname(filename)
+                .withWorkingFile(etc.getCurrentFile())
+                .withLatexPath(etc.getLatexPath())
+                .withLogger(new ApplicationLogger("pdflatex")));
         }
     }
 }

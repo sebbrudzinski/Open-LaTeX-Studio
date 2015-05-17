@@ -11,6 +11,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import latexstudio.editor.EditorTopComponent;
 import latexstudio.editor.files.FileService;
+import latexstudio.editor.runtime.CommandLineBuilder;
 import latexstudio.editor.util.ApplicationUtils;
 import org.openide.util.Exceptions;
 
@@ -62,10 +63,14 @@ public class PDFPreviewRefresher implements Runnable {
         String content = etc.getEditorContent();
         
         FileService.writeToFile(fileLocation, content);
-        CommandLineExecutor.executeGeneratePDF(ApplicationUtils.getTempSourceFile(), 
-                ApplicationUtils.getAppDirectory(),
-                "preview",
-                etc.getCurrentFile());
+
+        CommandLineExecutor.executeGeneratePDF(new CommandLineBuilder()
+                .withPathToSource(ApplicationUtils.getTempSourceFile())
+                .withOutputDirectory(ApplicationUtils.getAppDirectory())
+                .withJobname("preview")
+                .withWorkingFile(etc.getCurrentFile())
+                .withLatexPath(etc.getLatexPath())
+        );
     }
 
 }

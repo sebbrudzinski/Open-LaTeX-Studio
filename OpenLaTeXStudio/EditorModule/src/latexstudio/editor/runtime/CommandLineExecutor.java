@@ -8,14 +8,12 @@ package latexstudio.editor.runtime;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
-import latexstudio.editor.ApplicationLogger;
 import latexstudio.editor.util.ApplicationUtils;
 import org.apache.commons.exec.CommandLine;
 import org.apache.commons.exec.DefaultExecutor;
 import org.apache.commons.exec.ExecuteWatchdog;
 import org.apache.commons.exec.PumpStreamHandler;
 import org.apache.commons.io.IOUtils;
-import org.openide.util.Exceptions;
 
 /**
  * The class responsible for execution of commands in runtime and handling the outputs
@@ -25,51 +23,52 @@ import org.openide.util.Exceptions;
  */
 public final class CommandLineExecutor {
     
-    public static void executeGeneratePDF(String pathToSource, String outputDir, File workingFile) {
-        executeGeneratePDF(pathToSource, outputDir, null, workingFile);
-    }
+    private static final DefaultExecutor EXECUTOR;
     
-    public static void executeGeneratePDF(String pathToSource, String outputDir, String jobname, File workingFile) {
-        executeGeneratePDF(pathToSource, outputDir, jobname, workingFile, null);
+    static {
+        EXECUTOR = new DefaultExecutor();
+        ExecuteWatchdog watchdog = new ExecuteWatchdog(8000);
+
+        // generating pdf returns code 1, so we add it to the accepted values
+        EXECUTOR.setExitValues(new int[] {0,1});
+        EXECUTOR.setWatchdog(watchdog);
     }
-    
-    public static void executeGeneratePDF(String pathToSource, String outputDir, String jobname, File workingFile, ApplicationLogger logger) {
-        String outputDirectory = "--output-directory=" + outputDir;
+      
+    public static void executeGeneratePDF(CommandLineBuilder cmd) {
+        String outputDirectory = "--output-directory=" + cmd.getOutputDirectory();
         String outputFormat = "--output-format=pdf";
         
-        String job = jobname == null ? "" : "--jobname=" + jobname.replaceAll(" ", "_");
-        String includeDir = workingFile == null ? "" : "--include-directory=" + workingFile.getParentFile().getAbsolutePath();
-        String quiet = logger  == null ? "--quiet" : "";
+        String job = cmd.getJobname() == null ? "" : "--jobname=" + cmd.getJobname().replaceAll(" ", "_");
+        String includeDir = cmd.getWorkingFile() == null ? "" : "--include-directory=" + cmd.getWorkingFile().getParentFile().getAbsolutePath();
+        String quiet = cmd.getLogger() == null ? "--quiet" : "";
         
         ByteArrayOutputStream outputStream = null;
         
         try {           
             String[] command =  new String[] {
-                outputDirectory, outputFormat, job, includeDir, quiet, pathToSource
+                outputDirectory, outputFormat, job, includeDir, quiet, cmd.getPathToSource()
             };
          
-            CommandLine cmdLine = new CommandLine(ApplicationUtils.PATH_TO_TEX);
+            CommandLine cmdLine = new CommandLine(cmd.getLatexPath() + File.separator + ApplicationUtils.PATH_TO_TEX);
             //For windows, we set handling quoting to true
             cmdLine.addArguments(command, ApplicationUtils.isWindows());
             
-            DefaultExecutor executor = new DefaultExecutor();
-            ExecuteWatchdog watchdog = new ExecuteWatchdog(8000);
             
             outputStream = new ByteArrayOutputStream();
             PumpStreamHandler streamHandler = new PumpStreamHandler(outputStream);
-            executor.setStreamHandler(streamHandler);
+            EXECUTOR.setStreamHandler(streamHandler);
             
-            // generating pdf returns code 1, so we add it to the accepted values
-            executor.setExitValues(new int[] {0,1});
-            executor.setWatchdog(watchdog);
-            executor.execute(cmdLine);      
+            EXECUTOR.execute(cmdLine);      
 
-            if (logger != null) {
-                logger.log(outputStream.toString());
+            if (cmd.getLogger() != null) {
+                cmd.getLogger().log(cmdLine.toString());
+                cmd.getLogger().log(outputStream.toString());
             }
                         
         } catch (IOException e) {
-            Exceptions.printStackTrace(e);
+            if (cmd.getLogger() != null) {
+                cmd.getLogger().log("The path to the pdflatex tool is incorrect or has not been set.");
+            }
         } finally {
             IOUtils.closeQuietly(outputStream);
         }
