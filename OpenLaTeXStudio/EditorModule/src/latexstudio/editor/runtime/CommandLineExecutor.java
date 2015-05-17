@@ -49,7 +49,7 @@ public final class CommandLineExecutor {
                 outputDirectory, outputFormat, job, includeDir, quiet, cmd.getPathToSource()
             };
          
-            CommandLine cmdLine = new CommandLine(cmd.getLatexPath() + File.separator + ApplicationUtils.PATH_TO_TEX);
+            CommandLine cmdLine = new CommandLine(ApplicationUtils.getPathToTEX(cmd.getLatexPath()));
             //For windows, we set handling quoting to true
             cmdLine.addArguments(command, ApplicationUtils.isWindows());
             

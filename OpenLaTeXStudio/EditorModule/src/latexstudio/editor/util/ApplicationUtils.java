@@ -24,7 +24,17 @@ public final class ApplicationUtils {
     private static final String PREVIEW_PDF_FILENAME = "preview.pdf";
     private static final String SETTINGS_FILENAME = "settings.properties";
     
-    public static final String PATH_TO_TEX = "pdflatex";
+    public static final String PDFLATEX = "pdflatex";
+    
+    public static final String getPathToTEX(String texDirectory) {
+        if (texDirectory == null || texDirectory.equals("")) {
+            return PDFLATEX;
+        } else {
+            return texDirectory.endsWith(File.separator) ? 
+                    texDirectory.concat(PDFLATEX) : 
+                    texDirectory.concat(File.separator).concat(PDFLATEX);
+        }
+    }
     
     public static final String getTempSourceFile() {
         return getAppDirectory().concat(File.separator).concat(PREVIEW_SOURCE_FILENAME);
