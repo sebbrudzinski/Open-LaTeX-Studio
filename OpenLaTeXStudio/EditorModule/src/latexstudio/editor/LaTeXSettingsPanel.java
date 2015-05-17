@@ -86,7 +86,7 @@ final class LaTeXSettingsPanel extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        File directory = FileChooserService.getSelectedDirectory();
+        File directory = FileChooserService.getSelectedDirectory("Choose");
         if (directory != null) {
             jTextField1.setText(directory.getAbsolutePath());
         }

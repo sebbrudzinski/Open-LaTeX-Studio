@@ -15,11 +15,11 @@ import javax.swing.filechooser.FileNameExtensionFilter;
  */
 public class FileChooserService {
     
-    public static File getSelectedDirectory() {
+    public static File getSelectedDirectory(String buttonText) {
         JFileChooser chooser = new JFileChooser();
         chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY); 
         
-        int returnVal = chooser.showSaveDialog(null);
+        int returnVal = chooser.showDialog(null, buttonText);
         if(returnVal == JFileChooser.APPROVE_OPTION) {
             File file = chooser.getSelectedFile();
             
