@@ -39,12 +39,14 @@ public final class CommandLineExecutor {
         
         String job = jobname == null ? "" : "--jobname=" + jobname.replaceAll(" ", "_");
         String includeDir = workingFile == null ? "" : "--include-directory=" + workingFile.getParentFile().getAbsolutePath();
+        String quiet = logger  == null ? "--quiet" : "";
         
         ByteArrayOutputStream outputStream = null;
         
         try {           
             String[] command =  new String[] {
-                outputDirectory, outputFormat, job, includeDir, pathToSource};
+                outputDirectory, outputFormat, job, includeDir, quiet, pathToSource
+            };
          
             CommandLine cmdLine = new CommandLine(ApplicationUtils.PATH_TO_TEX);
             //For windows, we set handling quoting to true
