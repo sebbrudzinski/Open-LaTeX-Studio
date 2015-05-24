@@ -6,7 +6,6 @@
 package latexstudio.editor.runtime;
 
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.IOException;
 import latexstudio.editor.util.ApplicationUtils;
 import org.apache.commons.exec.CommandLine;
@@ -40,13 +39,12 @@ public final class CommandLineExecutor {
         
         String job = cmd.getJobname() == null ? "" : "--jobname=" + cmd.getJobname().replaceAll(" ", "_");
         String includeDir = cmd.getWorkingFile() == null ? "" : "--include-directory=" + cmd.getWorkingFile().getParentFile().getAbsolutePath();
-        String quiet = cmd.getLogger() == null ? "--quiet" : "";
-        
+
         ByteArrayOutputStream outputStream = null;
         
         try {           
             String[] command =  new String[] {
-                outputDirectory, outputFormat, job, includeDir, quiet, cmd.getPathToSource()
+                outputDirectory, outputFormat, job, includeDir, cmd.getPathToSource()
             };
          
             CommandLine cmdLine = new CommandLine(ApplicationUtils.getPathToTEX(cmd.getLatexPath()));
