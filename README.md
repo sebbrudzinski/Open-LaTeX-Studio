@@ -18,7 +18,7 @@ Navigate to the release tab and pick the latest stable release. We provide binar
 
 Contribute
 ----------
-If you would like to contribute, you are welcome to take a look at the Issues section and grab any open, unassigned ticket. We have marked the issues that are friendly for the new contributors with the green label "community friendly". There are of course many other ways to help, if you are not interested in coding. You may test the application and submit bug reports or ideas for improvements. You can also contribute by expanding our wiki or advertising the project. If you decide to contribute, take a look at our wiki, that will be updated on a regular basis to help with the development and other community related issues.
+If you would like to contribute, you are welcome to take a look at the Issues section and grab any open, unassigned ticket. We have marked the issues that are friendly for the new contributors with the green label "community friendly". There are of course many other ways to help, if you are not interested in coding. You may test the application and submit bug reports or ideas for improvements. You can also contribute by expanding our wiki or advertising the project. Please also take a look at our [collaborate section](https://github.com/sebbrudzinski/Open-LaTeX-Studio/blob/master/COLLABORATE.md), to get more information.
 
 Planned releases
 ----------------
