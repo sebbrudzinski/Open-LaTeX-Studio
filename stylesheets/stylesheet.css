@@ -73,7 +73,6 @@ header h1 {
   font-size: 48px; font-weight: 900;
   line-height: 1.2;
   color: #303030;
-  letter-spacing: -2px;
   padding-left: 15px;
 }
 
@@ -96,7 +95,7 @@ header #logo {
 }
 
 .inner {
-  width: 620px;
+  width: 950px;
   margin: 0 auto;
 }
 
@@ -167,9 +166,10 @@ a.button span {
 #view-on-github span {
   background: transparent url(../images/octocat-icon.png) 12px 50% no-repeat;
 }
-#view-on-github {
-  margin-right: 0;
+#collaborators span {
+  background: transparent url(../images/collaborators-icon.png) 12px 50% no-repeat;
 }
+
 
 code, pre {
   margin-bottom: 30px;
