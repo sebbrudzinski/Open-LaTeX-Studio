@@ -166,8 +166,8 @@ a.button span {
 #view-on-github span {
   background: transparent url(../images/octocat-icon.png) 12px 50% no-repeat;
 }
-#collaborators span {
-  background: transparent url(../images/collaborators-icon.png) 12px 50% no-repeat;
+#contributors span {
+  background: transparent url(../images/contributors-icon.png) 12px 50% no-repeat;
 }
 
 
