@@ -5,10 +5,12 @@
  */
 package latexstudio.editor.pdf;
 
+import java.awt.Point;
 import latexstudio.editor.runtime.CommandLineExecutor;
 import java.util.logging.Logger;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JViewport;
 import latexstudio.editor.EditorTopComponent;
 import latexstudio.editor.files.FileService;
 import latexstudio.editor.runtime.CommandLineBuilder;
@@ -54,7 +56,11 @@ public class PDFPreviewRefresher implements Runnable {
         JPanel pdfImagePanel = pdfDisplay.drawPreviewOnJPanel();
        
         if (pdfImagePanel != null) {
-            jScrollPane.setViewportView(pdfImagePanel);
+            JViewport vp = jScrollPane.getViewport();
+            Point p = vp.getViewPosition();
+            vp.setView(pdfImagePanel);
+            vp.setViewPosition(p);
+
         }
     }
 
