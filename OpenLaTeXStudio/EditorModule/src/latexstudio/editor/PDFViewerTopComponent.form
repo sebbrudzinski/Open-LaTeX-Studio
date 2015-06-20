@@ -19,13 +19,17 @@
           <Group type="102" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Component id="jScrollPane1" pref="380" max="32767" attributes="0"/>
+                  <Component id="jScrollPane1" pref="423" max="32767" attributes="0"/>
                   <Group type="102" attributes="0">
-                      <Component id="jButton1" min="-2" pref="150" max="-2" attributes="0"/>
+                      <Component id="jButton1" min="-2" pref="120" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="jTextField1" max="32767" attributes="0"/>
+                      <Component id="jTextField1" pref="74" max="32767" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="jButton2" min="-2" pref="150" max="-2" attributes="0"/>
+                      <Component id="jButton2" min="-2" pref="120" max="-2" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Component id="jSpinnerZoom" min="-2" max="-2" attributes="0"/>
                   </Group>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
@@ -37,7 +41,11 @@
           <Group type="102" alignment="1" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                  <Component id="jButton2" alignment="1" max="32767" attributes="0"/>
+                  <Group type="103" alignment="1" groupAlignment="3" attributes="0">
+                      <Component id="jButton2" alignment="3" max="32767" attributes="0"/>
+                      <Component id="jSpinnerZoom" alignment="3" max="32767" attributes="0"/>
+                      <Component id="jLabel1" alignment="3" min="-2" max="-2" attributes="0"/>
+                  </Group>
                   <Component id="jTextField1" alignment="1" min="-2" max="-2" attributes="0"/>
                   <Component id="jButton1" alignment="1" max="32767" attributes="0"/>
               </Group>
@@ -50,6 +58,9 @@
   </Layout>
   <SubComponents>
     <Container class="javax.swing.JScrollPane" name="jScrollPane1">
+      <Events>
+        <EventHandler event="mouseWheelMoved" listener="java.awt.event.MouseWheelListener" parameters="java.awt.event.MouseWheelEvent" handler="jScrollPane1MouseWheelMoved"/>
+      </Events>
 
       <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
     </Container>
@@ -82,6 +93,26 @@
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButton2ActionPerformed"/>
       </Events>
+    </Component>
+    <Component class="javax.swing.JSpinner" name="jSpinnerZoom">
+      <Properties>
+        <Property name="model" type="javax.swing.SpinnerModel" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+          <Connection code="new javax.swing.SpinnerNumberModel(DEFAULT_ZOOM, MIN_ZOOM, MAX_ZOOM, SPINNER_ZOOM_SIZE)" type="code"/>
+        </Property>
+        <Property name="name" type="java.lang.String" value="jSpinnerZoom" noResource="true"/>
+      </Properties>
+      <Events>
+        <EventHandler event="mouseWheelMoved" listener="java.awt.event.MouseWheelListener" parameters="java.awt.event.MouseWheelEvent" handler="jSpinnerZoomMouseWheelMoved"/>
+        <EventHandler event="stateChanged" listener="javax.swing.event.ChangeListener" parameters="javax.swing.event.ChangeEvent" handler="jSpinnerZoomStateChanged"/>
+      </Events>
+    </Component>
+    <Component class="javax.swing.JLabel" name="jLabel1">
+      <Properties>
+        <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+          <ResourceString bundle="latexstudio/editor/Bundle.properties" key="PDFViewerTopComponent.jLabelZoom.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
+        </Property>
+        <Property name="name" type="java.lang.String" value="jLabelZoom" noResource="true"/>
+      </Properties>
     </Component>
   </SubComponents>
 </Form>

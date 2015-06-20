@@ -20,16 +20,18 @@ public class PDFPreviewBuilder {
     private static final double SCALE_FACTOR = 0.4;
     private static final int SCALE_TYPE = Image.SCALE_SMOOTH;
 
-    public static Image buildPDFPreview(PDPage pdfPage) {
+    public static Image buildPDFPreview(PDPage pdfPage, int zoom) {
         if (pdfPage == null) {
             return null;
         }
          
+
+        double newScale = SCALE_FACTOR * (((double)zoom)/100.0);
         BufferedImage pageImage = null;
         try {
             pageImage = pdfPage.convertToImage();
-            int width = (int) (SCALE_FACTOR * pageImage.getWidth());
-            int height = (int) (SCALE_FACTOR * pageImage.getHeight());
+            int width = (int) (newScale * pageImage.getWidth());
+            int height = (int) (newScale * pageImage.getHeight());
             int type = pageImage.getType();
             
             return pageImage.getScaledInstance(width, height, SCALE_TYPE);
