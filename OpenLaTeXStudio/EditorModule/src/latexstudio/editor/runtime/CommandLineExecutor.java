@@ -33,28 +33,28 @@ public final class CommandLineExecutor {
         EXECUTOR.setWatchdog(watchdog);
     }
       
-    public static void executeGeneratePDF(CommandLineBuilder cmd) {
+    public synchronized static void executeGeneratePDF(CommandLineBuilder cmd) {
         String outputDirectory = "--output-directory=" + cmd.getOutputDirectory();
         String outputFormat = "--output-format=pdf";
-        
         String job = cmd.getJobname() == null ? "" : "--jobname=" + cmd.getJobname().replaceAll(" ", "_");
-        String includeDir = cmd.getWorkingFile() == null ? "" : "--include-directory=" + cmd.getWorkingFile().getParentFile().getAbsolutePath();
-
         ByteArrayOutputStream outputStream = null;
         
         try {           
             String[] command =  new String[] {
-                outputDirectory, outputFormat, job, includeDir, cmd.getPathToSource()
+                outputDirectory, outputFormat, job, cmd.getPathToSource()
             };
          
             CommandLine cmdLine = new CommandLine(ApplicationUtils.getPathToTEX(cmd.getLatexPath()));
             //For windows, we set handling quoting to true
             cmdLine.addArguments(command, ApplicationUtils.isWindows());
             
-            
             outputStream = new ByteArrayOutputStream();
             PumpStreamHandler streamHandler = new PumpStreamHandler(outputStream);
             EXECUTOR.setStreamHandler(streamHandler);
+            
+            if (cmd.getWorkingFile() != null) {
+                EXECUTOR.setWorkingDirectory(cmd.getWorkingFile().getParentFile().getAbsoluteFile());
+            }
             
             EXECUTOR.execute(cmdLine);      
 
