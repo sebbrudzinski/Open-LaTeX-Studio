@@ -46,6 +46,7 @@ public final class SaveFile implements ActionListener {
         if (file != null) {
             FileService.writeToFile(file.getAbsolutePath(), content);
             LOGGER.log("Saving file " + file.getAbsolutePath());
+            etc.setCurrentFile(file);
         }
     }
 }
