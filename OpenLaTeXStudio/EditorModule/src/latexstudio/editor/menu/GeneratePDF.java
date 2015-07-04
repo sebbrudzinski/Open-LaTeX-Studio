@@ -12,6 +12,7 @@ import latexstudio.editor.ApplicationLogger;
 import latexstudio.editor.EditorTopComponent;
 import latexstudio.editor.TopComponentFactory;
 import latexstudio.editor.files.FileChooserService;
+import latexstudio.editor.files.FileChooserService.DialogType;
 import latexstudio.editor.runtime.CommandLineBuilder;
 import latexstudio.editor.runtime.CommandLineExecutor;
 import latexstudio.editor.util.ApplicationUtils;
@@ -42,7 +43,7 @@ public final class GeneratePDF implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {        
-        File file = FileChooserService.getSelectedFile("pdf", "PDF files", false);
+        File file = FileChooserService.getSelectedFile("pdf", "PDF files", DialogType.PDF, false);
         if (file != null) {
             String filename = file.getName();
             

@@ -11,6 +11,7 @@ import java.io.File;
 import latexstudio.editor.EditorTopComponent;
 import latexstudio.editor.TopComponentFactory;
 import latexstudio.editor.files.FileChooserService;
+import latexstudio.editor.files.FileChooserService.DialogType;
 import latexstudio.editor.files.FileService;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
@@ -33,7 +34,7 @@ public final class OpenFile implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        File file = FileChooserService.getSelectedFile("tex", "TeX files");
+        File file = FileChooserService.getSelectedFile("tex", "TeX files", DialogType.OPEN);
         if (file != null) {
             String content = FileService.readFromFile(file.getAbsolutePath());
             etc.setEditorContent(content);

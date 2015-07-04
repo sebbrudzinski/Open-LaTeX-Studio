@@ -10,10 +10,16 @@ import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 /**
- *
+ * This is a simple util class, generating the file/directory chooser modals and
+ * returning the user choices.
+ * 
  * @author Sebastian
  */
 public class FileChooserService {
+    
+    public enum DialogType {
+        SAVE, OPEN, PDF;
+    }
     
     public static File getSelectedDirectory(String buttonText) {
         JFileChooser chooser = new JFileChooser();
@@ -29,16 +35,28 @@ public class FileChooserService {
         return null;
     }
     
-    public static File getSelectedFile(String extension, String description) {
-        return getSelectedFile(extension, description, false);
+    public static File getSelectedFile(String extension, String description, DialogType type) {
+        return getSelectedFile(extension, description, type, false);
     }
     
-    public static File getSelectedFile(String extension, String description, boolean fixExtension) {
+    public static File getSelectedFile(String extension, String description, DialogType type, boolean fixExtension) {
         JFileChooser chooser = new JFileChooser();
         FileNameExtensionFilter filter = new FileNameExtensionFilter(description, extension);
         chooser.setFileFilter(filter);
         
-        int returnVal = chooser.showSaveDialog(null);
+        int returnVal = 0;
+        switch (type) {
+            case SAVE:
+                returnVal = chooser.showSaveDialog(null);
+                break;
+            case OPEN:
+                returnVal = chooser.showOpenDialog(null);
+                break;
+            case PDF:
+                returnVal = chooser.showDialog(null, "Generate PDF");
+                break;   
+        }
+        
         if(returnVal == JFileChooser.APPROVE_OPTION) {
             File file = chooser.getSelectedFile();
             
