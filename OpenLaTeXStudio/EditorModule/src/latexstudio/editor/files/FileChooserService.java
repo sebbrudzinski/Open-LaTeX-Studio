@@ -59,15 +59,15 @@ public class FileChooserService {
         
         if(returnVal == JFileChooser.APPROVE_OPTION) {
             File file = chooser.getSelectedFile();
+                if (file.exists()) {
+                    String filePath = file.getAbsolutePath();
+                    if (fixExtension && !filePath.endsWith("." + extension)) {
+                        file = new File(filePath + "." + extension);
+                    }
             
-            String filePath = file.getAbsolutePath();
-            if (fixExtension && !filePath.endsWith("." + extension)) {
-                file = new File(filePath + "." + extension);
-            }
-            
-            return file;
+        return file;
+                }
         }
-        
         return null;
     }
 }
