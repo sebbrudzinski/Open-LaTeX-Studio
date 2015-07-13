@@ -41,7 +41,7 @@ public class PDFPreviewRefresher implements Runnable {
             if (etc.isDirty()) {
                 compileTemporaryFile();
                 drawPreview();
-              //  etc.setDirty(false);
+                etc.setDirty(false);
             }
             
             try {
@@ -52,7 +52,7 @@ public class PDFPreviewRefresher implements Runnable {
         }
     }
     
-    public void drawPreview() {
+    private void drawPreview() {
         JPanel pdfImagePanel = pdfDisplay.drawPreviewOnJPanel();
        
         if (pdfImagePanel != null) {
@@ -64,7 +64,7 @@ public class PDFPreviewRefresher implements Runnable {
         }
     }
 
-    public void compileTemporaryFile() {        
+    private void compileTemporaryFile() {        
         String fileLocation = ApplicationUtils.getTempSourceFile();
         String content = etc.getEditorContent();
         
