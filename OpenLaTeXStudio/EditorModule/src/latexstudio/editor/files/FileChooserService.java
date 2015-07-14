@@ -61,15 +61,15 @@ public class FileChooserService {
 
         if (returnVal == JFileChooser.APPROVE_OPTION) {
             File file = chooser.getSelectedFile();
-            if (file.exists()) {
+            if (!file.exists() && type == DialogType.OPEN) {
+                JOptionPane.showMessageDialog(null, "File doesn't exist", "Item not found", JOptionPane.ERROR_MESSAGE); 
+            } else {              
                 String filePath = file.getAbsolutePath();
                 if (fixExtension && !filePath.endsWith("." + extension)) {
                     file = new File(filePath + "." + extension);
                 }
 
                 return file;
-            } else {              
-                JOptionPane.showMessageDialog(null, "File doesn't exist", "Item not found", JOptionPane.WARNING_MESSAGE);               
             }
         }
         return null;
