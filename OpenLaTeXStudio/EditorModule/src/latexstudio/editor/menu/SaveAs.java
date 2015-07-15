@@ -6,6 +6,8 @@ package latexstudio.editor.menu;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import javax.swing.JFileChooser;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import latexstudio.editor.ApplicationLogger;
 import latexstudio.editor.EditorTopComponent;
 import latexstudio.editor.TopComponentFactory;
@@ -28,7 +30,7 @@ import org.openide.util.NbBundle.Messages;
 )
 @ActionReferences ({
         @ActionReference(path="Menu/File", position = 1400),
-        @ActionReference(path="Toolbars/File", position = 2300)
+        //@ActionReference(path="Toolbars/File", position = 2300) Icon same as "Save"
 })
 @Messages("CTL_SaveAs= Save As")
 public class SaveAs implements ActionListener {
@@ -38,13 +40,12 @@ public class SaveAs implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent aE) {
         String content = ETC.getEditorContent();
-        File file = FileChooserService.getSelectedFile("tex", "TeX files", 
-                DialogType.SAVE, true);
+        File file = FileChooserService.getSelectedFile
+                       ("tex", "TeX files", DialogType.SAVE, true);
         if(file != null) {
             FileService.writeToFile(file.getAbsolutePath(), content);
             LOGGER.log("Saving file as " + file.getAbsolutePath());
             ETC.setCurrentFile(file);
         }
-       
     }   
 }
