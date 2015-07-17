@@ -37,6 +37,5 @@ public final class Undo implements ActionListener {
         EditorTopComponent etc = (EditorTopComponent) tc;
         
         etc.undoAction();
-        etc.setDirty(true);
     }
 }

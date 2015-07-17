@@ -33,12 +33,9 @@ public final class Redo implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-
         TopComponent tc = WindowManager.getDefault().findTopComponent("EditorTopComponent");
         EditorTopComponent etc = (EditorTopComponent) tc;
-
+        
         etc.redoAction();
-        etc.setDirty(true);
     }
-
 }
