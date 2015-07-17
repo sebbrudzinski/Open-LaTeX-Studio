@@ -43,8 +43,9 @@ public final class SaveFile implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {                
         String content = etc.getEditorContent();
-        File file = FileChooserService.getSelectedFile("tex", "TeX files", DialogType.SAVE, true);
-        if (file != null) {
+        File file = etc.getCurrentFile();
+        if(file == null) file = FileChooserService.getSelectedFile("tex", "TeX files", DialogType.SAVE, true);
+        if(file != null) {
             FileService.writeToFile(file.getAbsolutePath(), content);
             LOGGER.log("Saving file " + file.getAbsolutePath());
             etc.setCurrentFile(file);

@@ -9,6 +9,7 @@ import java.io.File;
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 
 /**
  * This is a simple util class, generating the file/directory chooser modals and
@@ -63,7 +64,23 @@ public class FileChooserService {
             File file = chooser.getSelectedFile();
             if (!file.exists() && type == DialogType.OPEN) {
                 JOptionPane.showMessageDialog(null, "File doesn't exist", "Item not found", JOptionPane.ERROR_MESSAGE); 
-            } else {              
+            } 
+            else if(file.exists() && type == DialogType.SAVE) {
+                int promptResponse = showOverwritePrompt(file);
+                while(promptResponse == JOptionPane.NO_OPTION){
+                        chooser.showSaveDialog(null);
+                        file = chooser.getSelectedFile();
+                        if(file.exists()) { 
+                            promptResponse = showOverwritePrompt(file);
+                        }
+                }
+                String filePath = file.getAbsolutePath();
+                if (fixExtension && !filePath.endsWith("." + extension)) {
+                    file = new File(filePath + "." + extension);
+                }
+                return file;
+            }
+            else {              
                 String filePath = file.getAbsolutePath();
                 if (fixExtension && !filePath.endsWith("." + extension)) {
                     file = new File(filePath + "." + extension);
@@ -73,5 +90,11 @@ public class FileChooserService {
             }
         }
         return null;
+    }
+    
+    private static int showOverwritePrompt(File file) {
+         return  JOptionPane.showConfirmDialog(null, "File " + file.getName() 
+                            + " exists and will be overwritten. Are you sure?", 
+                                "Overwrite File?", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);  
     }
 }
