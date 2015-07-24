@@ -54,9 +54,9 @@ import org.openide.windows.TopComponent;
     "HINT_EditorTopComponent=This is a Editor window"
 })
 public final class EditorTopComponent extends TopComponent {
-    
+
     private boolean dirty = false;
-    private File currentFile; 
+    private File currentFile;
     private DbxState dbxState;
     private String latexPath;
 
@@ -69,17 +69,17 @@ public final class EditorTopComponent extends TopComponent {
         setToolTipText(Bundle.HINT_EditorTopComponent());
         putClientProperty(TopComponent.PROP_CLOSING_DISABLED, Boolean.TRUE);
         putClientProperty(TopComponent.PROP_UNDOCKING_DISABLED, Boolean.TRUE);
-        
-        Preferences pref = NbPreferences.forModule(LaTeXSettingsPanel.class); 
-        String path = pref.get("latexPath", ""); 
+
+        Preferences pref = NbPreferences.forModule(LaTeXSettingsPanel.class);
+        String path = pref.get("latexPath", "");
         pref.addPreferenceChangeListener(new PreferenceChangeListener() {
-            public void preferenceChange(PreferenceChangeEvent evt) { 
-                if (evt.getKey().equals("latexPath")) { 
-                    latexPath = evt.getNewValue(); 
-                } 
-            } 
-        }); 
-        
+            public void preferenceChange(PreferenceChangeEvent evt) {
+                if (evt.getKey().equals("latexPath")) {
+                    latexPath = evt.getNewValue();
+                }
+            }
+        });
+
         latexPath = path;
     }
 
@@ -130,7 +130,7 @@ public final class EditorTopComponent extends TopComponent {
     private javax.swing.JScrollPane jScrollPane1;
     private org.fife.ui.rsyntaxtextarea.RSyntaxTextArea rSyntaxTextArea;
     // End of variables declaration//GEN-END:variables
-    
+
     @Override
     public void componentOpened() {
         ApplicationUtils.deleteTempFiles();
@@ -140,7 +140,7 @@ public final class EditorTopComponent extends TopComponent {
         ac.setAutoActivationEnabled(true);
         ac.setAutoCompleteEnabled(true);
         ac.install(rSyntaxTextArea);
-        
+
         InputStream is = null;
         try {
             is = getClass().getResource("/latexstudio/editor/resources/welcome.tex").openStream();
@@ -157,11 +157,11 @@ public final class EditorTopComponent extends TopComponent {
     @Override
     public void componentClosed() {
     }
-    
+
     public String getEditorContent() {
         return rSyntaxTextArea.getText();
     }
-    
+
     public void setEditorContent(String text) {
         rSyntaxTextArea.setText(text);
         dirty = true;
@@ -174,11 +174,11 @@ public final class EditorTopComponent extends TopComponent {
     public void setDirty(boolean dirty) {
         this.dirty = dirty;
     }
-    
+
     public void undoAction() {
         rSyntaxTextArea.undoLastAction();
     }
-    
+
     public void redoAction() {
         rSyntaxTextArea.redoLastAction();
     }
@@ -199,11 +199,40 @@ public final class EditorTopComponent extends TopComponent {
     public void setDbxState(DbxState dbxState) {
         this.dbxState = dbxState;
     }
-    
+
     public String getLatexPath() {
         return latexPath;
     }
-    
+
+    public void commentOutText() {
+        String highlightedTextArea = rSyntaxTextArea.getSelectedText();
+        
+        try {
+            if (highlightedTextArea != null) {
+                if (highlightedTextArea.startsWith("%")) {
+                    rSyntaxTextArea.replaceSelection(highlightedTextArea.replace("%", ""));
+
+                } else {
+                    rSyntaxTextArea.replaceSelection(highlightedTextArea.replace("\n", "\n%"));
+                }
+            } else {
+                int currentOffsetFromLineStart = rSyntaxTextArea.getCaretOffsetFromLineStart();
+                int currentCaretPosition = 0;
+                int lineStartPosition = 0;
+                currentCaretPosition = rSyntaxTextArea.getCaretPosition();
+                lineStartPosition = currentCaretPosition - currentOffsetFromLineStart;
+                String firstChar = rSyntaxTextArea.getText(lineStartPosition, lineStartPosition + 1);
+                if (firstChar.startsWith("%")) {
+                    rSyntaxTextArea.replaceRange("", lineStartPosition, lineStartPosition + 1);
+                } else {
+                    rSyntaxTextArea.replaceRange("%", lineStartPosition, lineStartPosition);
+                }
+            }
+        } catch (Exception err) {
+            Exceptions.printStackTrace(err);
+        }
+    }
+
     void writeProperties(java.util.Properties p) {
         // better to version settings since initial version as advocated at
         // http://wiki.apidesign.org/wiki/PropertyFiles
@@ -215,7 +244,7 @@ public final class EditorTopComponent extends TopComponent {
         String version = p.getProperty("version");
         // TODO read your settings according to their version
     }
-    
+
     private CompletionProvider createCompletionProvider() {
         DefaultCompletionProvider provider = new DefaultCompletionProvider();
         provider.setAutoActivationRules(true, "");
@@ -242,7 +271,7 @@ public final class EditorTopComponent extends TopComponent {
                 IOUtils.closeQuietly(is);
             }
         }
-        
+
         return provider;
-   }
+    }
 }
