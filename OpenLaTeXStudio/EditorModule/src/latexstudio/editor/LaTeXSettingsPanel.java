@@ -103,7 +103,7 @@ final class LaTeXSettingsPanel extends javax.swing.JPanel {
                     if (directory != null) pdflatex_exe = new File(directory.toString() + "/pdflatex.exe");
                 }
             }
-            jTextField1.setText(directory.getAbsolutePath());
+            if (directory != null) jTextField1.setText(directory.getAbsolutePath());
         }
     }//GEN-LAST:event_jButton1ActionPerformed
 
