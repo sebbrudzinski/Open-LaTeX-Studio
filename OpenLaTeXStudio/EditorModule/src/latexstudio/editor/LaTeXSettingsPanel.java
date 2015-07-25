@@ -5,7 +5,6 @@
  */
 package latexstudio.editor;
 
-import com.sun.javafx.Utils;
 import java.io.File;
 import javax.swing.JOptionPane;
 import latexstudio.editor.files.FileChooserService;
