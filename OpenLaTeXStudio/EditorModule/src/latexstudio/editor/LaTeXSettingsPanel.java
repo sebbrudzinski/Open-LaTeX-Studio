@@ -6,7 +6,9 @@
 package latexstudio.editor;
 
 import java.io.File;
+import javax.swing.JOptionPane;
 import latexstudio.editor.files.FileChooserService;
+import latexstudio.editor.util.ApplicationUtils;
 import org.openide.util.NbPreferences;
 
 final class LaTeXSettingsPanel extends javax.swing.JPanel {
@@ -87,8 +89,23 @@ final class LaTeXSettingsPanel extends javax.swing.JPanel {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         File directory = FileChooserService.getSelectedDirectory("Choose");
+        File pdflatex_exe;
+        String fname = (ApplicationUtils.isWindows()? "/pdflatex.exe" : "/pdflatex");
         if (directory != null) {
-            jTextField1.setText(directory.getAbsolutePath());
+            pdflatex_exe = new File(directory.toString() + fname);
+            int reply = JOptionPane.NO_OPTION;
+            while (!(pdflatex_exe.exists()) && reply == JOptionPane.NO_OPTION) {
+                reply = JOptionPane.showConfirmDialog(null,
+                        "We could not find the pdflatex in the selected path. Do you confirm the selection?",
+                        "Pdflatex not found",
+                        JOptionPane.YES_NO_OPTION);
+
+                if (reply == JOptionPane.NO_OPTION) {
+                    directory = FileChooserService.getSelectedDirectory("Choose");
+                    if (directory != null) pdflatex_exe = new File(directory.toString() + fname);
+                }
+            }
+            if (directory != null) jTextField1.setText(directory.getAbsolutePath());
         }
     }//GEN-LAST:event_jButton1ActionPerformed
 
