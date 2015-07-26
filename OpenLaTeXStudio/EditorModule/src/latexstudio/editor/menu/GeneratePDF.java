@@ -57,7 +57,7 @@ public final class GeneratePDF implements ActionListener {
             File v_overwriting = new File(file.toString() + ".pdf");
             while (v_overwriting.exists() && reply == JOptionPane.NO_OPTION) {
                 reply = JOptionPane.showConfirmDialog(null,
-                            "The selected file already exists. Do you want to overwrite it?",
+                            v_overwriting.toString() + " already exists. Do you want to overwrite it?",
                             "File already exists.",
                             JOptionPane.YES_NO_OPTION);
                 if (reply == JOptionPane.NO_OPTION) { //The user does not want to overwrite. Then select another name
