@@ -20,15 +20,15 @@ public class ApplicationLogger {
     private final String loggerName;
     private final OutputTopComponent otc = new TopComponentFactory<OutputTopComponent>()
             .getTopComponent(OutputTopComponent.class.getSimpleName());
-    DateFormat loggerDateFormat = new SimpleDateFormat("MMM dd HH:mm:ss");
-    Date currentDate;
+    private final DateFormat loggerDateFormat = new SimpleDateFormat("MMM dd HH:mm:ss");
+    
     
     public ApplicationLogger(String loggerName) {
         this.loggerName = loggerName;
     }
     
     public void log(String message) {
-        currentDate = new Date();
+		Date currentDate = new Date();
         otc.logToOutput(loggerDateFormat.format(currentDate) + " [" + loggerName + "] " + message);
     }
     
