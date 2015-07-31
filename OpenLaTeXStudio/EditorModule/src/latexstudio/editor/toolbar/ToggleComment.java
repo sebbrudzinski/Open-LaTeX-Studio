@@ -40,6 +40,7 @@ public final class ToggleComment implements ActionListener {
         TopComponent tc = WindowManager.getDefault().findTopComponent("EditorTopComponent");
         EditorTopComponent etc = (EditorTopComponent) tc;
         etc.commentOutText();
+        etc.setDirty(true);
     }
 
 }
