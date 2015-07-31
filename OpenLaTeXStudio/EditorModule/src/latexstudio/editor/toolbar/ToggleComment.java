@@ -1,7 +1,7 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+/* 
+ * Copyright (c) 2015 Sebastian Brudzinski
+ * 
+ * See the file LICENSE for copying permission.
  */
 package latexstudio.editor.toolbar;
 
@@ -25,7 +25,7 @@ import org.openide.windows.WindowManager;
         id = "latexstudio.editor.ToggleComment"
 )
 @ActionRegistration(
-        iconBase = "latexstudio/editor/resources/icons/comment-symbol24.png",
+        iconBase = "latexstudio/editor/resources/icons/comment_symbol.png",
         displayName = "#CTL_ToggleComment"
 )
 @ActionReferences({
