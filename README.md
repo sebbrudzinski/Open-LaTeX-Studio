@@ -23,4 +23,4 @@ Contribute
 If you would like to contribute, you are welcome to take a look at the Issues section and grab any open, unassigned ticket. We have marked the issues that are friendly for the new contributors with the green label "community friendly". There are of course many other ways to help, if you are not interested in coding. You may test the application and submit bug reports or ideas for improvements. You can also contribute by expanding our wiki or advertising the project. Please also take a look at our [collaborate section](https://github.com/sebbrudzinski/Open-LaTeX-Studio/blob/master/COLLABORATE.md), to get more information.
 
 ### Keywords
-LaTeX, Open Source, Java, NetBeans Platform, remote collaboration
+LaTeX, Open Source, Java, NetBeans Platform, remote collaboration,
