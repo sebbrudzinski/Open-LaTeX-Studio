@@ -1,0 +1,21 @@
+<ivysettings>
+    <settings defaultResolver="default" />
+
+    <resolvers>
+        <filesystem name="local-maven-2" m2compatible="true" local="true">
+            <ivy pattern="${user.home}/.m2/repository/[organisation]/[module]/[revision]/[module]-[revision].pom"/>
+            <artifact pattern="${user.home}/.m2/repository/[organisation]/[module]/[revision]/[module]-[revision].[ext]"/>
+        </filesystem>
+
+        <ibiblio name="public" m2compatible="true" />
+        <ibiblio name="sevntu-checkstyle" m2compatible="true"
+                root="http://sevntu-checkstyle.github.com/sevntu.checkstyle/maven2/" />
+
+        <chain name="default" returnFirst="true">
+            <resolver ref="local-maven-2"/>
+            <resolver ref="public" />
+            <resolver ref="sevntu-checkstyle" />
+        </chain>
+
+    </resolvers>
+</ivysettings>
