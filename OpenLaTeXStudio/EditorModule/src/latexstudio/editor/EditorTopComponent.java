@@ -206,7 +206,7 @@ public final class EditorTopComponent extends TopComponent {
         return latexPath;
     }
 
-    public String findStartSymbol() {
+    private String findStartSymbol() {
         String highlightedTextArea2 = null;
         boolean toggle = true;
         int carretCoordinates;
