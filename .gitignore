@@ -11,3 +11,6 @@
 /OpenLaTeXStudio/EditorModule/build/
 /OpenLaTeXStudio/lib/
 *checkstyle_report.xml
+/OpenLaTeXStudio/Commons-IO/nbproject/private/
+/OpenLaTeXStudio/Jackson-core/nbproject/private/
+/OpenLaTeXStudio/AutoComplete/nbproject/private/
