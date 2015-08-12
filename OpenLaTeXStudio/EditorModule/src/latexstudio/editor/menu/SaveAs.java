@@ -21,12 +21,12 @@ import org.openide.util.NbBundle.Messages;
         id = "latexstudio.editor.SaveAs"
 )
 @ActionRegistration(
-        iconBase = "latexstudio/editor/resources/icons/save.png",
+        iconBase = "latexstudio/editor/resources/icons/saveas.png",
         displayName = "#CTL_SaveAs"
 )
 @ActionReferences({
     @ActionReference(path = "Menu/File", position = 1300),
-    @ActionReference(path = "Toolbars/File", position = 3222)
+    @ActionReference(path = "Toolbars/File", position = 2223)
 })
 @Messages("CTL_SaveAs=Save As")
 public final class SaveAs implements ActionListener {
