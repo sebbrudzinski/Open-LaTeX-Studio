@@ -39,11 +39,11 @@ import org.openide.util.NbBundle.Messages;
 @Messages("CTL_ConnectDropbox=Connect to Dropbox")
 public final class ConnectDropbox implements ActionListener {
     
-    private final static String PROPETIES = "dropbox.properties";
+    private static final String PROPETIES = "dropbox.properties";
     
-    private final static String APP_KEY = PropertyService.
+    private static final String APP_KEY = PropertyService.
             readProperties(PROPETIES).getProperty("dropbox.appKey");
-    private final static String APP_SECRET = PropertyService.
+    private static final String APP_SECRET = PropertyService.
             readProperties(PROPETIES).getProperty("dropbox.appSecret");
     
     private final ApplicationLogger LOGGER = new ApplicationLogger("Dropbox");
@@ -119,7 +119,11 @@ public final class ConnectDropbox implements ActionListener {
 
                 StringBuilder cmd = new StringBuilder();
                 for (int i = 0 ; i < browsers.length; i++) {
-                    cmd.append((i == 0  ? "" : " || " )).append(browsers[i]).append(" \"").append(uri.toString()).append("\" ");
+                    if (i == 0) {
+                        cmd.append("").append(browsers[i]).append(" \"").append(uri.toString()).append("\" ");
+                    }else{
+                        cmd.append(" || ").append(browsers[i]).append(" \"").append(uri.toString()).append("\" ");
+                    }
                 }
 
                 rt.exec(new String[] { "sh", "-c", cmd.toString() });
