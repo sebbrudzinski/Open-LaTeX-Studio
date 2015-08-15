@@ -10,7 +10,6 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import latexstudio.editor.ApplicationLogger;
 import latexstudio.editor.EditorTopComponent;
-import latexstudio.editor.OutputTopComponent;
 import latexstudio.editor.TopComponentFactory;
 import latexstudio.editor.files.FileChooserService;
 import latexstudio.editor.files.FileChooserService.DialogType;
