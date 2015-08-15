@@ -37,7 +37,7 @@ public final class SaveFile implements ActionListener {
     
     private final EditorTopComponent etc = new TopComponentFactory<EditorTopComponent>()
             .getTopComponent(EditorTopComponent.class.getSimpleName());
-    private final ApplicationLogger LOGGER = new ApplicationLogger("Open LaTeX Studio");
+    private static final ApplicationLogger LOGGER = new ApplicationLogger("Open LaTeX Studio");
 
     @Override
     public void actionPerformed(ActionEvent e) {                

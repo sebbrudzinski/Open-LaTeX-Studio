@@ -46,7 +46,7 @@ public final class ConnectDropbox implements ActionListener {
     private static final String APP_SECRET = PropertyService.
             readProperties(PROPETIES).getProperty("dropbox.appSecret");
     
-    private final ApplicationLogger LOGGER = new ApplicationLogger("Dropbox");
+    private static final ApplicationLogger LOGGER = new ApplicationLogger("Dropbox");
 
     @Override
     public void actionPerformed(ActionEvent e) {

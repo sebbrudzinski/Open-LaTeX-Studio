@@ -42,7 +42,7 @@ public final class OpenFromDropbox implements ActionListener {
             .getTopComponent(EditorTopComponent.class.getSimpleName());
     private final DropboxRevisionsTopComponent drtc = new TopComponentFactory<DropboxRevisionsTopComponent>()
             .getTopComponent(DropboxRevisionsTopComponent.class.getSimpleName());
-    private final ApplicationLogger LOGGER = new ApplicationLogger("Dropbox");
+    private static final ApplicationLogger LOGGER = new ApplicationLogger("Dropbox");
 
     @Override
     public void actionPerformed(ActionEvent e) {
