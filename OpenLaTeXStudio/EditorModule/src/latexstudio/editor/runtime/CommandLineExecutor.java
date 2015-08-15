@@ -33,10 +33,15 @@ public final class CommandLineExecutor {
         EXECUTOR.setWatchdog(watchdog);
     }
       
-    public synchronized static void executeGeneratePDF(CommandLineBuilder cmd) {
+    public static synchronized void executeGeneratePDF(CommandLineBuilder cmd) {
         String outputDirectory = "--output-directory=" + cmd.getOutputDirectory();
         String outputFormat = "--output-format=pdf";
-        String job = cmd.getJobname() == null ? "" : "--jobname=" + cmd.getJobname().replaceAll(" ", "_");
+        String job;
+        if (cmd.getJobname() == null) {
+            job = "";
+        } else {
+            job = "--jobname=" + cmd.getJobname().replaceAll(" ", "_");
+        }
         ByteArrayOutputStream outputStream = null;
         
         try {           
