@@ -65,14 +65,18 @@ public final class GeneratePDF implements ActionListener {
                     if (file != null) {
                         if (file.toString().endsWith(".pdf")) {
                             file = new File(file.toString().substring(0, file.toString().length() - 4));
-                         }
+                        }
                         v_overwriting = new File(file.toString() + ".pdf");
                     }
-                    else return;
+                    else{
+                        return;
+                    }
                 }
             }
         }
-        if (file == null) return;
+        if (file == null){
+            return;
+        }
         String filename = file.getName();
 
         LOGGER.log("Invoking pdflatex");
