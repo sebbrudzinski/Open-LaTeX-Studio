@@ -90,7 +90,12 @@ final class LaTeXSettingsPanel extends javax.swing.JPanel {
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         File directory = FileChooserService.getSelectedDirectory("Choose");
         File pdflatex_exe;
-        String fname = (ApplicationUtils.isWindows()? "/pdflatex.exe" : "/pdflatex");
+        String fname;
+        if (ApplicationUtils.isWindows()) {
+            fname = "/pdflatex.exe";
+        }else{
+            fname = "/pdflatex";
+        }
         if (directory != null) {
             pdflatex_exe = new File(directory.toString() + fname);
             int reply = JOptionPane.NO_OPTION;
@@ -102,10 +107,14 @@ final class LaTeXSettingsPanel extends javax.swing.JPanel {
 
                 if (reply == JOptionPane.NO_OPTION) {
                     directory = FileChooserService.getSelectedDirectory("Choose");
-                    if (directory != null) pdflatex_exe = new File(directory.toString() + fname);
+                    if (directory != null){
+                        pdflatex_exe = new File(directory.toString() + fname);
+                    }
                 }
             }
-            if (directory != null) jTextField1.setText(directory.getAbsolutePath());
+            if (directory != null){
+                jTextField1.setText(directory.getAbsolutePath());
+            }
         }
     }//GEN-LAST:event_jButton1ActionPerformed
 
