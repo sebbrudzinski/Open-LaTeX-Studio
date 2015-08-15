@@ -67,8 +67,7 @@ public final class GeneratePDF implements ActionListener {
                             file = new File(file.toString().substring(0, file.toString().length() - 4));
                         }
                         v_overwriting = new File(file.toString() + ".pdf");
-                    }
-                    else{
+                    } else{
                         return;
                     }
                 }
