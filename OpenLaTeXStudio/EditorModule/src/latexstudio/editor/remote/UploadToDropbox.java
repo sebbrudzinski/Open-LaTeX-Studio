@@ -67,7 +67,9 @@ public final class UploadToDropbox implements ActionListener {
         String fileName = (String) JOptionPane.showInputDialog(null, "Please enter file name", "Upload file", 
                 JOptionPane.INFORMATION_MESSAGE, null, null, defaultFileName);
         if (fileName != null) {
-            fileName = fileName.endsWith(".tex") ? fileName : fileName.concat(".tex");
+            if (!fileName.endsWith(".tex")) {
+                fileName = fileName.concat(".tex");
+            }
             try {
                 DbxEntry.File uploadedFile = client.uploadFile("/OpenLaTeXStudio/" + fileName,
                     DbxWriteMode.add(), file.length(), inputStream);
