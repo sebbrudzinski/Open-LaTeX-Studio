@@ -264,7 +264,8 @@ public final class EditorTopComponent extends TopComponent {
                 int lineStartPosition = 0;
                 currentCaretPosition = rSyntaxTextArea.getCaretPosition();
                 lineStartPosition = currentCaretPosition - currentOffsetFromLineStart;
-                String firstChar = rSyntaxTextArea.getText(lineStartPosition, lineStartPosition + 1);
+                int lineLength = rSyntaxTextArea.getLineEndOffsetOfCurrentLine();
+                String firstChar = rSyntaxTextArea.getText(lineStartPosition, lineLength - lineStartPosition);
                 if (firstChar.startsWith("%")) {
                     rSyntaxTextArea.replaceRange("", lineStartPosition, lineStartPosition + 1);
                 } else {
