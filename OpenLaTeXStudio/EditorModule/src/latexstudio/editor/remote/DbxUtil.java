@@ -23,7 +23,10 @@ import org.openide.util.Exceptions;
  * @author Sebastian
  */
 public final class DbxUtil {
-       
+
+    private DbxUtil() {
+    }
+
     public static DbxClient getDbxClient() {
         String accessToken = SettingsService.loadApplicationSettings().getDropboxToken();
         if (accessToken == null) {

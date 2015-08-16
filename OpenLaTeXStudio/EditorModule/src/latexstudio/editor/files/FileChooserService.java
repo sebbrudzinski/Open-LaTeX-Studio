@@ -16,7 +16,10 @@ import javax.swing.JOptionPane;
  *
  * @author Sebastian
  */
-public class FileChooserService {
+public final class FileChooserService {
+
+    private FileChooserService() {
+    }
 
     public enum DialogType {
 

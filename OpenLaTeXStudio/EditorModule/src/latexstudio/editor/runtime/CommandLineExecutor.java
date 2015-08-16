@@ -23,6 +23,9 @@ import org.apache.commons.io.IOUtils;
 public final class CommandLineExecutor {
     
     private static final DefaultExecutor EXECUTOR;
+
+    private CommandLineExecutor() {
+    }
     
     static {
         EXECUTOR = new DefaultExecutor();

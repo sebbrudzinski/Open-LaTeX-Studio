@@ -25,6 +25,9 @@ public final class ApplicationUtils {
     private static final String SETTINGS_FILENAME = "settings.properties";
     
     public static final String PDFLATEX = "pdflatex";
+
+    private ApplicationUtils() {
+    }
     
     public static String getPathToTEX(String texDirectory) {
         if (texDirectory == null || texDirectory.equals("")) {

@@ -19,6 +19,9 @@ import org.openide.util.Exceptions;
  */
 public final class SettingsService {
 
+    private SettingsService() {
+    }
+
     public static ApplicationSettings loadApplicationSettings() {
         ApplicationSettings appSettings = new ApplicationSettings();
         FileInputStream fis = null;
