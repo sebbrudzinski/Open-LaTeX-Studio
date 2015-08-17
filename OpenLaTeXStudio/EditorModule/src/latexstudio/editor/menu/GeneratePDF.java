@@ -54,10 +54,10 @@ public final class GeneratePDF implements ActionListener {
             }
             
             //If the user only type "file", we have to check if "file.pdf" exists.
-            File v_overwriting = new File(file.toString() + ".pdf");
-            while (v_overwriting.exists() && reply == JOptionPane.NO_OPTION) {
+            File vOverwriting = new File(file.toString() + ".pdf");
+            while (vOverwriting.exists() && reply == JOptionPane.NO_OPTION) {
                 reply = JOptionPane.showConfirmDialog(null,
-                            v_overwriting.toString() + " already exists. Do you want to overwrite it?",
+                            vOverwriting.toString() + " already exists. Do you want to overwrite it?",
                             "File already exists.",
                             JOptionPane.YES_NO_OPTION);
                 if (reply == JOptionPane.NO_OPTION) { //The user does not want to overwrite. Then select another name
@@ -66,7 +66,7 @@ public final class GeneratePDF implements ActionListener {
                         if (file.toString().endsWith(".pdf")) {
                             file = new File(file.toString().substring(0, file.toString().length() - 4));
                         }
-                        v_overwriting = new File(file.toString() + ".pdf");
+                        vOverwriting = new File(file.toString() + ".pdf");
                     } else{
                         return;
                     }
