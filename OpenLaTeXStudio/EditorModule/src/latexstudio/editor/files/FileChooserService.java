@@ -60,8 +60,10 @@ public final class FileChooserService {
             case PDF:
                 returnVal = chooser.showDialog(null, "Generate PDF");
                 break;
+            default:
+                break;
         }
-
+        
         if (returnVal == JFileChooser.APPROVE_OPTION) {
             File file = chooser.getSelectedFile();
             if (!file.exists() && type == DialogType.OPEN) {
