@@ -29,10 +29,10 @@ import org.openide.windows.WindowManager;
         displayName = "#CTL_ToggleComment"
 )
 @ActionReferences({
-    @ActionReference(path = "Menu/Edit", position = 250),
+    @ActionReference(path = "Menu/Edit", position = 200),
     @ActionReference(path = "Toolbars/Comment", position = 3333)
 })
-@Messages("CTL_ToggleComment=ToggleComment")
+@Messages("CTL_ToggleComment=Toggle Comment")
 public final class ToggleComment implements ActionListener {
 
     @Override

@@ -25,7 +25,7 @@ import org.openide.windows.WindowManager;
         displayName = "#CTL_Redo"
 )
 @ActionReferences({
-    @ActionReference(path = "Menu/Edit", position = 150),
+    @ActionReference(path = "Menu/Edit", position = 150, separatorAfter = 151),
     @ActionReference(path = "Toolbars/UndoRedo", position = 3433)
 })
 @Messages("CTL_Redo=Redo")

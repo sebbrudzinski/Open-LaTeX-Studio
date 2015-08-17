@@ -25,10 +25,10 @@ import org.openide.util.NbBundle.Messages;
         displayName = "#CTL_SaveAs"
 )
 @ActionReferences({
-    @ActionReference(path = "Menu/File", position = 1300),
+    @ActionReference(path = "Menu/File", position = 1301),
     @ActionReference(path = "Toolbars/File", position = 2223)
 })
-@Messages("CTL_SaveAs=Save As")
+@Messages("CTL_SaveAs=Save As...")
 public final class SaveAs implements ActionListener {
     
     private final EditorTopComponent etc = new TopComponentFactory<EditorTopComponent>()

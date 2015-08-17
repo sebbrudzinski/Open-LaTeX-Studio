@@ -33,7 +33,7 @@ import org.openide.util.NbBundle.Messages;
     @ActionReference(path = "Menu/File", position = 1300),
     @ActionReference(path = "Toolbars/File", position = 2222)
 })
-@Messages("CTL_SaveFile=Save File")
+@Messages("CTL_SaveFile=Save")
 public final class SaveFile implements ActionListener {
     
     private final EditorTopComponent etc = new TopComponentFactory<EditorTopComponent>()
