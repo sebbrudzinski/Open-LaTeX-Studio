@@ -89,7 +89,7 @@ final class LaTeXSettingsPanel extends javax.swing.JPanel {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         File directory = FileChooserService.getSelectedDirectory("Choose");
-        File pdflatex_exe;
+        File pdfLatexExe;
         String fname;
         if (ApplicationUtils.isWindows()) {
             fname = "/pdflatex.exe";
@@ -97,9 +97,9 @@ final class LaTeXSettingsPanel extends javax.swing.JPanel {
             fname = "/pdflatex";
         }
         if (directory != null) {
-            pdflatex_exe = new File(directory.toString() + fname);
+            pdfLatexExe = new File(directory.toString() + fname);
             int reply = JOptionPane.NO_OPTION;
-            while (!(pdflatex_exe.exists()) && reply == JOptionPane.NO_OPTION) {
+            while (!(pdfLatexExe.exists()) && reply == JOptionPane.NO_OPTION) {
                 reply = JOptionPane.showConfirmDialog(null,
                         "We could not find the pdflatex in the selected path. Do you confirm the selection?",
                         "Pdflatex not found",
@@ -108,7 +108,7 @@ final class LaTeXSettingsPanel extends javax.swing.JPanel {
                 if (reply == JOptionPane.NO_OPTION) {
                     directory = FileChooserService.getSelectedDirectory("Choose");
                     if (directory != null){
-                        pdflatex_exe = new File(directory.toString() + fname);
+                        pdfLatexExe = new File(directory.toString() + fname);
                     }
                 }
             }
