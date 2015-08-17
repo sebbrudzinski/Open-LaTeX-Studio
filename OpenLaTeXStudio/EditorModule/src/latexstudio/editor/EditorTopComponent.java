@@ -103,6 +103,9 @@ public final class EditorTopComponent extends TopComponent {
             public void keyReleased(java.awt.event.KeyEvent evt) {
                 rSyntaxTextAreaKeyReleased(evt);
             }
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                rSyntaxTextAreaKeyTyped(evt);
+            }
         });
         jScrollPane1.setViewportView(rSyntaxTextArea);
 
@@ -127,6 +130,11 @@ public final class EditorTopComponent extends TopComponent {
     private void rSyntaxTextAreaKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_rSyntaxTextAreaKeyReleased
         dirty = true;
     }//GEN-LAST:event_rSyntaxTextAreaKeyReleased
+
+    private void rSyntaxTextAreaKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_rSyntaxTextAreaKeyTyped
+        if (currentFile == null) return;
+        setDisplayName(currentFile.getName() + '*');
+    }//GEN-LAST:event_rSyntaxTextAreaKeyTyped
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JScrollPane jScrollPane1;
