@@ -51,6 +51,7 @@
           </Properties>
           <Events>
             <EventHandler event="keyReleased" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="rSyntaxTextAreaKeyReleased"/>
+            <EventHandler event="keyTyped" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="rSyntaxTextAreaKeyTyped"/>
           </Events>
         </Component>
       </SubComponents>

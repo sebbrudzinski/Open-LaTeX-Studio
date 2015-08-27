@@ -16,28 +16,30 @@ import org.openide.util.NbBundle.Messages;
 import org.openide.windows.TopComponent;
 import org.openide.windows.WindowManager;
 
+/**
+ *
+ * @author Labelpm
+ */
 @ActionID(
         category = "Edit",
-        id = "latexstudio.editor.Redo"
+        id = "latexstudio.editor.ToggleComment"
 )
 @ActionRegistration(
-        iconBase = "latexstudio/editor/resources/icons/arrow-redo.png",
-        displayName = "#CTL_Redo"
+        iconBase = "latexstudio/editor/resources/icons/comment_symbol.png",
+        displayName = "#CTL_ToggleComment"
 )
 @ActionReferences({
-    @ActionReference(path = "Menu/Edit", position = 150, separatorAfter = 151),
-    @ActionReference(path = "Toolbars/UndoRedo", position = 3433)
+    @ActionReference(path = "Menu/Edit", position = 200),
+    @ActionReference(path = "Toolbars/Comment", position = 3333)
 })
-@Messages("CTL_Redo=Redo")
-public final class Redo implements ActionListener {
+@Messages("CTL_ToggleComment=Toggle Comment")
+public final class ToggleComment implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-
         TopComponent tc = WindowManager.getDefault().findTopComponent("EditorTopComponent");
         EditorTopComponent etc = (EditorTopComponent) tc;
-
-        etc.redoAction();
+        etc.commentOutText();
         etc.setDirty(true);
     }
 

@@ -26,7 +26,7 @@ import org.openide.util.NbBundle.Messages;
         displayName = "#CTL_OpenFile"
 )
 @ActionReference(path = "Menu/File", position = 1200)
-@Messages("CTL_OpenFile=Open file")
+@Messages("CTL_OpenFile=Open File")
 public final class OpenFile implements ActionListener {
     
     private final EditorTopComponent etc = new TopComponentFactory<EditorTopComponent>()
