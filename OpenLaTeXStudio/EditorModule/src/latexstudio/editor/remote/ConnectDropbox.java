@@ -119,11 +119,7 @@ public final class ConnectDropbox implements ActionListener {
 
                 StringBuilder cmd = new StringBuilder();
                 for (int i = 0 ; i < browsers.length; i++) {
-                    if (i == 0) {
-                        cmd.append("").append(browsers[i]).append(" \"").append(uri.toString()).append("\" ");
-                    }else{
-                        cmd.append(" || ").append(browsers[i]).append(" \"").append(uri.toString()).append("\" ");
-                    }
+                    cmd.append((i == 0 ? "" : " || ")).append(browsers[i]).append(" \"").append(uri.toString()).append("\" ");
                 }
 
                 rt.exec(new String[] { "sh", "-c", cmd.toString() });
