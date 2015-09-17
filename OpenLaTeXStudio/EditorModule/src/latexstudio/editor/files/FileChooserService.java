@@ -16,7 +16,10 @@ import javax.swing.JOptionPane;
  *
  * @author Sebastian
  */
-public class FileChooserService {
+public final class FileChooserService {
+
+    private FileChooserService() {
+    }
 
     public enum DialogType {
 
@@ -57,8 +60,10 @@ public class FileChooserService {
             case PDF:
                 returnVal = chooser.showDialog(null, "Generate PDF");
                 break;
+            default:
+                break;
         }
-
+        
         if (returnVal == JFileChooser.APPROVE_OPTION) {
             File file = chooser.getSelectedFile();
             if (!file.exists() && type == DialogType.OPEN) {

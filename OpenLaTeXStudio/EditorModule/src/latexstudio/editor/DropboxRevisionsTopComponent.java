@@ -13,7 +13,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.List;
-import javax.swing.table.*;
+import javax.swing.table.DefaultTableModel;
 import javax.swing.DefaultListModel;
 import javax.swing.JTable;
 import latexstudio.editor.remote.DbxEntryRevision;
@@ -56,15 +56,15 @@ import org.openide.windows.TopComponent;
 public final class DropboxRevisionsTopComponent extends TopComponent {
     
     private DefaultListModel<DbxEntryRevision> dlm = new DefaultListModel<DbxEntryRevision>();
-    private final ApplicationLogger LOGGER = new ApplicationLogger("Dropbox");
+    private static final ApplicationLogger LOGGER = new ApplicationLogger("Dropbox");
     
-    private final RevisionDisplayTopComponent revtc = new TopComponentFactory<RevisionDisplayTopComponent>()
+    private static final RevisionDisplayTopComponent REVTC = new TopComponentFactory<RevisionDisplayTopComponent>()
             .getTopComponent(RevisionDisplayTopComponent.class.getSimpleName());
     
-    private final String REVISION_COLUMN_NAME = "Revision";
-    private final String MODIFIED_COLUMN_NAME = "Modified";
-    private final String FILE_SIZE_COLUMN_NAME = "File size";
-    private final int REVISION_COLUMN = 0;
+    private static final String REVISION_COLUMN_NAME = "Revision";
+    private static final String MODIFIED_COLUMN_NAME = "Modified";
+    private static final String FILE_SIZE_COLUMN_NAME = "File size";
+    private static final int REVISION_COLUMN = 0;
 
     public DropboxRevisionsTopComponent() {
         initComponents();
@@ -158,12 +158,12 @@ public final class DropboxRevisionsTopComponent extends TopComponent {
                 IOUtils.closeQuietly(outputStream);
             }
             
-            revtc.open();
-            revtc.requestActive();
-            revtc.setName(entry.getName() + " (rev: " + entry.getRevision() + ")");
-            revtc.setDisplayedRevision(new DbxState(entry.getPath(), entry.getRevision()));
+            REVTC.open();
+            REVTC.requestActive();
+            REVTC.setName(entry.getName() + " (rev: " + entry.getRevision() + ")");
+            REVTC.setDisplayedRevision(new DbxState(entry.getPath(), entry.getRevision()));
             try {
-                revtc.setText(FileUtils.readFileToString(outputFile));
+                REVTC.setText(FileUtils.readFileToString(outputFile));
             } catch (IOException e) {
                 Exceptions.printStackTrace(e);
             }

@@ -23,6 +23,9 @@ import org.apache.commons.io.IOUtils;
 public final class CommandLineExecutor {
     
     private static final DefaultExecutor EXECUTOR;
+
+    private CommandLineExecutor() {
+    }
     
     static {
         EXECUTOR = new DefaultExecutor();
@@ -33,7 +36,7 @@ public final class CommandLineExecutor {
         EXECUTOR.setWatchdog(watchdog);
     }
       
-    public synchronized static void executeGeneratePDF(CommandLineBuilder cmd) {
+    public static synchronized void executeGeneratePDF(CommandLineBuilder cmd) {
         String outputDirectory = "--output-directory=" + cmd.getOutputDirectory();
         String outputFormat = "--output-format=pdf";
         String job = cmd.getJobname() == null ? "" : "--jobname=" + cmd.getJobname().replaceAll(" ", "_");

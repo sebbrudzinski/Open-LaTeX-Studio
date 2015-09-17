@@ -25,26 +25,31 @@ public final class ApplicationUtils {
     private static final String SETTINGS_FILENAME = "settings.properties";
     
     public static final String PDFLATEX = "pdflatex";
+
+    private ApplicationUtils() {
+    }
     
-    public static final String getPathToTEX(String texDirectory) {
+    public static String getPathToTEX(String texDirectory) {
         if (texDirectory == null || texDirectory.equals("")) {
             return PDFLATEX;
         } else {
-            return texDirectory.endsWith(File.separator) ? 
-                    texDirectory.concat(PDFLATEX) : 
-                    texDirectory.concat(File.separator).concat(PDFLATEX);
+            if (texDirectory.endsWith(File.separator)) {
+                return texDirectory.concat(PDFLATEX);
+            } else {
+                return texDirectory.concat(File.separator).concat(PDFLATEX);
+            }
         }
     }
     
-    public static final String getTempSourceFile() {
+    public static String getTempSourceFile() {
         return getAppDirectory().concat(File.separator).concat(PREVIEW_SOURCE_FILENAME);
     }
     
-    public static final String getTempPDFFile() {
+    public static String getTempPDFFile() {
         return getAppDirectory().concat(File.separator).concat(PREVIEW_PDF_FILENAME);
     }
     
-    public static final String getSettingsFile() {
+    public static String getSettingsFile() {
         String settingsFileName = getAppDirectory().concat(File.separator).concat(SETTINGS_FILENAME);
         File file = new File(settingsFileName);
         if (!file.exists()) {

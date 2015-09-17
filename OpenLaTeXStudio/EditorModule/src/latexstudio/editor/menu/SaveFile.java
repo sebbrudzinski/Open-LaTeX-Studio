@@ -10,7 +10,6 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import latexstudio.editor.ApplicationLogger;
 import latexstudio.editor.EditorTopComponent;
-import latexstudio.editor.OutputTopComponent;
 import latexstudio.editor.TopComponentFactory;
 import latexstudio.editor.files.FileChooserService;
 import latexstudio.editor.files.FileChooserService.DialogType;
@@ -38,7 +37,7 @@ public final class SaveFile implements ActionListener {
     
     private final EditorTopComponent etc = new TopComponentFactory<EditorTopComponent>()
             .getTopComponent(EditorTopComponent.class.getSimpleName());
-    private final ApplicationLogger LOGGER = new ApplicationLogger("Open LaTeX Studio");
+    private static final ApplicationLogger LOGGER = new ApplicationLogger("Open LaTeX Studio");
 
     @Override
     public void actionPerformed(ActionEvent e) {                

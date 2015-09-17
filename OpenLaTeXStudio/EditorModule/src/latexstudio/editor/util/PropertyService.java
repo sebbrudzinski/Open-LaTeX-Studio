@@ -15,6 +15,9 @@ import org.openide.util.Exceptions;
  * @author Sebastian
  */
 public final class PropertyService {
+
+    private PropertyService() {
+    }
     
     public static Properties readProperties(String propertyFileName) {
         Properties properties = new Properties();

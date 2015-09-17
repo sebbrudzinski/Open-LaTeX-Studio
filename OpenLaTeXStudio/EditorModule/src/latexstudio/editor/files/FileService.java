@@ -18,7 +18,11 @@ import org.openide.util.Exceptions;
  * A class that allows all kind of operations on files. 
  * @author Sebastian
  */
-public class FileService {
+public final class FileService {
+
+    private FileService() {
+    }
+    
     public static void writeToFile(String filename, String content) {
         PrintWriter writer = null;
         try {

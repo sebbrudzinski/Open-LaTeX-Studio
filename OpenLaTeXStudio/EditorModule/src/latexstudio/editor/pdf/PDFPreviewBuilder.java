@@ -15,10 +15,13 @@ import org.openide.util.Exceptions;
  * A class responsible for building PDF preview.
  * @author Sebastian
  */
-public class PDFPreviewBuilder {
+public final class PDFPreviewBuilder {
     
     private static final double SCALE_FACTOR = 0.4;
     private static final int SCALE_TYPE = Image.SCALE_SMOOTH;
+
+    private PDFPreviewBuilder() {
+    }
 
     public static Image buildPDFPreview(PDPage pdfPage, int zoom) {
         if (pdfPage == null) {

@@ -13,7 +13,7 @@ import java.util.Properties;
  */
 public class ApplicationSettings extends Properties {
     
-    private final static String DROPBOX_TOKEN = "dropbox.token";
+    private static final String DROPBOX_TOKEN = "dropbox.token";
     
     public void setDropboxToken(String token) {
         setProperty(DROPBOX_TOKEN, token);

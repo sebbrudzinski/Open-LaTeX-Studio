@@ -17,10 +17,13 @@ import org.openide.util.Exceptions;
  * This class allows all kind of operations on the PDF files.
  * @author Sebastian
  */
-public class PDFService {
+public final class PDFService {
     
     private static PDDocument inputPDF;
     private static final String PDF_PATH = ApplicationUtils.getTempPDFFile();
+
+    private PDFService() {
+    }
 
     public static PDPage getPDFPage(int number) {
         PDPage page = null;
