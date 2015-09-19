@@ -14,15 +14,10 @@ import java.net.URL;
 import java.util.prefs.PreferenceChangeEvent;
 import java.util.prefs.PreferenceChangeListener;
 import java.util.prefs.Preferences;
-<<<<<<< HEAD
 import java.util.Properties;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Document;
 import latexstudio.editor.files.FileService;
-=======
-import javax.swing.text.BadLocationException;
-import javax.swing.text.Document;
->>>>>>> ecfcdbf0196313ede02e6c1f4a2446f17e0ea208
 import latexstudio.editor.remote.DbxState;
 import latexstudio.editor.util.ApplicationUtils;
 import latexstudio.editor.util.PropertyService;
@@ -69,12 +64,12 @@ public final class EditorTopComponent extends TopComponent {
     private File currentFile;
     private DbxState dbxState;
     private String latexPath;
-    private Properties OLS_PROPERTIES;
+    private Properties openLatexStudioProperties;
     private static final int AUTO_COMPLETE_DELAY = 700;
     
     //Properties key values
-    private final String CURRENT_FILE_KEY = "CURRENT_FILE";
-    private final String LATEX_PATH_KEY = "LATEX_PATH";
+    private static final String CURRENT_FILE_KEY = "CURRENT_FILE";
+    private static final String LATEX_PATH_KEY = "LATEX_PATH";
     
     
     public EditorTopComponent() {
@@ -82,20 +77,11 @@ public final class EditorTopComponent extends TopComponent {
         setName(Bundle.CTL_EditorTopComponent());
         setDisplayName("welcome.tex");
         setToolTipText(Bundle.HINT_EditorTopComponent());
-        
         putClientProperty(TopComponent.PROP_CLOSING_DISABLED, Boolean.TRUE);
         putClientProperty(TopComponent.PROP_UNDOCKING_DISABLED, Boolean.TRUE);
-<<<<<<< HEAD
         Preferences pref = NbPreferences.forModule(LaTeXSettingsPanel.class);
         String path = pref.get("latexPath", "");
         pref.addPreferenceChangeListener(new PreferenceChangeListener() {
-            @Override
-=======
-
-        Preferences pref = NbPreferences.forModule(LaTeXSettingsPanel.class);
-        String path = pref.get("latexPath", "");
-        pref.addPreferenceChangeListener(new PreferenceChangeListener() {
->>>>>>> ecfcdbf0196313ede02e6c1f4a2446f17e0ea208
             public void preferenceChange(PreferenceChangeEvent evt) {
                 if (evt.getKey().equals("latexPath")) {
                     latexPath = evt.getNewValue();
@@ -171,21 +157,15 @@ public final class EditorTopComponent extends TopComponent {
         ac.setAutoActivationEnabled(true);
         ac.setAutoCompleteEnabled(true);
         ac.install(rSyntaxTextArea);
-<<<<<<< HEAD
-=======
-
-        InputStream is = null;
->>>>>>> ecfcdbf0196313ede02e6c1f4a2446f17e0ea208
-        try {
-           OLS_PROPERTIES = PropertyService.readProperties(PropertyService.PROPERTIES_FILEPATH);
-           readProperties(OLS_PROPERTIES);
+        if(PropertyService.hasProperties()){
+           openLatexStudioProperties = PropertyService.readProperties(PropertyService.getPropertyFilePath());
+           readProperties(openLatexStudioProperties);
+           if(currentFile != null) {
+              rSyntaxTextArea.setText(FileService.readFromFile(currentFile.getAbsolutePath()));
+           }
         }
-        catch(NullPointerException nPE) {
-            
-        }
-        if(currentFile == null)
-        {
-           OLS_PROPERTIES = new Properties();
+        else {
+           openLatexStudioProperties = new Properties();
            InputStream is = null;
            try {
                is = getClass().getResource("/latexstudio/editor/resources/welcome.tex").openStream();
@@ -203,7 +183,7 @@ public final class EditorTopComponent extends TopComponent {
     @Override
     public void componentClosed() {
         //if properties file available, write properties
-        writeProperties(OLS_PROPERTIES);
+        writeProperties(openLatexStudioProperties);
     }
 
     public String getEditorContent() {
@@ -238,8 +218,6 @@ public final class EditorTopComponent extends TopComponent {
     public void setCurrentFile(File currentFile) {
         this.currentFile = currentFile;
         setDisplayName(currentFile.getName());
-        this.setEditorContent(FileService.readFromFile(currentFile.getAbsolutePath()));
-        writeProperties(OLS_PROPERTIES);//to remove; for testing
     }
 
     public DbxState getDbxState() {
@@ -349,43 +327,33 @@ public final class EditorTopComponent extends TopComponent {
     void readProperties(java.util.Properties p) {
         // TODO read your settings according to their version
         String currentFilePath;
-        File temp;
-        try {
-           p = PropertyService.readProperties(PropertyService.PROPERTIES_FILEPATH);
+        File candidateFile = null;
+        p = PropertyService.readProperties(PropertyService.getPropertyFilePath());
+        if(p == null)
+        {
+            return;
         }
-        catch(NullPointerException exception) {
-           return;
-        }
-        try {
         currentFilePath = (String) p.get(CURRENT_FILE_KEY);
-        
-        temp = new File(currentFilePath);
-        if(temp.exists() && temp.canRead()) 
+        if(currentFilePath != null)
+        {
+            candidateFile = new File(currentFilePath);
+            if(candidateFile.exists() && candidateFile.canRead()) 
             {
-                this.setCurrentFile(temp);
+                this.setCurrentFile(candidateFile);
             }
+        }        
+        String version = p.getProperty("version");
+        String latexDirectory = p.getProperty(LATEX_PATH_KEY);
+        if(latexDirectory != null)
+        {
+            candidateFile = new File(latexDirectory);
         }
-         catch(NullPointerException exception) {
-                //Automatically done at startup, so no feedback to user
-        }
-        try {
-           String version = p.getProperty("version");
-           String latexDirectory = p.getProperty(LATEX_PATH_KEY);
-           temp = new File(latexDirectory);
-           if(temp.exists() && temp.canRead())
-           {
-              this.latexPath = latexDirectory;
-            }
-        }
-        catch(NullPointerException exception) {
-                //Automatically done at startup, so no feedback to user
+        if(candidateFile.exists() &&candidateFile.canRead())
+        {
+            this.latexPath = latexDirectory;
         }
     }
-<<<<<<< HEAD
     
-=======
->>>>>>> ecfcdbf0196313ede02e6c1f4a2446f17e0ea208
-
     private CompletionProvider createCompletionProvider() {
         DefaultCompletionProvider provider = new DefaultCompletionProvider();
         provider.setAutoActivationRules(true, "");
