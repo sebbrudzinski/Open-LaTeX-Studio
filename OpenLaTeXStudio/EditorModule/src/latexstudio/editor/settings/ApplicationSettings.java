@@ -14,6 +14,7 @@ import java.util.Properties;
 public class ApplicationSettings extends Properties {
     
     private static final String DROPBOX_TOKEN = "dropbox.token";
+    private static final String USER_LASTDIR = "user.lastdir";
     
     public void setDropboxToken(String token) {
         setProperty(DROPBOX_TOKEN, token);
@@ -21,5 +22,13 @@ public class ApplicationSettings extends Properties {
     
     public String getDropboxToken() {
         return getProperty(DROPBOX_TOKEN);
+    }
+    
+    public void setUserLastDir(String dir) {
+        setProperty(USER_LASTDIR, dir);
+    }
+    
+    public String getUserLastDir() {
+        return getProperty(USER_LASTDIR);
     }
 }
