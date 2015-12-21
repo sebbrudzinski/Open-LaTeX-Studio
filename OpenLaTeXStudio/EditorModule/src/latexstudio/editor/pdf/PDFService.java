@@ -24,6 +24,23 @@ public final class PDFService {
 
     private PDFService() {
     }
+    
+    public static int getTotalPDFPages(){
+        int pages = 0;
+        
+        File pdfFile = null;
+        try {
+            pdfFile = new File(PDF_PATH);
+            if (pdfFile.exists()) {
+                inputPDF = PDDocument.load(pdfFile);
+                pages = inputPDF.getNumberOfPages();
+            }
+        } catch (IOException ex) {
+            closeDocument();
+        }
+        
+        return pages;
+    }
 
     public static PDPage getPDFPage(int number) {
         PDPage page = null;
