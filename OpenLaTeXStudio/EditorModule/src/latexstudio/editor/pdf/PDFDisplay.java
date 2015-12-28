@@ -17,11 +17,17 @@ import javax.swing.JPanel;
 public class PDFDisplay {
 
     private int selectedPage;
+    private int totalPages;
     private int viewZoom;
     
     public PDFDisplay() {
         this.selectedPage = 1;
+        this.totalPages = 1;
         this.viewZoom = 100;
+    }
+    
+    public void updateTotalPages(){
+        this.totalPages = PDFService.getTotalPDFPages();
     }
     
     public JPanel drawPreviewOnJPanel() {
@@ -60,5 +66,9 @@ public class PDFDisplay {
     }
     public int getZoom () {
         return viewZoom;
+    }
+
+    public int getTotalPages() {
+        return totalPages;
     }
 }

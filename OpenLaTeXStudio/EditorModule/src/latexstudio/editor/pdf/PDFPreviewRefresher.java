@@ -8,6 +8,7 @@ package latexstudio.editor.pdf;
 import java.awt.Point;
 import latexstudio.editor.runtime.CommandLineExecutor;
 import java.util.logging.Logger;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JViewport;
@@ -24,13 +25,15 @@ import org.openide.util.Exceptions;
 public class PDFPreviewRefresher implements Runnable {
     
     private final JScrollPane jScrollPane;
+    private final JLabel jLabel;
     private final EditorTopComponent etc;
     private final PDFDisplay pdfDisplay;
     
     private static final Logger LOGGER = Logger.getLogger(PDFPreviewRefresher.class.getName());
     
-    public PDFPreviewRefresher(JScrollPane jScrollPane, EditorTopComponent etc, PDFDisplay pdfDisplay) {
+    public PDFPreviewRefresher(JScrollPane jScrollPane, JLabel jLabel,EditorTopComponent etc, PDFDisplay pdfDisplay) {
         this.jScrollPane = jScrollPane;
+        this.jLabel = jLabel;
         this.etc = etc;
         this.pdfDisplay = pdfDisplay;
     }
@@ -40,6 +43,7 @@ public class PDFPreviewRefresher implements Runnable {
         while(true) {
             if (etc.isDirty()) {
                 compileTemporaryFile();
+                pdfDisplay.updateTotalPages();
                 drawPreview();
                 etc.setDirty(false);
             }
@@ -62,6 +66,8 @@ public class PDFPreviewRefresher implements Runnable {
             vp.setViewPosition(p);
 
         }
+        
+        jLabel.setText("of "+pdfDisplay.getTotalPages());
     }
 
     private void compileTemporaryFile() {        
