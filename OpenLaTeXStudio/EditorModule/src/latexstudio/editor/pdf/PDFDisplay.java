@@ -23,7 +23,7 @@ public class PDFDisplay {
     public PDFDisplay() {
         this.selectedPage = 1;
         this.totalPages = 1;
-        this.viewZoom = 100;
+        this.viewZoom = 50;
     }
     
     public void updateTotalPages(){

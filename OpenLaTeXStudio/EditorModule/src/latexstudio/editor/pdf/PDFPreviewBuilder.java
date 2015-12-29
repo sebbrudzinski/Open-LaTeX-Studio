@@ -17,7 +17,6 @@ import org.openide.util.Exceptions;
  */
 public final class PDFPreviewBuilder {
     
-    private static final double SCALE_FACTOR = 0.4;
     private static final int SCALE_TYPE = Image.SCALE_SMOOTH;
 
     private PDFPreviewBuilder() {
@@ -27,9 +26,8 @@ public final class PDFPreviewBuilder {
         if (pdfPage == null) {
             return null;
         }
-         
 
-        double newScale = SCALE_FACTOR * (((double)zoom)/100.0);
+        double newScale = ((double) zoom) / 100.0;
         BufferedImage pageImage = null;
         try {
             pageImage = pdfPage.convertToImage();

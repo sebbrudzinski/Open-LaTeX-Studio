@@ -44,10 +44,10 @@ import org.openide.windows.TopComponent;
 })
 public final class PDFViewerTopComponent extends TopComponent {
     
-    private static final int DEFAULT_ZOOM = 100;
+    private static final int DEFAULT_ZOOM = 50;
     private static final int MIN_ZOOM = 25;
     private static final int MAX_ZOOM = 400;
-    private static final int SPINNER_ZOOM_SIZE = 25;
+    private static final int SPINNER_ZOOM_SIZE = 10;
     
     private final EditorTopComponent etc = new TopComponentFactory<EditorTopComponent>()
             .getTopComponent(EditorTopComponent.class.getSimpleName());
@@ -190,16 +190,15 @@ public final class PDFViewerTopComponent extends TopComponent {
      */
  
    private void externalZoomBy(int zoomDelta) {
-            int zoom = (Integer)jSpinnerZoom.getValue();
-            zoom += zoomDelta;
-            if (zoom < MIN_ZOOM ) { 
-                zoom = MIN_ZOOM;
-            }
-            if (zoom > MAX_ZOOM) {
-                zoom = MAX_ZOOM;
-            }
-            jSpinnerZoom.setValue (zoom);  // triggers jSpinnerZoomStateChanged
-            
+        int zoom = (Integer)jSpinnerZoom.getValue();
+        zoom += zoomDelta;
+        if (zoom < MIN_ZOOM ) { 
+            zoom = MIN_ZOOM;
+        }
+        if (zoom > MAX_ZOOM) {
+            zoom = MAX_ZOOM;
+        }
+        jSpinnerZoom.setValue (zoom);  // triggers jSpinnerZoomStateChanged
     }
 
 
@@ -275,7 +274,7 @@ public final class PDFViewerTopComponent extends TopComponent {
         }
         
         jTextField1.setText(String.valueOf(pdfDisplay.getSelectedPage()));
-        jLabel2.setText("of "+pdfDisplay.getTotalPages());
+        jLabel2.setText("of " + pdfDisplay.getTotalPages());
     }
 
     void writeProperties(java.util.Properties p) {
