@@ -8,14 +8,24 @@ package latexstudio.editor;
 import com.dropbox.core.DbxClient;
 import com.dropbox.core.DbxEntry;
 import com.dropbox.core.DbxException;
+import java.awt.Component;
 import java.awt.Point;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.List;
+import javax.swing.Action;
+import javax.swing.DefaultCellEditor;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.DefaultListModel;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JOptionPane;
 import javax.swing.JTable;
+import javax.swing.UIManager;
+import javax.swing.table.TableCellRenderer;
 import latexstudio.editor.remote.DbxEntryRevision;
 import latexstudio.editor.remote.DbxState;
 import latexstudio.editor.remote.DbxUtil;
@@ -64,6 +74,7 @@ public final class DropboxRevisionsTopComponent extends TopComponent {
     private static final String REVISION_COLUMN_NAME = "Revision";
     private static final String MODIFIED_COLUMN_NAME = "Modified";
     private static final String FILE_SIZE_COLUMN_NAME = "File size";
+    private static final String REVIEW_COLUMN_NAME = "Review";
     private static final int REVISION_COLUMN = 0;
 
     public DropboxRevisionsTopComponent() {
@@ -85,17 +96,17 @@ public final class DropboxRevisionsTopComponent extends TopComponent {
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null},
-                {null, null, null},
-                {null, null, null},
-                {null, null, null}
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
             },
             new String [] {
-                "Revision", "Modified", "File size"
+                "Revision", "Modified", "File size", "Review"
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false, false
+                false, false, false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
@@ -112,6 +123,7 @@ public final class DropboxRevisionsTopComponent extends TopComponent {
             jTable1.getColumnModel().getColumn(0).setHeaderValue(org.openide.util.NbBundle.getMessage(DropboxRevisionsTopComponent.class, "DropboxRevisionsTopComponent.jTable1.columnModel.title0")); // NOI18N
             jTable1.getColumnModel().getColumn(1).setHeaderValue(org.openide.util.NbBundle.getMessage(DropboxRevisionsTopComponent.class, "DropboxRevisionsTopComponent.jTable1.columnModel.title1")); // NOI18N
             jTable1.getColumnModel().getColumn(2).setHeaderValue(org.openide.util.NbBundle.getMessage(DropboxRevisionsTopComponent.class, "DropboxRevisionsTopComponent.jTable1.columnModel.title2")); // NOI18N
+            jTable1.getColumnModel().getColumn(3).setHeaderValue(org.openide.util.NbBundle.getMessage(DropboxRevisionsTopComponent.class, "DropboxRevisionsTopComponent.jTable1.columnModel.title3_1")); // NOI18N
         }
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
@@ -218,12 +230,16 @@ public final class DropboxRevisionsTopComponent extends TopComponent {
         model.addColumn(REVISION_COLUMN_NAME);
         model.addColumn(MODIFIED_COLUMN_NAME);
         model.addColumn(FILE_SIZE_COLUMN_NAME);
+        model.addColumn(REVIEW_COLUMN_NAME);
         
         for (DbxEntry.File dbxEntry : entries) {
             dlm.addElement(new DbxEntryRevision(dbxEntry));
-            model.addRow(new Object[]{ dbxEntry.rev, dbxEntry.lastModified, dbxEntry.humanSize});
+            model.addRow(new Object[]{ dbxEntry.rev, dbxEntry.lastModified, dbxEntry.humanSize, "Check version"});
         }
+        
         jTable1.setModel(model);
+        jTable1.getColumn(REVIEW_COLUMN_NAME).setCellEditor(new ButtonEditor(new JCheckBox()));
+        jTable1.getColumn(REVIEW_COLUMN_NAME).setCellRenderer(new ButtonRenderer());
     }
 
 
@@ -235,4 +251,79 @@ public final class DropboxRevisionsTopComponent extends TopComponent {
         this.dlm = dlm;
     }
     
+}
+
+class ButtonRenderer extends JButton implements TableCellRenderer {
+
+    public ButtonRenderer() {
+        setOpaque(true);
+    }
+
+    @Override
+    public Component getTableCellRendererComponent(JTable table, Object value, 
+            boolean isSelected, boolean hasFocus, int row, int column) {
+        if(isSelected) {
+            setForeground(table.getSelectionForeground());
+            setBackground(table.getSelectionBackground());
+        } else {
+            setForeground(table.getForeground());
+            setBackground(UIManager.getColor("Button.background"));
+        }
+        setText((value == null) ? "" : value.toString());
+        return this;
+    }
+    
+}
+
+class ButtonEditor extends DefaultCellEditor {
+    protected JButton button;
+    private String label;
+    private boolean isPushed;
+    
+    public ButtonEditor(JCheckBox checkBox) {
+        super(checkBox);
+        button = new JButton();
+        button.setOpaque(true);
+        button.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                fireEditingStopped();
+            }
+        });
+    }
+    
+    public Component getTableCellEditorComponent(JTable table, Object value, 
+            boolean isSelected, boolean hasFocus, int row, int column) {
+        if(isSelected) {
+            button.setForeground(table.getSelectionForeground());
+            button.setBackground(table.getSelectionBackground());
+        } else {
+            button.setForeground(table.getForeground());
+            button.setBackground(UIManager.getColor("Button.background"));
+        }
+        label = (value == null) ? "" : value.toString();
+        button.setText(label);
+        return button;
+    }
+    
+    @Override
+    public Object getCellEditorValue() {
+        if(isPushed) {
+            JOptionPane.showMessageDialog(null, "My Goodness, this is so concise");
+        }
+        isPushed = false;
+        return new String(label);
+    }
+
+    @Override
+    public boolean stopCellEditing() {
+        isPushed = false;
+        return super.stopCellEditing(); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    protected void fireEditingStopped() {
+        super.fireEditingStopped(); //To change body of generated methods, choose Tools | Templates.
+    }
+
 }
