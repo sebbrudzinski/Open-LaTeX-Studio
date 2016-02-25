@@ -77,7 +77,7 @@ public final class DropboxRevisionsTopComponent extends TopComponent {
     private static final String MODIFIED_COLUMN_NAME = "Modified";
     private static final String FILE_SIZE_COLUMN_NAME = "File size";
     private static final String REVIEW_COLUMN_NAME = "Review";
-    private static final String REVIEW_BUTTON_LABEL = "Check revision";
+    private static final String REVIEW_BUTTON_LABEL = "view revision";
     private static final int REVISION_COLUMN = 0;
     private static final int REVIEW_COLUMN = 3;
 
