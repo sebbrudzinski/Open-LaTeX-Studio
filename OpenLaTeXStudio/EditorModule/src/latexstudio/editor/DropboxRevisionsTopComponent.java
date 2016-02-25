@@ -93,10 +93,7 @@ public final class DropboxRevisionsTopComponent extends TopComponent {
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
+
             },
             new String [] {
                 "Revision", "Modified", "File size", "Review"
