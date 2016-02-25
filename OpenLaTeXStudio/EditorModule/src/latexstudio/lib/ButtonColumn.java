@@ -1,4 +1,4 @@
-package lib;
+package latexstudio.lib;
 
 import java.awt.Color;
 import java.awt.Component;

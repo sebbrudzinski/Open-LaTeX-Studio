@@ -24,7 +24,7 @@ import latexstudio.editor.remote.DbxEntryRevision;
 import latexstudio.editor.remote.DbxState;
 import latexstudio.editor.remote.DbxUtil;
 import latexstudio.editor.util.ApplicationUtils;
-import lib.ButtonColumn;
+import latexstudio.lib.ButtonColumn;
 import org.apache.commons.io.FileUtils;
 import org.apache.pdfbox.io.IOUtils;
 import org.netbeans.api.settings.ConvertAsProperties;
