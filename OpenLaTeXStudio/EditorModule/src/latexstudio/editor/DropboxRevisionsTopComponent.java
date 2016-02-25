@@ -9,29 +9,22 @@ import com.dropbox.core.DbxClient;
 import com.dropbox.core.DbxEntry;
 import com.dropbox.core.DbxException;
 import com.sun.glass.events.KeyEvent;
-import java.awt.Component;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.List;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
-import javax.swing.DefaultCellEditor;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.DefaultListModel;
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JOptionPane;
 import javax.swing.JTable;
-import javax.swing.UIManager;
-import javax.swing.table.TableCellRenderer;
 import latexstudio.editor.remote.DbxEntryRevision;
 import latexstudio.editor.remote.DbxState;
 import latexstudio.editor.remote.DbxUtil;
 import latexstudio.editor.util.ApplicationUtils;
+import lib.ButtonColumn;
 import org.apache.commons.io.FileUtils;
 import org.apache.pdfbox.io.IOUtils;
 import org.netbeans.api.settings.ConvertAsProperties;
@@ -77,7 +70,7 @@ public final class DropboxRevisionsTopComponent extends TopComponent {
     private static final String MODIFIED_COLUMN_NAME = "Modified";
     private static final String FILE_SIZE_COLUMN_NAME = "File size";
     private static final String REVIEW_COLUMN_NAME = "Review";
-    private static final String REVIEW_BUTTON_LABEL = "view revision";
+    private static final String REVIEW_BUTTON_LABEL = "View Revision";
     private static final int REVISION_COLUMN = 0;
     private static final int REVIEW_COLUMN = 3;
 
@@ -117,6 +110,7 @@ public final class DropboxRevisionsTopComponent extends TopComponent {
                 return canEdit [columnIndex];
             }
         });
+        jTable1.setRowHeight(25);
         jTable1.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mousePressed(java.awt.event.MouseEvent evt) {
                 jTable1MousePressed(evt);
@@ -258,8 +252,6 @@ public final class DropboxRevisionsTopComponent extends TopComponent {
         };
 
         jTable1.setModel(model);
-//        jTable1.getColumn(REVIEW_COLUMN_NAME).setCellRenderer(new ButtonRenderer());
-//        jTable1.getColumn(REVIEW_COLUMN_NAME).setCellEditor(new ButtonEditor(new JCheckBox()));
         ButtonColumn buttonColumn = new ButtonColumn(jTable1, showVersion, REVIEW_COLUMN);
         buttonColumn.setMnemonic(KeyEvent.VK_D);
     }
