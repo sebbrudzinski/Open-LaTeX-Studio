@@ -45,16 +45,38 @@ public class PDFDisplay {
         return pdfImagePanel;
     }
     
-    public void previousPage() {
-        selectedPage--;
+    /**
+     * Shows the previous page, in case it's not the first page already.
+     * @return true, if page was modified; false otherwise
+     */
+    public boolean previousPage() {
+        if (selectedPage - 1 > 0) {
+            selectedPage--;
+            return true;
+        }
+        return false;
     }
     
-    public void nextPage() {
-        selectedPage++;
+    /**
+     * Shows the next page, in case it's not the last page already.
+     * @return true, if page was modified; false otherwise
+     */
+    public boolean nextPage() {
+        if (selectedPage + 1 <= totalPages) {
+            selectedPage++;
+            return true;
+        }
+        return false;
     }
     
     public void setPage(int page) {
-        selectedPage = page;
+        if (page > totalPages) {
+            selectedPage = totalPages;
+        } else if (page < 1) {
+            selectedPage = 1;
+        } else {
+            selectedPage = page;
+        }
     }
     
     public int getSelectedPage() {

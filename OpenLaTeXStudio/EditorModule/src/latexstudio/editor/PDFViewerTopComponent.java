@@ -167,13 +167,17 @@ public final class PDFViewerTopComponent extends TopComponent {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        pdfDisplay.nextPage();
-        refreshDisplayPane();
+        boolean pageModified = pdfDisplay.nextPage();
+        if (pageModified) {
+            refreshDisplayPane();
+        }
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        pdfDisplay.previousPage();
-        refreshDisplayPane();
+        boolean pageModified = pdfDisplay.previousPage();
+        if (pageModified) {
+            refreshDisplayPane();
+        }
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jTextField1KeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextField1KeyReleased
@@ -181,6 +185,8 @@ public final class PDFViewerTopComponent extends TopComponent {
             int selectedPage = Integer.parseInt(jTextField1.getText());
             jTextField1.setBackground(Color.WHITE);
             pdfDisplay.setPage(selectedPage);
+            // The PDF display may adjust the page, if user typed non-existant page
+            jTextField1.setText(Integer.toString(pdfDisplay.getSelectedPage()));
             refreshDisplayPane();
         } catch (NumberFormatException e) {
             jTextField1.setBackground(Color.PINK);
