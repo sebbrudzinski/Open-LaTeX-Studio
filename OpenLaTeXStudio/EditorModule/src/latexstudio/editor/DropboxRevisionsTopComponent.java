@@ -8,6 +8,7 @@ package latexstudio.editor;
 import com.dropbox.core.DbxClient;
 import com.dropbox.core.DbxEntry;
 import com.dropbox.core.DbxException;
+import com.sun.glass.events.KeyEvent;
 import java.awt.Component;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
@@ -16,6 +17,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.List;
+import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.DefaultCellEditor;
 import javax.swing.table.DefaultTableModel;
@@ -64,18 +66,20 @@ import org.openide.windows.TopComponent;
     "HINT_DropboxRevisionsTopComponent=This is a Dropbox Revisions window"
 })
 public final class DropboxRevisionsTopComponent extends TopComponent {
-    
+
     private DefaultListModel<DbxEntryRevision> dlm = new DefaultListModel<DbxEntryRevision>();
     private static final ApplicationLogger LOGGER = new ApplicationLogger("Dropbox");
-    
+
     private static final RevisionDisplayTopComponent REVTC = new TopComponentFactory<RevisionDisplayTopComponent>()
             .getTopComponent(RevisionDisplayTopComponent.class.getSimpleName());
-    
+
     private static final String REVISION_COLUMN_NAME = "Revision";
     private static final String MODIFIED_COLUMN_NAME = "Modified";
     private static final String FILE_SIZE_COLUMN_NAME = "File size";
     private static final String REVIEW_COLUMN_NAME = "Review";
+    private static final String REVIEW_BUTTON_LABEL = "Check revision";
     private static final int REVISION_COLUMN = 0;
+    private static final int REVIEW_COLUMN = 3;
 
     public DropboxRevisionsTopComponent() {
         initComponents();
@@ -138,28 +142,21 @@ public final class DropboxRevisionsTopComponent extends TopComponent {
         );
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jTable1MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable1MousePressed
-        if(evt.getClickCount() == 2) {
-            // Resolving which row has been double-clicked
-            Point point = evt.getPoint();
-            JTable table = (JTable) evt.getSource();
-            int row = table.rowAtPoint(point);
-            // Finding revision using information from the clicked row
-            String revisionNumber = table.getValueAt(row, REVISION_COLUMN).toString();
-            DbxEntryRevision entry = null;
-            DbxClient client = DbxUtil.getDbxClient();
-            for(int i = 0; i < dlm.size(); i++) {
-                if(revisionNumber.equals(dlm.get(i).getRevision())) {
-                    entry = dlm.get(i);
-                    break;
-                }
+    private void loadRevision(String revisionNumber) {
+        DbxEntryRevision entry = null;
+        DbxClient client = DbxUtil.getDbxClient();
+        for (int i = 0; i < dlm.size(); i++) {
+            if (revisionNumber.equals(dlm.get(i).getRevision())) {
+                entry = dlm.get(i);
+                break;
             }
-            
-            FileOutputStream outputStream = null;
-            
-            if(entry != null) {
+        }
+
+        FileOutputStream outputStream = null;
+
+        if (entry != null) {
             File outputFile = new File(ApplicationUtils.getAppDirectory() + File.separator + entry.getName() + entry.getRevision());
-            
+
             try {
                 outputStream = new FileOutputStream(outputFile);
                 client.getFile(entry.getPath(), entry.getRevision(), outputStream);
@@ -169,7 +166,7 @@ public final class DropboxRevisionsTopComponent extends TopComponent {
             } finally {
                 IOUtils.closeQuietly(outputStream);
             }
-            
+
             REVTC.open();
             REVTC.requestActive();
             REVTC.setName(entry.getName() + " (rev: " + entry.getRevision() + ")");
@@ -181,7 +178,18 @@ public final class DropboxRevisionsTopComponent extends TopComponent {
             }
             updateRevisionsList(entry.getPath());
         }
-       }
+    }
+
+    private void jTable1MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable1MousePressed
+        if (evt.getClickCount() == 2) {
+            // Resolving which row has been double-clicked
+            Point point = evt.getPoint();
+            JTable table = (JTable) evt.getSource();
+            int row = table.rowAtPoint(point);
+            // Finding revision using information from the clicked row
+            String revisionNumber = table.getValueAt(row, REVISION_COLUMN).toString();
+            loadRevision(revisionNumber);
+        }
     }//GEN-LAST:event_jTable1MousePressed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -209,39 +217,52 @@ public final class DropboxRevisionsTopComponent extends TopComponent {
         String version = p.getProperty("version");
         // TODO read your settings according to their version
     }
-    
+
     public void updateRevisionsList(String path) {
         DbxClient client = DbxUtil.getDbxClient();
         List<DbxEntry.File> entries = null;
-         
+
         try {
             entries = client.getRevisions(path);
         } catch (DbxException ex) {
             Exceptions.printStackTrace(ex);
         }
-        
+
         dlm.clear();
         DefaultTableModel model = new DefaultTableModel() {
             @Override
             public boolean isCellEditable(int row, int column) {
-                return false;
+                return column == REVIEW_COLUMN;
             }
         };
         model.addColumn(REVISION_COLUMN_NAME);
         model.addColumn(MODIFIED_COLUMN_NAME);
         model.addColumn(FILE_SIZE_COLUMN_NAME);
         model.addColumn(REVIEW_COLUMN_NAME);
-        
+
         for (DbxEntry.File dbxEntry : entries) {
             dlm.addElement(new DbxEntryRevision(dbxEntry));
-            model.addRow(new Object[]{ dbxEntry.rev, dbxEntry.lastModified, dbxEntry.humanSize, "Check version"});
+            model.addRow(new Object[]{dbxEntry.rev, dbxEntry.lastModified, dbxEntry.humanSize, REVIEW_BUTTON_LABEL});
         }
-        
-        jTable1.setModel(model);
-        jTable1.getColumn(REVIEW_COLUMN_NAME).setCellEditor(new ButtonEditor(new JCheckBox()));
-        jTable1.getColumn(REVIEW_COLUMN_NAME).setCellRenderer(new ButtonRenderer());
-    }
 
+        Action showVersion = new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // Resolving which row has been double-clicked
+                JTable table = (JTable) e.getSource();
+                int row = Integer.valueOf(e.getActionCommand());
+                // Finding revision using information from the clicked row
+                String revisionNumber = table.getValueAt(row, REVISION_COLUMN).toString();
+                loadRevision(revisionNumber);
+            }
+        };
+
+        jTable1.setModel(model);
+//        jTable1.getColumn(REVIEW_COLUMN_NAME).setCellRenderer(new ButtonRenderer());
+//        jTable1.getColumn(REVIEW_COLUMN_NAME).setCellEditor(new ButtonEditor(new JCheckBox()));
+        ButtonColumn buttonColumn = new ButtonColumn(jTable1, showVersion, REVIEW_COLUMN);
+        buttonColumn.setMnemonic(KeyEvent.VK_D);
+    }
 
     public DefaultListModel<DbxEntryRevision> getDlm() {
         return dlm;
@@ -249,81 +270,6 @@ public final class DropboxRevisionsTopComponent extends TopComponent {
 
     public void setDlm(DefaultListModel<DbxEntryRevision> dlm) {
         this.dlm = dlm;
-    }
-    
-}
-
-class ButtonRenderer extends JButton implements TableCellRenderer {
-
-    public ButtonRenderer() {
-        setOpaque(true);
-    }
-
-    @Override
-    public Component getTableCellRendererComponent(JTable table, Object value, 
-            boolean isSelected, boolean hasFocus, int row, int column) {
-        if(isSelected) {
-            setForeground(table.getSelectionForeground());
-            setBackground(table.getSelectionBackground());
-        } else {
-            setForeground(table.getForeground());
-            setBackground(UIManager.getColor("Button.background"));
-        }
-        setText((value == null) ? "" : value.toString());
-        return this;
-    }
-    
-}
-
-class ButtonEditor extends DefaultCellEditor {
-    protected JButton button;
-    private String label;
-    private boolean isPushed;
-    
-    public ButtonEditor(JCheckBox checkBox) {
-        super(checkBox);
-        button = new JButton();
-        button.setOpaque(true);
-        button.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                fireEditingStopped();
-            }
-        });
-    }
-    
-    public Component getTableCellEditorComponent(JTable table, Object value, 
-            boolean isSelected, boolean hasFocus, int row, int column) {
-        if(isSelected) {
-            button.setForeground(table.getSelectionForeground());
-            button.setBackground(table.getSelectionBackground());
-        } else {
-            button.setForeground(table.getForeground());
-            button.setBackground(UIManager.getColor("Button.background"));
-        }
-        label = (value == null) ? "" : value.toString();
-        button.setText(label);
-        return button;
-    }
-    
-    @Override
-    public Object getCellEditorValue() {
-        if(isPushed) {
-            JOptionPane.showMessageDialog(null, "My Goodness, this is so concise");
-        }
-        isPushed = false;
-        return new String(label);
-    }
-
-    @Override
-    public boolean stopCellEditing() {
-        isPushed = false;
-        return super.stopCellEditing(); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    protected void fireEditingStopped() {
-        super.fireEditingStopped(); //To change body of generated methods, choose Tools | Templates.
     }
 
 }
