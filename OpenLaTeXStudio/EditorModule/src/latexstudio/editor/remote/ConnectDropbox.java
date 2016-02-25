@@ -50,7 +50,18 @@ public final class ConnectDropbox implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        DbxAppInfo appInfo = new DbxAppInfo(APP_KEY, APP_SECRET);
+        DbxAppInfo appInfo = null;
+        try {
+            appInfo = new DbxAppInfo(APP_KEY, APP_SECRET);
+        } catch (IllegalArgumentException ex) {
+            JOptionPane.showMessageDialog(null,
+                        "You are using the development version of the application and have not provided the necessary properties.\n"
+                        + "In order to develop Dropbox features, create Dropbox developer account and fill in the necessary fields in dropbox.properties file.\n"
+                        + "You can also contact us at open-latex-studio@googlegroups.com in case of any troubles.",
+                "Development version",
+                JOptionPane.WARNING_MESSAGE);
+            return;
+        }
         DbxWebAuthNoRedirect webAuth = new DbxWebAuthNoRedirect(DbxUtil.getDbxConfig(), appInfo);
         final String authorizeUrl = webAuth.start();
 
