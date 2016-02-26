@@ -5,7 +5,6 @@
  */
 package latexstudio.editor.remote;
 
-import com.dropbox.core.DbxAppInfo;
 import com.dropbox.core.DbxClient;
 import com.dropbox.core.DbxException;
 import java.awt.event.ActionEvent;
@@ -16,7 +15,6 @@ import latexstudio.editor.DropboxRevisionsTopComponent;
 import latexstudio.editor.TopComponentFactory;
 import latexstudio.editor.settings.ApplicationSettings;
 import latexstudio.editor.settings.SettingsService;
-import latexstudio.editor.util.PropertyService;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.awt.ActionRegistration;
@@ -33,13 +31,6 @@ import org.openide.util.NbBundle.Messages;
 @Messages("CTL_DisconnectDropbox=Disconnect from Dropbox")
 public final class DisconnectDropbox implements ActionListener {
 
-    private static final String PROPERTIES = "dropbox.properties";
-
-    private static final String APP_KEY = PropertyService.
-            readProperties(PROPERTIES).getProperty("dropbox.appKey");
-    private static final String APP_SECRET = PropertyService.
-            readProperties(PROPERTIES).getProperty("dropbox.appSecret");
-
     private final DropboxRevisionsTopComponent drtc = new TopComponentFactory<DropboxRevisionsTopComponent>()
             .getTopComponent(DropboxRevisionsTopComponent.class.getSimpleName());
 
@@ -47,10 +38,10 @@ public final class DisconnectDropbox implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        DbxAppInfo appInfo = null;
         DbxClient client = DbxUtil.getDbxClient();
 
         if (client == null) {
+            LOGGER.log("Dropbox account already disconnected.");
             return;
         }
 
