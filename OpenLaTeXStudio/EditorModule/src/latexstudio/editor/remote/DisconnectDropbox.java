@@ -33,12 +33,12 @@ import org.openide.util.NbBundle.Messages;
 @Messages("CTL_DisconnectDropbox=Disconnect from Dropbox")
 public final class DisconnectDropbox implements ActionListener {
 
-    private static final String PROPETIES = "dropbox.properties";
+    private static final String PROPERTIES = "dropbox.properties";
 
     private static final String APP_KEY = PropertyService.
-            readProperties(PROPETIES).getProperty("dropbox.appKey");
+            readProperties(PROPERTIES).getProperty("dropbox.appKey");
     private static final String APP_SECRET = PropertyService.
-            readProperties(PROPETIES).getProperty("dropbox.appSecret");
+            readProperties(PROPERTIES).getProperty("dropbox.appSecret");
 
     private final DropboxRevisionsTopComponent drtc = new TopComponentFactory<DropboxRevisionsTopComponent>()
             .getTopComponent(DropboxRevisionsTopComponent.class.getSimpleName());
