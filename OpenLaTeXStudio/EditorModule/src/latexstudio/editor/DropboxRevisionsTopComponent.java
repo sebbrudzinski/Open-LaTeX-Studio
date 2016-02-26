@@ -215,10 +215,12 @@ public final class DropboxRevisionsTopComponent extends TopComponent {
         DbxClient client = DbxUtil.getDbxClient();
         List<DbxEntry.File> entries = null;
 
-        try {
-            entries = client.getRevisions(path);
-        } catch (DbxException ex) {
-            Exceptions.printStackTrace(ex);
+        if (path != null) {
+            try {
+                entries = client.getRevisions(path);
+            } catch (DbxException ex) {
+                Exceptions.printStackTrace(ex);
+            }
         }
 
         dlm.clear();
@@ -233,9 +235,11 @@ public final class DropboxRevisionsTopComponent extends TopComponent {
         model.addColumn(FILE_SIZE_COLUMN_NAME);
         model.addColumn(REVIEW_COLUMN_NAME);
 
-        for (DbxEntry.File dbxEntry : entries) {
-            dlm.addElement(new DbxEntryRevision(dbxEntry));
-            model.addRow(new Object[]{dbxEntry.rev, dbxEntry.lastModified, dbxEntry.humanSize, REVIEW_BUTTON_LABEL});
+        if (entries != null && entries.size() > 0) {
+            for (DbxEntry.File dbxEntry : entries) {
+                dlm.addElement(new DbxEntryRevision(dbxEntry));
+                model.addRow(new Object[]{dbxEntry.rev, dbxEntry.lastModified, dbxEntry.humanSize, REVIEW_BUTTON_LABEL});
+            }
         }
 
         Action showVersion = new AbstractAction() {
