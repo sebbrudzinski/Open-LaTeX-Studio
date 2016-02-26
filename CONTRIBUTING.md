@@ -1,7 +1,7 @@
-Collaborate
-===========
+Contribute
+==========
 
-Thanks for your interest in collaborating to the Open LaTeX Studio - an open source, Java based LaTeX editor.
+Thanks for your interest in contributing to the Open LaTeX Studio - an open source, Java based LaTeX editor.
 This page explains in details in what areas you can currently help the project grow. It will also help you 
 gettting started, in case you have already found something to work on.
 
