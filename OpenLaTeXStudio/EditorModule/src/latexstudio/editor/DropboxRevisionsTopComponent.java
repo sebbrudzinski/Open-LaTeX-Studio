@@ -93,10 +93,7 @@ public final class DropboxRevisionsTopComponent extends TopComponent {
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
+
             },
             new String [] {
                 "Revision", "Modified", "File size", "Review"
@@ -181,8 +178,10 @@ public final class DropboxRevisionsTopComponent extends TopComponent {
             JTable table = (JTable) evt.getSource();
             int row = table.rowAtPoint(point);
             // Finding revision using information from the clicked row
-            String revisionNumber = table.getValueAt(row, REVISION_COLUMN).toString();
-            loadRevision(revisionNumber);
+            Object revisionNumber = table.getValueAt(row, REVISION_COLUMN);
+            if (revisionNumber != null) {
+                loadRevision(revisionNumber.toString());
+            }
         }
     }//GEN-LAST:event_jTable1MousePressed
 
