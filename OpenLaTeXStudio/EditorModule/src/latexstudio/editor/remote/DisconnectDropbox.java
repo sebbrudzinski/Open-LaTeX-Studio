@@ -62,8 +62,8 @@ public final class DisconnectDropbox implements ActionListener {
 
             } catch (DbxException ex) {
                 JOptionPane.showMessageDialog(null,
-                        "Invalid access token! Open LaTeX Studio has NOT been connected with Dropbox.\n Please try again and provide correct access token.",
-                        "Invalid token",
+                        "There is a problem with the Internet Connection\n Please, check your connection and try again.",
+                        "Unable to connect",
                         JOptionPane.ERROR_MESSAGE);
             }
         } else {

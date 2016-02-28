@@ -33,7 +33,7 @@ import org.openide.util.NbBundle.Messages;
 @ActionRegistration(
         displayName = "#CTL_UploadToDropbox"
 )
-@ActionReference(path = "Menu/Remote", position = 3433)
+@ActionReference(path = "Menu/Remote", position = 3433, separatorAfter = 3483)
 @Messages("CTL_UploadToDropbox=Upload to Dropbox")
 public final class UploadToDropbox implements ActionListener {
 
