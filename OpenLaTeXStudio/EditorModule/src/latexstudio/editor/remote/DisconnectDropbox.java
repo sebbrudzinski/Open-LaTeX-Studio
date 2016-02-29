@@ -61,10 +61,7 @@ public final class DisconnectDropbox implements ActionListener {
                 LOGGER.log("Successfully disconnected from Dropbox account.");
 
             } catch (DbxException ex) {
-                JOptionPane.showMessageDialog(null,
-                        "There is a problem with the Internet Connection\n Please, check your connection and try again.",
-                        "Unable to connect",
-                        JOptionPane.ERROR_MESSAGE);
+                DbxUtil.showDbxAccessDeniedPrompt();
             }
         } else {
             LOGGER.log("Dropbox account already disconnected.");

@@ -152,7 +152,9 @@ public final class DropboxRevisionsTopComponent extends TopComponent {
                 outputStream = new FileOutputStream(outputFile);
                 client.getFile(entry.getPath(), entry.getRevision(), outputStream);
                 LOGGER.log("Loaded revision " + entry.getRevision() + " from Dropbox");
-            } catch (Throwable e) {
+            } catch (DbxException e) {
+                DbxUtil.showDbxAccessDeniedPrompt();
+            } catch (IOException e) {
                 Exceptions.printStackTrace(e);
             } finally {
                 IOUtils.closeQuietly(outputStream);
@@ -219,7 +221,7 @@ public final class DropboxRevisionsTopComponent extends TopComponent {
             try {
                 entries = client.getRevisions(path);
             } catch (DbxException ex) {
-                Exceptions.printStackTrace(ex);
+                DbxUtil.showDbxAccessDeniedPrompt();
             }
         }
 
