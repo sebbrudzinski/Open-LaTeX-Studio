@@ -152,7 +152,9 @@ public final class DropboxRevisionsTopComponent extends TopComponent {
                 outputStream = new FileOutputStream(outputFile);
                 client.getFile(entry.getPath(), entry.getRevision(), outputStream);
                 LOGGER.log("Loaded revision " + entry.getRevision() + " from Dropbox");
-            } catch (Throwable e) {
+            } catch (DbxException e) {
+                DbxUtil.showDbxAccessDeniedPrompt();
+            } catch (IOException e) {
                 Exceptions.printStackTrace(e);
             } finally {
                 IOUtils.closeQuietly(outputStream);
@@ -215,10 +217,12 @@ public final class DropboxRevisionsTopComponent extends TopComponent {
         DbxClient client = DbxUtil.getDbxClient();
         List<DbxEntry.File> entries = null;
 
-        try {
-            entries = client.getRevisions(path);
-        } catch (DbxException ex) {
-            Exceptions.printStackTrace(ex);
+        if (path != null) {
+            try {
+                entries = client.getRevisions(path);
+            } catch (DbxException ex) {
+                DbxUtil.showDbxAccessDeniedPrompt();
+            }
         }
 
         dlm.clear();
@@ -233,9 +237,11 @@ public final class DropboxRevisionsTopComponent extends TopComponent {
         model.addColumn(FILE_SIZE_COLUMN_NAME);
         model.addColumn(REVIEW_COLUMN_NAME);
 
-        for (DbxEntry.File dbxEntry : entries) {
-            dlm.addElement(new DbxEntryRevision(dbxEntry));
-            model.addRow(new Object[]{dbxEntry.rev, dbxEntry.lastModified, dbxEntry.humanSize, REVIEW_BUTTON_LABEL});
+        if (entries != null && entries.size() > 0) {
+            for (DbxEntry.File dbxEntry : entries) {
+                dlm.addElement(new DbxEntryRevision(dbxEntry));
+                model.addRow(new Object[]{dbxEntry.rev, dbxEntry.lastModified, dbxEntry.humanSize, REVIEW_BUTTON_LABEL});
+            }
         }
 
         Action showVersion = new AbstractAction() {
