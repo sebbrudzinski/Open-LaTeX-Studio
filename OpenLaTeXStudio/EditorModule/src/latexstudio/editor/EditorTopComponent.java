@@ -14,10 +14,13 @@ import java.net.URL;
 import java.util.prefs.PreferenceChangeEvent;
 import java.util.prefs.PreferenceChangeListener;
 import java.util.prefs.Preferences;
+import java.util.Properties;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Document;
+import latexstudio.editor.files.FileService;
 import latexstudio.editor.remote.DbxState;
 import latexstudio.editor.util.ApplicationUtils;
+import latexstudio.editor.util.PropertyService;
 import org.apache.commons.io.IOUtils;
 import org.fife.ui.autocomplete.AutoCompletion;
 import org.fife.ui.autocomplete.BasicCompletion;
@@ -61,9 +64,14 @@ public final class EditorTopComponent extends TopComponent {
     private File currentFile;
     private DbxState dbxState;
     private String latexPath;
-
+    private Properties openLatexStudioProperties;
     private static final int AUTO_COMPLETE_DELAY = 700;
-
+    
+    //Properties key values
+    private static final String CURRENT_FILE_KEY = "CURRENT_FILE";
+    private static final String LATEX_PATH_KEY = "LATEX_PATH";
+    
+    
     public EditorTopComponent() {
         initComponents();
         setName(Bundle.CTL_EditorTopComponent());
@@ -71,7 +79,6 @@ public final class EditorTopComponent extends TopComponent {
         setToolTipText(Bundle.HINT_EditorTopComponent());
         putClientProperty(TopComponent.PROP_CLOSING_DISABLED, Boolean.TRUE);
         putClientProperty(TopComponent.PROP_UNDOCKING_DISABLED, Boolean.TRUE);
-
         Preferences pref = NbPreferences.forModule(LaTeXSettingsPanel.class);
         String path = pref.get("latexPath", "");
         pref.addPreferenceChangeListener(new PreferenceChangeListener() {
@@ -150,22 +157,33 @@ public final class EditorTopComponent extends TopComponent {
         ac.setAutoActivationEnabled(true);
         ac.setAutoCompleteEnabled(true);
         ac.install(rSyntaxTextArea);
-
-        InputStream is = null;
-        try {
-            is = getClass().getResource("/latexstudio/editor/resources/welcome.tex").openStream();
-            String welcomeMessage = IOUtils.toString(is);
-            rSyntaxTextArea.setText(welcomeMessage);
-            setDirty(true);
-        } catch (IOException ex) {
-            Exceptions.printStackTrace(ex);
-        } finally {
-            IOUtils.closeQuietly(is);
+        if(PropertyService.hasProperties()){
+           openLatexStudioProperties = PropertyService.readProperties(PropertyService.getPropertyFilePath());
+           readProperties(openLatexStudioProperties);
+           if(currentFile != null) {
+              rSyntaxTextArea.setText(FileService.readFromFile(currentFile.getAbsolutePath()));
+           }
+        }
+        else {
+           openLatexStudioProperties = new Properties();
+           InputStream is = null;
+           try {
+               is = getClass().getResource("/latexstudio/editor/resources/welcome.tex").openStream();
+               String welcomeMessage = IOUtils.toString(is);
+               rSyntaxTextArea.setText(welcomeMessage);
+               setDirty(true);
+           } catch (IOException ex) {
+               Exceptions.printStackTrace(ex);
+           } finally {
+               IOUtils.closeQuietly(is);
+           }
         }
     }
 
     @Override
     public void componentClosed() {
+        //if properties file available, write properties
+        writeProperties(openLatexStudioProperties);
     }
 
     public String getEditorContent() {
@@ -291,13 +309,51 @@ public final class EditorTopComponent extends TopComponent {
         // http://wiki.apidesign.org/wiki/PropertyFiles
         p.setProperty("version", "1.0");
         // TODO store your settings
-    }
-
+        if(currentFile != null) {
+           p.setProperty(CURRENT_FILE_KEY, currentFile.getAbsolutePath());
+        }
+        else {
+            p.remove(CURRENT_FILE_KEY);
+        }
+        if(latexPath != null) {
+           p.setProperty(LATEX_PATH_KEY, latexPath);
+        }
+        else {
+            p.remove(LATEX_PATH_KEY);
+        }
+        PropertyService.writeProperties(p);
+    } 
+   //previous argumnent: java.util.Properties p
     void readProperties(java.util.Properties p) {
-        String version = p.getProperty("version");
         // TODO read your settings according to their version
+        String currentFilePath;
+        File candidateFile = null;
+        p = PropertyService.readProperties(PropertyService.getPropertyFilePath());
+        if(p == null)
+        {
+            return;
+        }
+        currentFilePath = (String) p.get(CURRENT_FILE_KEY);
+        if(currentFilePath != null)
+        {
+            candidateFile = new File(currentFilePath);
+            if(candidateFile.exists() && candidateFile.canRead()) 
+            {
+                this.setCurrentFile(candidateFile);
+            }
+        }        
+        String version = p.getProperty("version");
+        String latexDirectory = p.getProperty(LATEX_PATH_KEY);
+        if(latexDirectory != null)
+        {
+            candidateFile = new File(latexDirectory);
+        }
+        if(candidateFile.exists() &&candidateFile.canRead())
+        {
+            this.latexPath = latexDirectory;
+        }
     }
-
+    
     private CompletionProvider createCompletionProvider() {
         DefaultCompletionProvider provider = new DefaultCompletionProvider();
         provider.setAutoActivationRules(true, "");
