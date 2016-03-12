@@ -9,12 +9,10 @@ import com.dropbox.core.DbxClient;
 import com.dropbox.core.DbxException;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import javax.swing.JOptionPane;
 import latexstudio.editor.ApplicationLogger;
 import latexstudio.editor.DropboxRevisionsTopComponent;
 import latexstudio.editor.TopComponentFactory;
 import latexstudio.editor.settings.ApplicationSettings;
-import latexstudio.editor.settings.SettingsService;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.awt.ActionRegistration;
@@ -55,9 +53,8 @@ public final class DisconnectDropbox implements ActionListener {
                 drtc.updateRevisionsList(null);
                 drtc.close();
 
-                ApplicationSettings appSettings = SettingsService.loadApplicationSettings();
-                appSettings.setDropboxToken("");
-                SettingsService.saveApplicationSettings(appSettings);
+                ApplicationSettings.INSTANCE.setDropboxToken("");
+                ApplicationSettings.INSTANCE.save();
                 LOGGER.log("Successfully disconnected from Dropbox account.");
 
             } catch (DbxException ex) {
