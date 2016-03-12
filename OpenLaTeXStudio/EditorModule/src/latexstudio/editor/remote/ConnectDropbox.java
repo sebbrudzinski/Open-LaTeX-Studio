@@ -19,7 +19,6 @@ import javax.swing.JButton;
 import javax.swing.JOptionPane;
 import latexstudio.editor.ApplicationLogger;
 import latexstudio.editor.settings.ApplicationSettings;
-import latexstudio.editor.settings.SettingsService;
 import latexstudio.editor.util.ApplicationUtils;
 import latexstudio.editor.util.PropertyService;
 import org.openide.awt.ActionID;
@@ -92,9 +91,8 @@ public final class ConnectDropbox implements ActionListener {
                 DbxAuthFinish authFinish = webAuth.finish(userToken);
                 userToken = authFinish.accessToken;
                 
-                ApplicationSettings appSettings = SettingsService.loadApplicationSettings();
-                appSettings.setDropboxToken(userToken);
-                SettingsService.saveApplicationSettings(appSettings);
+                ApplicationSettings.INSTANCE.setDropboxToken(userToken);
+                ApplicationSettings.INSTANCE.save();
                 LOGGER.log("Successfully connected application with Dropbox account.");
             } catch (DbxException ex) {
                 JOptionPane.showMessageDialog(null,
