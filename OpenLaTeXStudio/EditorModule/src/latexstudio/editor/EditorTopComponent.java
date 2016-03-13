@@ -63,7 +63,6 @@ public final class EditorTopComponent extends TopComponent {
     private String latexPath;
 
     private static final int AUTO_COMPLETE_DELAY = 700;
-
     public EditorTopComponent() {
         initComponents();
         setName(Bundle.CTL_EditorTopComponent());
@@ -132,7 +131,7 @@ public final class EditorTopComponent extends TopComponent {
     }//GEN-LAST:event_rSyntaxTextAreaKeyReleased
 
     private void rSyntaxTextAreaKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_rSyntaxTextAreaKeyTyped
-        if (currentFile == null) return;
+        if (currentFile == null || evt.isControlDown()) return;
         setDisplayName(currentFile.getName() + '*');
     }//GEN-LAST:event_rSyntaxTextAreaKeyTyped
 

@@ -30,7 +30,8 @@ import org.openide.util.NbBundle.Messages;
 )
 @ActionReferences({
     @ActionReference(path = "Menu/File", position = 1300),
-    @ActionReference(path = "Toolbars/File", position = 2222)
+    @ActionReference(path = "Toolbars/File", position = 2222),
+    @ActionReference(path = "Shortcuts", name = "D-S")
 })
 @Messages("CTL_SaveFile=Save")
 public final class SaveFile implements ActionListener {
