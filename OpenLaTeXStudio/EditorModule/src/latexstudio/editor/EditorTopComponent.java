@@ -306,3 +306,4 @@ public final class EditorTopComponent extends TopComponent {
         return provider;
     }
 }
+
