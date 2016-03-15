@@ -120,6 +120,7 @@ final class LaTeXSettingsPanel extends javax.swing.JPanel {
 
     void store() {
         ApplicationSettings.INSTANCE.setLatexPath( jTextField1.getText() );
+        ApplicationSettings.INSTANCE.save();
     }
 
     boolean valid() {
