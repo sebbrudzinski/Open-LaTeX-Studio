@@ -5,28 +5,29 @@
  */
 package latexstudio.editor;
 
+import java.awt.EventQueue;
 import java.io.File;
-import java.text.NumberFormat;
 import javax.swing.JOptionPane;
-import javax.swing.text.DefaultFormatterFactory;
-import javax.swing.text.NumberFormatter;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.Document;
 import latexstudio.editor.files.FileChooserService;
 import latexstudio.editor.settings.ApplicationSettings;
 import latexstudio.editor.util.ApplicationUtils;
-import org.openide.util.NbPreferences;
+import org.openide.util.Exceptions;
 
 final class LaTeXSettingsPanel extends javax.swing.JPanel {
 
     private final LaTeXSettingsOptionsPanelController controller;
     public static final String KEY_AUTOCOMPLETE_DELAY = "auto_complete_delay";
     public static final int DEFAULT_AUTOCOMPLETE_DELAY_MS = 700;
-    private ApplicationLogger logger = new ApplicationLogger("LatexSettingsPanel");
             
     LaTeXSettingsPanel(LaTeXSettingsOptionsPanelController controller) {
         this.controller = controller;
         initComponents();
         // TODO listen to changes in form fields and call controller.changed()
-        componentOpened();
+        prepareAutoCompleteDelayFieldDocumentListener();
     }
 
     /**
@@ -122,14 +123,47 @@ final class LaTeXSettingsPanel extends javax.swing.JPanel {
         jPanel1.getAccessibleContext().setAccessibleName(org.openide.util.NbBundle.getMessage(LaTeXSettingsPanel.class, "LaTeXSettingsPanel.jPanel1.AccessibleContext.accessibleName")); // NOI18N
     }// </editor-fold>//GEN-END:initComponents
     
-    private void componentOpened(){
-        NumberFormat format = NumberFormat.getIntegerInstance();
-        format.setGroupingUsed(false);
-        NumberFormatter formatter = new NumberFormatter(format);
-        formatter.setValueClass(Integer.class);
-        formatter.setMinimum(0);
-        formatter.setMaximum(9999);
-        jFormattedTextField1.setFormatterFactory(new DefaultFormatterFactory(formatter));
+    private void prepareAutoCompleteDelayFieldDocumentListener(){
+        
+        jFormattedTextField1.getDocument().addDocumentListener(new DocumentListener() {
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                onUpdated(e);
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                onUpdated(e);
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+                onUpdated(e);
+            }
+            /**
+             * It will make sure text is maximum 4 digit long.
+             * @param e 
+             */
+            public void onUpdated(DocumentEvent e) {
+                final Document doc = (Document)e.getDocument();
+                if(doc.getLength()>4){
+                    EventQueue.invokeLater(new Runnable() {
+                        @Override
+                        public void run() {
+                            try {
+                                if(doc.getLength()>4)
+                                    doc.remove(4, doc.getLength()-4);
+                            } catch (BadLocationException ex) {
+                                Exceptions.printStackTrace(ex);
+                            }
+                        }
+                    });
+                }else{
+                    controller.changed();
+                }
+            }
+        });
+        
 
     }
     
@@ -165,25 +199,29 @@ final class LaTeXSettingsPanel extends javax.swing.JPanel {
 
     void load() {
         jTextField1.setText( ApplicationSettings.INSTANCE.getLatexPath() );
-        jFormattedTextField1.setText(String.valueOf(NbPreferences.forModule(LaTeXSettingsPanel.class).getInt(LaTeXSettingsPanel.KEY_AUTOCOMPLETE_DELAY, DEFAULT_AUTOCOMPLETE_DELAY_MS)));
+        jFormattedTextField1.setText(String.valueOf(ApplicationSettings.INSTANCE.getAutoCompleteDelay()));
     }
     
     void store() {
         ApplicationSettings.INSTANCE.setLatexPath( jTextField1.getText() );
+        
+        int autoCompleteDelay = Integer.parseInt(jFormattedTextField1.getText());
+        ApplicationSettings.INSTANCE.setAutoCompleteDelay(autoCompleteDelay);
+        
         ApplicationSettings.INSTANCE.save();
-        
-        int autoCompleteDelay = DEFAULT_AUTOCOMPLETE_DELAY_MS;
-        
-        try{
-            autoCompleteDelay = Integer.parseInt(jFormattedTextField1.getText());
-        }catch(NumberFormatException ex){
-            autoCompleteDelay = DEFAULT_AUTOCOMPLETE_DELAY_MS;
-        }
-        
-        NbPreferences.forModule(LaTeXSettingsPanel.class).putInt(LaTeXSettingsPanel.KEY_AUTOCOMPLETE_DELAY, autoCompleteDelay);
     }
 
     boolean valid() {
+        //check validation of audo delay text field
+        //it will make sure ok button is disabled when input is not a valid number.
+        try{
+            int autoCompleteDelay = Integer.parseInt(jFormattedTextField1.getText());
+            if(autoCompleteDelay<0||autoCompleteDelay>9999)
+                return false;
+        }catch(NumberFormatException ex){
+            return false;
+        }
+        
         return true;
     }
     
