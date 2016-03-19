@@ -15,7 +15,6 @@ import java.util.prefs.PreferenceChangeEvent;
 import java.util.prefs.PreferenceChangeListener;
 import java.util.prefs.Preferences;
 import javax.swing.text.BadLocationException;
-import javax.swing.text.Document;
 import latexstudio.editor.remote.DbxState;
 import latexstudio.editor.util.ApplicationUtils;
 import org.apache.commons.io.IOUtils;
@@ -74,6 +73,7 @@ public final class EditorTopComponent extends TopComponent {
         Preferences pref = NbPreferences.forModule(LaTeXSettingsPanel.class);
         String path = pref.get("latexPath", "");
         pref.addPreferenceChangeListener(new PreferenceChangeListener() {
+            @Override
             public void preferenceChange(PreferenceChangeEvent evt) {
                 if (evt.getKey().equals("latexPath")) {
                     latexPath = evt.getNewValue();
