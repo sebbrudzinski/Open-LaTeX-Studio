@@ -9,7 +9,6 @@ import com.dropbox.core.DbxClient;
 import com.dropbox.core.DbxException;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import javax.swing.JOptionPane;
 import latexstudio.editor.ApplicationLogger;
 import latexstudio.editor.DropboxRevisionsTopComponent;
 import latexstudio.editor.TopComponentFactory;

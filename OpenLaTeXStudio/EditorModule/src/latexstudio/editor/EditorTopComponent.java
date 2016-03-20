@@ -13,13 +13,12 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.util.prefs.PreferenceChangeEvent;
 import java.util.prefs.PreferenceChangeListener;
 import java.util.prefs.Preferences;
-import javax.swing.SwingUtilities;
 import javax.swing.text.BadLocationException;
+import latexstudio.editor.remote.CloudStatus;
 import latexstudio.editor.remote.DbxState;
 import latexstudio.editor.remote.DbxUtil;
 import latexstudio.editor.util.ApplicationUtils;
@@ -68,7 +67,7 @@ public final class EditorTopComponent extends TopComponent {
     private DbxState dbxState;
     private String latexPath;
 
-    private static final ApplicationLogger LOGGER = new ApplicationLogger("Dropbox");
+    private static final ApplicationLogger LOGGER = new ApplicationLogger("Cloud Support");
     private static final int AUTO_COMPLETE_DELAY = 700;
     private static final int STATUS_DISPLAY_IMPORTANCE = 1;
 
@@ -142,7 +141,9 @@ public final class EditorTopComponent extends TopComponent {
     }//GEN-LAST:event_rSyntaxTextAreaKeyReleased
 
     private void rSyntaxTextAreaKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_rSyntaxTextAreaKeyTyped
-        if (currentFile == null || evt.isControlDown()) return;
+        if (currentFile == null || evt.isControlDown()) {
+            return;
+        }
         setDisplayName(currentFile.getName() + '*');
     }//GEN-LAST:event_rSyntaxTextAreaKeyTyped
 
@@ -339,14 +340,14 @@ public final class EditorTopComponent extends TopComponent {
     }
 
     private void displayConnectionStatus() {
-        
+
         boolean isConnected = false;
         String message = null;
         DbxAccountInfo info = null;
-        
+
         // Check Dropbox connection
         DbxClient client = DbxUtil.getDbxClient();
-        if(client != null) {
+        if (client != null) {
             String userToken = client.getAccessToken();
             if (userToken != null && !userToken.isEmpty()) {
                 try {
@@ -358,14 +359,14 @@ public final class EditorTopComponent extends TopComponent {
             }
         }
 
-        if(isConnected) {
+        if (isConnected) {
             message = "Connected to Dropbox account as " + info.displayName;
+            CloudStatus.getInstance().setStatus(CloudStatus.STATUS_DBX_CONNECTED, " (" + info.displayName + ")");
+        } else {
+            message = "Disconnected.";
+            CloudStatus.getInstance().setStatus(CloudStatus.STATUS_DISCONNECTED);
         }
-        else {
-            message = "You are not connected to Dropbox.";
-        }
-        
+
         LOGGER.log(message);
-        StatusDisplayer.getDefault().setStatusText(message, STATUS_DISPLAY_IMPORTANCE);
     }
 }
