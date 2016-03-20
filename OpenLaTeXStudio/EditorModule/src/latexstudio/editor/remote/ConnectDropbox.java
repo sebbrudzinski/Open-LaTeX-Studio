@@ -46,11 +46,14 @@ public final class ConnectDropbox implements ActionListener {
     private static final String APP_SECRET = PropertyService.
             readProperties(PROPERTIES).getProperty("dropbox.appSecret");
     
-    private static final ApplicationLogger LOGGER = new ApplicationLogger("Dropbox");
+    private static final ApplicationLogger LOGGER = new ApplicationLogger("Cloud Support");
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        DbxAppInfo appInfo = null;
+        int currentCloudStatus = CloudStatus.getInstance().getStatus();
+        CloudStatus.getInstance().setStatus(CloudStatus.STATUS_CONNECTING);
+        
+        DbxAppInfo appInfo;
         try {
             appInfo = new DbxAppInfo(APP_KEY, APP_SECRET);
         } catch (IllegalArgumentException ex) {
@@ -60,11 +63,12 @@ public final class ConnectDropbox implements ActionListener {
                         + "You can also contact us at open-latex-studio@googlegroups.com in case of any troubles.",
                 "Development version",
                 JOptionPane.WARNING_MESSAGE);
+            CloudStatus.getInstance().setStatus(CloudStatus.STATUS_DISCONNECTED);
             return;
         }
         DbxWebAuthNoRedirect webAuth = new DbxWebAuthNoRedirect(DbxUtil.getDbxConfig(), appInfo);
         final String authorizeUrl = webAuth.start();
-
+        
         class OpenUrlAction implements ActionListener {
             @Override public void actionPerformed(ActionEvent e) {
                 try {
@@ -96,12 +100,17 @@ public final class ConnectDropbox implements ActionListener {
                 appSettings.setDropboxToken(userToken);
                 SettingsService.saveApplicationSettings(appSettings);
                 LOGGER.log("Successfully connected application with Dropbox account.");
+                CloudStatus.getInstance().setStatus(CloudStatus.STATUS_DBX_CONNECTED);
             } catch (DbxException ex) {
                 JOptionPane.showMessageDialog(null,
                         "Invalid access token! Open LaTeX Studio has NOT been connected with Dropbox.\n Please try again and provide correct access token.",
                         "Invalid token",
                         JOptionPane.ERROR_MESSAGE);
+                CloudStatus.getInstance().setStatus(CloudStatus.STATUS_DISCONNECTED);
             }
+        }
+        else {
+            CloudStatus.getInstance().setStatus(currentCloudStatus);
         }
     }
     

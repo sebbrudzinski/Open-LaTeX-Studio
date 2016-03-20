@@ -9,7 +9,6 @@ import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
-import org.openide.util.ImageUtilities;
 
 /**
  * Class responsible for displaying the Cloud Support Status.
@@ -46,31 +45,30 @@ public class CloudStatus {
 
     static {
         IMG_DISCONNECTED = new ImageIcon(
-                ImageUtilities.loadImage(
-                        "latexstudio/editor/resources/icons/dbx-connected.png"));
+                CloudStatus.class.getResource(
+                        "/latexstudio/editor/resources/icons/dbx-connected.png"));
         IMG_CONNECTING = new ImageIcon(
-                ImageUtilities.loadImage(
-                        "latexstudio/editor/resources/icons/connecting.png"));
+                CloudStatus.class.getResource(
+                        "/latexstudio/editor/resources/icons/connecting.gif"));
         IMG_DBX_CONNECTED = new ImageIcon(
-                ImageUtilities.loadImage(
-                        "latexstudio/editor/resources/icons/disconnected.png"));
+                CloudStatus.class.getResource(
+                        "/latexstudio/editor/resources/icons/disconnected.png"));
 
         STATUS_MESSAGES = new String[3];
 
-        STATUS_MESSAGES[STATUS_DISCONNECTED] = "Disconnected";
+        STATUS_MESSAGES[STATUS_DISCONNECTED] = "Working locally";
         STATUS_MESSAGES[STATUS_CONNECTING] = "Connecting";
         STATUS_MESSAGES[STATUS_DBX_CONNECTED] = "Connected to Dropbox";
     }
 
-    private static final CloudStatus instance
-            = new CloudStatus();
+    private static final CloudStatus INSTANCE = new CloudStatus();
 
     /**
      * Get the single CloudStatus' instance
      * @return the single CloudStatus' instance
      */
     public static CloudStatus getInstance() {
-        return instance;
+        return INSTANCE;
     }
 
     /**

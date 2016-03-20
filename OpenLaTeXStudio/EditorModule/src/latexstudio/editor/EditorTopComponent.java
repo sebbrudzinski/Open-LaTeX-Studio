@@ -30,7 +30,6 @@ import org.fife.ui.autocomplete.DefaultCompletionProvider;
 import org.netbeans.api.settings.ConvertAsProperties;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
-import org.openide.awt.StatusDisplayer;
 import org.openide.util.Exceptions;
 import org.openide.util.NbBundle.Messages;
 import org.openide.util.NbPreferences;
@@ -69,7 +68,6 @@ public final class EditorTopComponent extends TopComponent {
 
     private static final ApplicationLogger LOGGER = new ApplicationLogger("Cloud Support");
     private static final int AUTO_COMPLETE_DELAY = 700;
-    private static final int STATUS_DISPLAY_IMPORTANCE = 1;
 
     public EditorTopComponent() {
         initComponents();
@@ -91,7 +89,7 @@ public final class EditorTopComponent extends TopComponent {
         });
 
         latexPath = path;
-        displayConnectionStatus();
+        displayCloudStatus();
     }
 
     /**
@@ -339,10 +337,10 @@ public final class EditorTopComponent extends TopComponent {
         return provider;
     }
 
-    private void displayConnectionStatus() {
+    private void displayCloudStatus() {
 
         boolean isConnected = false;
-        String message = null;
+        String message;
         DbxAccountInfo info = null;
 
         // Check Dropbox connection
@@ -363,7 +361,7 @@ public final class EditorTopComponent extends TopComponent {
             message = "Connected to Dropbox account as " + info.displayName;
             CloudStatus.getInstance().setStatus(CloudStatus.STATUS_DBX_CONNECTED, " (" + info.displayName + ")");
         } else {
-            message = "Disconnected.";
+            message = "Working locally.";
             CloudStatus.getInstance().setStatus(CloudStatus.STATUS_DISCONNECTED);
         }
 

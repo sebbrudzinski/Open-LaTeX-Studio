@@ -33,14 +33,18 @@ public final class DisconnectDropbox implements ActionListener {
     private final DropboxRevisionsTopComponent drtc = new TopComponentFactory<DropboxRevisionsTopComponent>()
             .getTopComponent(DropboxRevisionsTopComponent.class.getSimpleName());
 
-    private static final ApplicationLogger LOGGER = new ApplicationLogger("Dropbox");
+    private static final ApplicationLogger LOGGER = new ApplicationLogger("Cloud Support");
 
     @Override
     public void actionPerformed(ActionEvent e) {
+        int currentCloudStatus = CloudStatus.getInstance().getStatus();
+        CloudStatus.getInstance().setStatus(CloudStatus.STATUS_CONNECTING);
+        
         DbxClient client = DbxUtil.getDbxClient();
 
         if (client == null) {
             LOGGER.log("Dropbox account already disconnected.");
+            CloudStatus.getInstance().setStatus(CloudStatus.STATUS_DISCONNECTED);
             return;
         }
 
@@ -58,12 +62,15 @@ public final class DisconnectDropbox implements ActionListener {
                 appSettings.setDropboxToken("");
                 SettingsService.saveApplicationSettings(appSettings);
                 LOGGER.log("Successfully disconnected from Dropbox account.");
+            CloudStatus.getInstance().setStatus(CloudStatus.STATUS_DISCONNECTED);
 
             } catch (DbxException ex) {
                 DbxUtil.showDbxAccessDeniedPrompt();
+                CloudStatus.getInstance().setStatus(currentCloudStatus);
             }
         } else {
             LOGGER.log("Dropbox account already disconnected.");
+            CloudStatus.getInstance().setStatus(CloudStatus.STATUS_DISCONNECTED);
         }
     }
 }
