@@ -5,17 +5,23 @@
  */
 package latexstudio.editor;
 
+import com.dropbox.core.DbxAccountInfo;
+import com.dropbox.core.DbxClient;
+import com.dropbox.core.DbxException;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.util.prefs.PreferenceChangeEvent;
 import java.util.prefs.PreferenceChangeListener;
 import java.util.prefs.Preferences;
+import javax.swing.SwingUtilities;
 import javax.swing.text.BadLocationException;
 import latexstudio.editor.remote.DbxState;
+import latexstudio.editor.remote.DbxUtil;
 import latexstudio.editor.util.ApplicationUtils;
 import org.apache.commons.io.IOUtils;
 import org.fife.ui.autocomplete.AutoCompletion;
@@ -25,6 +31,7 @@ import org.fife.ui.autocomplete.DefaultCompletionProvider;
 import org.netbeans.api.settings.ConvertAsProperties;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
+import org.openide.awt.StatusDisplayer;
 import org.openide.util.Exceptions;
 import org.openide.util.NbBundle.Messages;
 import org.openide.util.NbPreferences;
@@ -61,7 +68,10 @@ public final class EditorTopComponent extends TopComponent {
     private DbxState dbxState;
     private String latexPath;
 
+    private static final ApplicationLogger LOGGER = new ApplicationLogger("Dropbox");
     private static final int AUTO_COMPLETE_DELAY = 700;
+    private static final int STATUS_DISPLAY_IMPORTANCE = 1;
+
     public EditorTopComponent() {
         initComponents();
         setName(Bundle.CTL_EditorTopComponent());
@@ -82,6 +92,7 @@ public final class EditorTopComponent extends TopComponent {
         });
 
         latexPath = path;
+        displayConnectionStatus();
     }
 
     /**
@@ -325,5 +336,36 @@ public final class EditorTopComponent extends TopComponent {
         }
 
         return provider;
+    }
+
+    private void displayConnectionStatus() {
+        
+        boolean isConnected = false;
+        String message = null;
+        DbxAccountInfo info = null;
+        
+        // Check Dropbox connection
+        DbxClient client = DbxUtil.getDbxClient();
+        if(client != null) {
+            String userToken = client.getAccessToken();
+            if (userToken != null && !userToken.isEmpty()) {
+                try {
+                    info = client.getAccountInfo();
+                    isConnected = true;
+                } catch (DbxException ex) {
+                    Exceptions.printStackTrace(ex);
+                }
+            }
+        }
+
+        if(isConnected) {
+            message = "Connected to Dropbox account as " + info.displayName;
+        }
+        else {
+            message = "You are not connected to Dropbox.";
+        }
+        
+        LOGGER.log(message);
+        StatusDisplayer.getDefault().setStatusText(message, STATUS_DISPLAY_IMPORTANCE);
     }
 }
