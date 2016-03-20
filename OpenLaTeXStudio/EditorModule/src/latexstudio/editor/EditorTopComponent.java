@@ -11,11 +11,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
-import java.util.prefs.PreferenceChangeEvent;
-import java.util.prefs.PreferenceChangeListener;
-import java.util.prefs.Preferences;
 import javax.swing.text.BadLocationException;
-import javax.swing.text.Document;
 import latexstudio.editor.remote.DbxState;
 import latexstudio.editor.util.ApplicationUtils;
 import org.apache.commons.io.IOUtils;
@@ -28,7 +24,6 @@ import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.util.Exceptions;
 import org.openide.util.NbBundle.Messages;
-import org.openide.util.NbPreferences;
 import org.openide.windows.TopComponent;
 
 /**
@@ -60,7 +55,6 @@ public final class EditorTopComponent extends TopComponent {
     private boolean dirty = false;
     private File currentFile;
     private DbxState dbxState;
-    private String latexPath;
 
     private static final int AUTO_COMPLETE_DELAY = 700;
     public EditorTopComponent() {
@@ -71,17 +65,6 @@ public final class EditorTopComponent extends TopComponent {
         putClientProperty(TopComponent.PROP_CLOSING_DISABLED, Boolean.TRUE);
         putClientProperty(TopComponent.PROP_UNDOCKING_DISABLED, Boolean.TRUE);
 
-        Preferences pref = NbPreferences.forModule(LaTeXSettingsPanel.class);
-        String path = pref.get("latexPath", "");
-        pref.addPreferenceChangeListener(new PreferenceChangeListener() {
-            public void preferenceChange(PreferenceChangeEvent evt) {
-                if (evt.getKey().equals("latexPath")) {
-                    latexPath = evt.getNewValue();
-                }
-            }
-        });
-
-        latexPath = path;
     }
 
     /**
@@ -207,10 +190,6 @@ public final class EditorTopComponent extends TopComponent {
 
     public void setDbxState(DbxState dbxState) {
         this.dbxState = dbxState;
-    }
-
-    public String getLatexPath() {
-        return latexPath;
     }
 
     private String findStartSymbol() {

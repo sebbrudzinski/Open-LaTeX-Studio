@@ -8,6 +8,7 @@ package latexstudio.editor;
 import java.io.File;
 import javax.swing.JOptionPane;
 import latexstudio.editor.files.FileChooserService;
+import latexstudio.editor.settings.ApplicationSettings;
 import latexstudio.editor.util.ApplicationUtils;
 import org.openide.util.NbPreferences;
 
@@ -114,11 +115,12 @@ final class LaTeXSettingsPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_jButton1ActionPerformed
 
     void load() {
-        jTextField1.setText(NbPreferences.forModule(LaTeXSettingsPanel.class).get("latexPath", ""));
+        jTextField1.setText( ApplicationSettings.INSTANCE.getLatexPath() );
     }
 
     void store() {
-        NbPreferences.forModule(LaTeXSettingsPanel.class).put("latexPath", jTextField1.getText());
+        ApplicationSettings.INSTANCE.setLatexPath( jTextField1.getText() );
+        ApplicationSettings.INSTANCE.save();
     }
 
     boolean valid() {
