@@ -358,7 +358,7 @@ public final class EditorTopComponent extends TopComponent {
         }
 
         if (isConnected) {
-            message = "Connected to Dropbox account as " + info.displayName;
+            message = "Connected to Dropbox account as " + info.displayName + ".";
             CloudStatus.getInstance().setStatus(CloudStatus.STATUS_DBX_CONNECTED, " (" + info.displayName + ")");
         } else {
             message = "Working locally.";

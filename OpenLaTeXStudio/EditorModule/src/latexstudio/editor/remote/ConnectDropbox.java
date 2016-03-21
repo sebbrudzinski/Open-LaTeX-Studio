@@ -5,8 +5,10 @@
  */
 package latexstudio.editor.remote;
 
+import com.dropbox.core.DbxAccountInfo;
 import com.dropbox.core.DbxAppInfo;
 import com.dropbox.core.DbxAuthFinish;
+import com.dropbox.core.DbxClient;
 import com.dropbox.core.DbxException;
 import com.dropbox.core.DbxWebAuthNoRedirect;
 import java.awt.Desktop;
@@ -99,8 +101,18 @@ public final class ConnectDropbox implements ActionListener {
                 ApplicationSettings appSettings = SettingsService.loadApplicationSettings();
                 appSettings.setDropboxToken(userToken);
                 SettingsService.saveApplicationSettings(appSettings);
-                LOGGER.log("Successfully connected application with Dropbox account.");
-                CloudStatus.getInstance().setStatus(CloudStatus.STATUS_DBX_CONNECTED);
+                
+                // getting dbx client displayName
+                DbxClient client = DbxUtil.getDbxClient();
+                DbxAccountInfo info = null;
+                String additional = "";
+                if(client != null) {
+                    info = client.getAccountInfo();
+                    additional = " (" + info.displayName + ")";
+                }
+                
+                LOGGER.log("Successfully connected application with Dropbox account" + additional + ".");
+                CloudStatus.getInstance().setStatus(CloudStatus.STATUS_DBX_CONNECTED, additional);
             } catch (DbxException ex) {
                 JOptionPane.showMessageDialog(null,
                         "Invalid access token! Open LaTeX Studio has NOT been connected with Dropbox.\n Please try again and provide correct access token.",

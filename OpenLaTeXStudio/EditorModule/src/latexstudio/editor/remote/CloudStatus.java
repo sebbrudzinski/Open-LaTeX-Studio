@@ -39,18 +39,18 @@ public class CloudStatus {
 
     private static final String[] STATUS_MESSAGES;
 
-    private static final ImageIcon IMG_DISCONNECTED;
+    private static final ImageIcon IMB_DBX_CONNECTED;
     private static final ImageIcon IMG_CONNECTING;
-    private static final ImageIcon IMG_DBX_CONNECTED;
+    private static final ImageIcon IMG_DISCONNECTED;
 
     static {
-        IMG_DISCONNECTED = new ImageIcon(
+        IMB_DBX_CONNECTED = new ImageIcon(
                 CloudStatus.class.getResource(
                         "/latexstudio/editor/resources/icons/dbx-connected.png"));
         IMG_CONNECTING = new ImageIcon(
                 CloudStatus.class.getResource(
                         "/latexstudio/editor/resources/icons/connecting.gif"));
-        IMG_DBX_CONNECTED = new ImageIcon(
+        IMG_DISCONNECTED = new ImageIcon(
                 CloudStatus.class.getResource(
                         "/latexstudio/editor/resources/icons/disconnected.png"));
 
@@ -87,7 +87,7 @@ public class CloudStatus {
 
     protected CloudStatus() {
         this.status = STATUS_DISCONNECTED;
-        this.label = new JLabel(IMG_DISCONNECTED);
+        this.label = new JLabel(IMB_DBX_CONNECTED);
         this.label.setToolTipText(getStatusMessage(this.status));
     }
 
@@ -126,13 +126,13 @@ public class CloudStatus {
         Icon icon;
         switch (this.status) {
             case STATUS_DBX_CONNECTED:
-                icon = IMG_DISCONNECTED;
+                icon = IMB_DBX_CONNECTED;
                 break;
             case STATUS_CONNECTING:
                 icon = IMG_CONNECTING;
                 break;
             default:
-                icon = IMG_DBX_CONNECTED;
+                icon = IMG_DISCONNECTED;
                 break;
         }
         
