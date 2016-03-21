@@ -63,7 +63,7 @@ public final class DropboxRevisionsTopComponent extends TopComponent {
     private DefaultListModel<DbxEntryRevision> dlm = new DefaultListModel<DbxEntryRevision>();
     private static final ApplicationLogger LOGGER = new ApplicationLogger("Dropbox");
 
-    private static final RevisionDisplayTopComponent REVTC = new TopComponentFactory<RevisionDisplayTopComponent>()
+    private final RevisionDisplayTopComponent revtc = new TopComponentFactory<RevisionDisplayTopComponent>()
             .getTopComponent(RevisionDisplayTopComponent.class.getSimpleName());
 
     private static final String REVISION_COLUMN_NAME = "Revision";
@@ -160,12 +160,12 @@ public final class DropboxRevisionsTopComponent extends TopComponent {
                 IOUtils.closeQuietly(outputStream);
             }
 
-            REVTC.open();
-            REVTC.requestActive();
-            REVTC.setName(entry.getName() + " (rev: " + entry.getRevision() + ")");
-            REVTC.setDisplayedRevision(new DbxState(entry.getPath(), entry.getRevision()));
+            revtc.open();
+            revtc.requestActive();
+            revtc.setName(entry.getName() + " (rev: " + entry.getRevision() + ")");
+            revtc.setDisplayedRevision(new DbxState(entry.getPath(), entry.getRevision()));
             try {
-                REVTC.setText(FileUtils.readFileToString(outputFile));
+                revtc.setText(FileUtils.readFileToString(outputFile));
             } catch (IOException e) {
                 Exceptions.printStackTrace(e);
             }

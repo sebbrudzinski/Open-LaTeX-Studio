@@ -11,6 +11,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import latexstudio.editor.ApplicationLogger;
 import latexstudio.editor.DropboxRevisionsTopComponent;
+import latexstudio.editor.RevisionDisplayTopComponent;
 import latexstudio.editor.TopComponentFactory;
 import latexstudio.editor.settings.ApplicationSettings;
 import org.openide.awt.ActionID;
@@ -31,6 +32,8 @@ public final class DisconnectDropbox implements ActionListener {
 
     private final DropboxRevisionsTopComponent drtc = new TopComponentFactory<DropboxRevisionsTopComponent>()
             .getTopComponent(DropboxRevisionsTopComponent.class.getSimpleName());
+    private final RevisionDisplayTopComponent revtc = new TopComponentFactory<RevisionDisplayTopComponent>()
+            .getTopComponent(RevisionDisplayTopComponent.class.getSimpleName());
 
     private static final ApplicationLogger LOGGER = new ApplicationLogger("Dropbox");
 
@@ -52,6 +55,7 @@ public final class DisconnectDropbox implements ActionListener {
 
                 drtc.updateRevisionsList(null);
                 drtc.close();
+                revtc.close();
 
                 ApplicationSettings.INSTANCE.setDropboxToken("");
                 ApplicationSettings.INSTANCE.save();

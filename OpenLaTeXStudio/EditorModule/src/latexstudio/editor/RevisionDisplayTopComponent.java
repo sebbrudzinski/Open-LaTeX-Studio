@@ -142,7 +142,9 @@ public final class RevisionDisplayTopComponent extends TopComponent {
 
     @Override
     public void componentClosed() {
-        // TODO add custom code on component closing
+        displayedRevision = null;
+        setText(null);
+        setDisplayName("Dropbox revision display");
     }
 
     void writeProperties(java.util.Properties p) {
