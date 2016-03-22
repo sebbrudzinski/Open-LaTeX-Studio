@@ -5,21 +5,27 @@
  */
 package latexstudio.editor;
 
+import java.awt.EventQueue;
 import java.io.File;
 import javax.swing.JOptionPane;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.Document;
 import latexstudio.editor.files.FileChooserService;
 import latexstudio.editor.settings.ApplicationSettings;
 import latexstudio.editor.util.ApplicationUtils;
-import org.openide.util.NbPreferences;
+import org.openide.util.Exceptions;
 
 final class LaTeXSettingsPanel extends javax.swing.JPanel {
 
     private final LaTeXSettingsOptionsPanelController controller;
-
+            
     LaTeXSettingsPanel(LaTeXSettingsOptionsPanelController controller) {
         this.controller = controller;
         initComponents();
         // TODO listen to changes in form fields and call controller.changed()
+        prepareAutoCompleteDelayFieldDocumentListener();
     }
 
     /**
@@ -33,6 +39,9 @@ final class LaTeXSettingsPanel extends javax.swing.JPanel {
         jPanel1 = new javax.swing.JPanel();
         jTextField1 = new javax.swing.JTextField();
         jButton1 = new javax.swing.JButton();
+        jLabel1 = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
+        jFormattedTextField1 = new javax.swing.JFormattedTextField();
 
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(org.openide.util.NbBundle.getMessage(LaTeXSettingsPanel.class, "LaTeXSettingsPanel.jPanel1.border.title"))); // NOI18N
         jPanel1.setToolTipText(org.openide.util.NbBundle.getMessage(LaTeXSettingsPanel.class, "LaTeXSettingsPanel.toolTipText")); // NOI18N
@@ -53,7 +62,7 @@ final class LaTeXSettingsPanel extends javax.swing.JPanel {
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jTextField1, javax.swing.GroupLayout.DEFAULT_SIZE, 270, Short.MAX_VALUE)
+                .addComponent(jTextField1, javax.swing.GroupLayout.DEFAULT_SIZE, 451, Short.MAX_VALUE)
                 .addGap(18, 18, 18)
                 .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
@@ -68,13 +77,32 @@ final class LaTeXSettingsPanel extends javax.swing.JPanel {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
+        org.openide.awt.Mnemonics.setLocalizedText(jLabel1, org.openide.util.NbBundle.getMessage(LaTeXSettingsPanel.class, "LaTeXSettingsPanel.jLabel1.text")); // NOI18N
+
+        org.openide.awt.Mnemonics.setLocalizedText(jLabel2, org.openide.util.NbBundle.getMessage(LaTeXSettingsPanel.class, "LaTeXSettingsPanel.jLabel2.text")); // NOI18N
+
+        jFormattedTextField1.setText(org.openide.util.NbBundle.getMessage(LaTeXSettingsPanel.class, "LaTeXSettingsPanel.jFormattedTextField1.text_1")); // NOI18N
+        jFormattedTextField1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jFormattedTextField1ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jLabel1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jFormattedTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabel2)
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -82,12 +110,61 @@ final class LaTeXSettingsPanel extends javax.swing.JPanel {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel1)
+                    .addComponent(jLabel2)
+                    .addComponent(jFormattedTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(35, Short.MAX_VALUE))
         );
 
         jPanel1.getAccessibleContext().setAccessibleName(org.openide.util.NbBundle.getMessage(LaTeXSettingsPanel.class, "LaTeXSettingsPanel.jPanel1.AccessibleContext.accessibleName")); // NOI18N
     }// </editor-fold>//GEN-END:initComponents
+    
+    private void prepareAutoCompleteDelayFieldDocumentListener(){
+        
+        jFormattedTextField1.getDocument().addDocumentListener(new DocumentListener() {
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                onUpdated(e);
+            }
 
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                onUpdated(e);
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+                onUpdated(e);
+            }
+            /**
+             * It will make sure text is maximum 4 digit long.
+             * @param e 
+             */
+            public void onUpdated(DocumentEvent e) {
+                final Document doc = (Document)e.getDocument();
+                if(doc.getLength()>4){
+                    EventQueue.invokeLater(new Runnable() {
+                        @Override
+                        public void run() {
+                            try {
+                                if(doc.getLength()>4)
+                                    doc.remove(4, doc.getLength()-4);
+                            } catch (BadLocationException ex) {
+                                Exceptions.printStackTrace(ex);
+                            }
+                        }
+                    });
+                }else{
+                    controller.changed();
+                }
+            }
+        });
+        
+
+    }
+    
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         File directory = FileChooserService.getSelectedDirectory("Choose");
         File pdfLatexExe;
@@ -114,21 +191,44 @@ final class LaTeXSettingsPanel extends javax.swing.JPanel {
         }
     }//GEN-LAST:event_jButton1ActionPerformed
 
+    private void jFormattedTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jFormattedTextField1ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jFormattedTextField1ActionPerformed
+
     void load() {
         jTextField1.setText( ApplicationSettings.INSTANCE.getLatexPath() );
+        jFormattedTextField1.setText(String.valueOf(ApplicationSettings.INSTANCE.getAutoCompleteDelay()));
     }
-
+    
     void store() {
         ApplicationSettings.INSTANCE.setLatexPath( jTextField1.getText() );
+        
+        int autoCompleteDelay = Integer.parseInt(jFormattedTextField1.getText());
+        ApplicationSettings.INSTANCE.setAutoCompleteDelay(autoCompleteDelay);
+        
         ApplicationSettings.INSTANCE.save();
     }
 
     boolean valid() {
+        //check validation of audo delay text field
+        //it will make sure ok button is disabled when input is not a valid number.
+        try{
+            int autoCompleteDelay = Integer.parseInt(jFormattedTextField1.getText());
+            if(autoCompleteDelay<0||autoCompleteDelay>9999)
+                return false;
+        }catch(NumberFormatException ex){
+            return false;
+        }
+        
         return true;
     }
+    
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
+    private javax.swing.JFormattedTextField jFormattedTextField1;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JTextField jTextField1;
     // End of variables declaration//GEN-END:variables

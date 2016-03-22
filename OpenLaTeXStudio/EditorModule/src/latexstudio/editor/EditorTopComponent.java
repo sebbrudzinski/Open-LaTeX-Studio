@@ -5,6 +5,8 @@
  */
 package latexstudio.editor;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
@@ -13,6 +15,7 @@ import java.io.InputStreamReader;
 import java.net.URL;
 import javax.swing.text.BadLocationException;
 import latexstudio.editor.remote.DbxState;
+import latexstudio.editor.settings.ApplicationSettings;
 import latexstudio.editor.util.ApplicationUtils;
 import org.apache.commons.io.IOUtils;
 import org.fife.ui.autocomplete.AutoCompletion;
@@ -56,7 +59,7 @@ public final class EditorTopComponent extends TopComponent {
     private File currentFile;
     private DbxState dbxState;
 
-    private static final int AUTO_COMPLETE_DELAY = 700;
+    private AutoCompletion autoCompletion = null;
     public EditorTopComponent() {
         initComponents();
         setName(Bundle.CTL_EditorTopComponent());
@@ -64,6 +67,15 @@ public final class EditorTopComponent extends TopComponent {
         setToolTipText(Bundle.HINT_EditorTopComponent());
         putClientProperty(TopComponent.PROP_CLOSING_DISABLED, Boolean.TRUE);
         putClientProperty(TopComponent.PROP_UNDOCKING_DISABLED, Boolean.TRUE);
+        
+        ApplicationSettings.INSTANCE.addPropertyChangeListener(new PropertyChangeListener() {
+            @Override
+            public void propertyChange(PropertyChangeEvent evt) {
+                if(evt.getPropertyName().equals(ApplicationSettings.AUTOCOMPLETE_DELAY)&&autoCompletion!=null){
+                    autoCompletion.setAutoActivationDelay((Integer)evt.getNewValue());
+                }
+            }
+        });
 
     }
 
@@ -127,11 +139,11 @@ public final class EditorTopComponent extends TopComponent {
     public void componentOpened() {
         ApplicationUtils.deleteTempFiles();
         CompletionProvider provider = createCompletionProvider();
-        AutoCompletion ac = new AutoCompletion(provider);
-        ac.setAutoActivationDelay(AUTO_COMPLETE_DELAY);
-        ac.setAutoActivationEnabled(true);
-        ac.setAutoCompleteEnabled(true);
-        ac.install(rSyntaxTextArea);
+        autoCompletion = new AutoCompletion(provider);
+        autoCompletion.setAutoActivationDelay(ApplicationSettings.INSTANCE.getAutoCompleteDelay());
+        autoCompletion.setAutoActivationEnabled(true);
+        autoCompletion.setAutoCompleteEnabled(true);
+        autoCompletion.install(rSyntaxTextArea);
 
         InputStream is = null;
         try {
@@ -306,3 +318,4 @@ public final class EditorTopComponent extends TopComponent {
         return provider;
     }
 }
+
