@@ -59,7 +59,6 @@ public final class EditorTopComponent extends TopComponent {
     private File currentFile;
     private DbxState dbxState;
 
-    private static final String AUTO_COMPLETE_DELAY_PROPERTY = "auto.complete.delay";
     private AutoCompletion autoCompletion = null;
     public EditorTopComponent() {
         initComponents();
@@ -72,7 +71,7 @@ public final class EditorTopComponent extends TopComponent {
         ApplicationSettings.INSTANCE.addPropertyChangeListener(new PropertyChangeListener() {
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
-                if(evt.getPropertyName().equals(AUTO_COMPLETE_DELAY_PROPERTY)&&autoCompletion!=null){
+                if(evt.getPropertyName().equals(ApplicationSettings.AUTOCOMPLETE_DELAY)&&autoCompletion!=null){
                     autoCompletion.setAutoActivationDelay((Integer)evt.getNewValue());
                 }
             }

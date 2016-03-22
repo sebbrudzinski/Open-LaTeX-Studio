@@ -24,7 +24,7 @@ public final class ApplicationSettings extends Properties {
     private static final String DROPBOX_TOKEN   = "dropbox.token";
     private static final String USER_LASTDIR    = "user.lastdir";
     private static final String LATEX_PATH      = "latex.path";
-    private static final String AUTO_COMPLETE_DELAY = "auto.complete.delay";
+    public static final String AUTOCOMPLETE_DELAY = "autocomplete.delay";
     
     private static final int DEFAULT_AUTO_COMPLETE_DELAY = 700;
     
@@ -84,13 +84,13 @@ public final class ApplicationSettings extends Properties {
     }
     
     public void setAutoCompleteDelay(int delay){
-        pcs.firePropertyChange(AUTO_COMPLETE_DELAY, getAutoCompleteDelay(), delay);
-        setProperty(AUTO_COMPLETE_DELAY, String.valueOf(delay));
+        pcs.firePropertyChange(AUTOCOMPLETE_DELAY, getAutoCompleteDelay(), delay);
+        setProperty(AUTOCOMPLETE_DELAY, String.valueOf(delay));
     }
     
     public int getAutoCompleteDelay(){
         try{
-            return Integer.parseInt(getProperty(AUTO_COMPLETE_DELAY));
+            return Integer.parseInt(getProperty(AUTOCOMPLETE_DELAY));
         }catch(NumberFormatException ex){
             return DEFAULT_AUTO_COMPLETE_DELAY;
         }

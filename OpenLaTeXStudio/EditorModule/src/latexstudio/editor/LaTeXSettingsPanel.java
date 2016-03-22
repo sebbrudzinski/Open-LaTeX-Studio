@@ -20,8 +20,6 @@ import org.openide.util.Exceptions;
 final class LaTeXSettingsPanel extends javax.swing.JPanel {
 
     private final LaTeXSettingsOptionsPanelController controller;
-    public static final String KEY_AUTOCOMPLETE_DELAY = "auto_complete_delay";
-    public static final int DEFAULT_AUTOCOMPLETE_DELAY_MS = 700;
             
     LaTeXSettingsPanel(LaTeXSettingsOptionsPanelController controller) {
         this.controller = controller;
