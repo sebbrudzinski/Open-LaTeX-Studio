@@ -172,7 +172,7 @@ final class LaTeXSettingsPanel extends javax.swing.JPanel {
         if (directory != null) {
             pdfLatexExe = new File(directory.toString() + fname);
             int reply = JOptionPane.NO_OPTION;
-            while (!(pdfLatexExe.exists()) && reply == JOptionPane.NO_OPTION) {
+            while (!pdfLatexExe.exists() && reply == JOptionPane.NO_OPTION) {
                 reply = JOptionPane.showConfirmDialog(null,
                         "We could not find the pdflatex in the selected path. Do you confirm the selection?",
                         "Pdflatex not found",
@@ -182,6 +182,8 @@ final class LaTeXSettingsPanel extends javax.swing.JPanel {
                     directory = FileChooserService.getSelectedDirectory("Choose");
                     if (directory != null) {
                         pdfLatexExe = new File(directory.toString() + fname);
+                    } else {
+                        break;
                     }
                 }
             }
