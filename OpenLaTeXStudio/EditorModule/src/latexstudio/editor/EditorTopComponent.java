@@ -87,8 +87,8 @@ public final class EditorTopComponent extends TopComponent {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jScrollPane1 = new javax.swing.JScrollPane();
         rSyntaxTextArea = new org.fife.ui.rsyntaxtextarea.RSyntaxTextArea();
+        rTextScrollPane1 = new org.fife.ui.rtextarea.RTextScrollPane(rSyntaxTextArea);
 
         rSyntaxTextArea.setColumns(20);
         rSyntaxTextArea.setRows(5);
@@ -101,7 +101,9 @@ public final class EditorTopComponent extends TopComponent {
                 rSyntaxTextAreaKeyTyped(evt);
             }
         });
-        jScrollPane1.setViewportView(rSyntaxTextArea);
+
+        rTextScrollPane1.setFoldIndicatorEnabled(true);
+        rTextScrollPane1.setLineNumbersEnabled(true);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -109,14 +111,14 @@ public final class EditorTopComponent extends TopComponent {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 380, Short.MAX_VALUE)
+                .addComponent(rTextScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 709, Short.MAX_VALUE)
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 278, Short.MAX_VALUE)
+                .addComponent(rTextScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 546, Short.MAX_VALUE)
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
@@ -131,8 +133,8 @@ public final class EditorTopComponent extends TopComponent {
     }//GEN-LAST:event_rSyntaxTextAreaKeyTyped
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JScrollPane jScrollPane1;
     private org.fife.ui.rsyntaxtextarea.RSyntaxTextArea rSyntaxTextArea;
+    private org.fife.ui.rtextarea.RTextScrollPane rTextScrollPane1;
     // End of variables declaration//GEN-END:variables
 
     @Override
