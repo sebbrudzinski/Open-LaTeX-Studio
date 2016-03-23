@@ -10,9 +10,15 @@ import java.beans.PropertyChangeSupport;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.EnumMap;
 import java.util.Properties;
 import latexstudio.editor.util.ApplicationUtils;
 import org.openide.util.Exceptions;
+import org.openide.util.Pair;
 
 /**
  * A class representing settings of the application.
@@ -28,9 +34,14 @@ public final class ApplicationSettings extends Properties {
     
     private static final int DEFAULT_AUTO_COMPLETE_DELAY = 700;
     
+    private final EnumMap<Setting,ArrayList<Pair<Object,Method>>> settingListeners = new EnumMap<Setting,ArrayList<Pair<Object,Method>>>(Setting.class);
+    
     private final PropertyChangeSupport pcs = new PropertyChangeSupport(this);
     
     private ApplicationSettings() {
+        for( Setting s : Setting.values() ){
+            settingListeners.put(s, new ArrayList<Pair<Object,Method>>());
+        }
         load();
     }
     
@@ -94,5 +105,78 @@ public final class ApplicationSettings extends Properties {
         }catch(NumberFormatException ex){
             return DEFAULT_AUTO_COMPLETE_DELAY;
         }
+    }
+    
+    public void registerSettingListeners(Object o) {
+        for(Method m : o.getClass().getMethods()) {
+            for(Annotation a : m.getAnnotations()) {
+                if( a instanceof SettingListener ) {
+                    Setting s = ((SettingListener) a).setting();
+                    //TODO 20160323 Type validation
+                    settingListeners.get(s).add(Pair.of(o,m));
+                    try {
+                        m.invoke(o, getSettingValue(s));
+                    } catch (IllegalAccessException ex) {
+                        Exceptions.printStackTrace(ex);
+                    } catch (IllegalArgumentException ex) {
+                        Exceptions.printStackTrace(ex);
+                    } catch (InvocationTargetException ex) {
+                        Exceptions.printStackTrace(ex);
+                    }
+                    break;
+                }
+            }
+        }
+    }
+            
+    private void fireSettingChange(Setting setting, String value) {
+        for( Pair<Object,Method> p : settingListeners.get(setting)) {
+            try {
+                p.second().invoke(p.first(), value);
+            } catch (IllegalAccessException ex) {
+                Exceptions.printStackTrace(ex);
+            } catch (IllegalArgumentException ex) {
+                Exceptions.printStackTrace(ex);
+            } catch (InvocationTargetException ex) {
+                Exceptions.printStackTrace(ex);
+            }
+        }
+    }
+    
+    public String getSettingValue(Setting setting) {
+        return getProperty(setting.storageName, setting.getDefaultValue());
+    }
+    
+    public void setSettingValue(Setting setting, String value) {
+        fireSettingChange(setting, value);
+        setProperty(setting.storageName, value);
+    }
+    
+    public static enum Setting {
+        AUTOCOMPLETE_ENABLED( "autocomplete.enabled", "true", SettingType.BOOLEAN );
+        
+        private final String storageName;
+        private final String defaultValue;
+        private final SettingType type;
+        
+        Setting(String storageName, String defaultValue, SettingType type) {
+            this.storageName = storageName;
+            this.defaultValue = defaultValue;
+            this.type = type;
+        }
+        
+        public String getDefaultValue() {
+            return defaultValue;
+        }
+        
+        public SettingType getSettingType() {
+            return type;
+        }
+    }
+    
+    public static enum SettingType {
+        INT,
+        STRING,
+        BOOLEAN;
     }
 }

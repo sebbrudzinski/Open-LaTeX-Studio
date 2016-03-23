@@ -14,10 +14,11 @@ import javax.swing.text.BadLocationException;
 import javax.swing.text.Document;
 import latexstudio.editor.files.FileChooserService;
 import latexstudio.editor.settings.ApplicationSettings;
+import latexstudio.editor.settings.SettingListener;
 import latexstudio.editor.util.ApplicationUtils;
 import org.openide.util.Exceptions;
 
-final class LaTeXSettingsPanel extends javax.swing.JPanel {
+public final class LaTeXSettingsPanel extends javax.swing.JPanel {
 
     private final LaTeXSettingsOptionsPanelController controller;
             
@@ -42,6 +43,7 @@ final class LaTeXSettingsPanel extends javax.swing.JPanel {
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         jFormattedTextField1 = new javax.swing.JFormattedTextField();
+        jCheckBox1 = new javax.swing.JCheckBox();
 
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(org.openide.util.NbBundle.getMessage(LaTeXSettingsPanel.class, "LaTeXSettingsPanel.jPanel1.border.title"))); // NOI18N
         jPanel1.setToolTipText(org.openide.util.NbBundle.getMessage(LaTeXSettingsPanel.class, "LaTeXSettingsPanel.toolTipText")); // NOI18N
@@ -88,6 +90,8 @@ final class LaTeXSettingsPanel extends javax.swing.JPanel {
             }
         });
 
+        org.openide.awt.Mnemonics.setLocalizedText(jCheckBox1, org.openide.util.NbBundle.getMessage(LaTeXSettingsPanel.class, "LaTeXSettingsPanel.jCheckBox1.text")); // NOI18N
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -97,11 +101,14 @@ final class LaTeXSettingsPanel extends javax.swing.JPanel {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel1)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jFormattedTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel2)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jLabel1)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jFormattedTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jLabel2))
+                            .addComponent(jCheckBox1))
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
@@ -110,12 +117,14 @@ final class LaTeXSettingsPanel extends javax.swing.JPanel {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jCheckBox1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
                     .addComponent(jLabel2)
                     .addComponent(jFormattedTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(35, Short.MAX_VALUE))
+                .addContainerGap(26, Short.MAX_VALUE))
         );
 
         jPanel1.getAccessibleContext().setAccessibleName(org.openide.util.NbBundle.getMessage(LaTeXSettingsPanel.class, "LaTeXSettingsPanel.jPanel1.AccessibleContext.accessibleName")); // NOI18N
@@ -165,6 +174,11 @@ final class LaTeXSettingsPanel extends javax.swing.JPanel {
 
     }
     
+    @SettingListener( setting = ApplicationSettings.Setting.AUTOCOMPLETE_ENABLED )
+    public void setAutocompleteEnabled( String value ) {
+        jCheckBox1.setSelected(Boolean.valueOf(value));
+    }
+    
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         File directory = FileChooserService.getSelectedDirectory("Choose");
         File pdfLatexExe;
@@ -196,12 +210,16 @@ final class LaTeXSettingsPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_jFormattedTextField1ActionPerformed
 
     void load() {
+        ApplicationSettings.INSTANCE.registerSettingListeners(this);
+        
         jTextField1.setText( ApplicationSettings.INSTANCE.getLatexPath() );
         jFormattedTextField1.setText(String.valueOf(ApplicationSettings.INSTANCE.getAutoCompleteDelay()));
     }
     
     void store() {
         ApplicationSettings.INSTANCE.setLatexPath( jTextField1.getText() );
+        
+        ApplicationSettings.INSTANCE.setSettingValue(ApplicationSettings.Setting.AUTOCOMPLETE_ENABLED, String.valueOf(jCheckBox1.isSelected()));
         
         int autoCompleteDelay = Integer.parseInt(jFormattedTextField1.getText());
         ApplicationSettings.INSTANCE.setAutoCompleteDelay(autoCompleteDelay);
@@ -226,6 +244,7 @@ final class LaTeXSettingsPanel extends javax.swing.JPanel {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
+    private javax.swing.JCheckBox jCheckBox1;
     private javax.swing.JFormattedTextField jFormattedTextField1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
