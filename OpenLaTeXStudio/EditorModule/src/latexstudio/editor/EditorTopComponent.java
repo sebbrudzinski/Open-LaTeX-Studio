@@ -73,6 +73,10 @@ public final class EditorTopComponent extends TopComponent {
             public void propertyChange(PropertyChangeEvent evt) {
                 if(evt.getPropertyName().equals(ApplicationSettings.AUTOCOMPLETE_DELAY)&&autoCompletion!=null){
                     autoCompletion.setAutoActivationDelay((Integer)evt.getNewValue());
+                }else if(evt.getPropertyName().equals(ApplicationSettings.LINEWRAP_STATUS)&&rSyntaxTextArea!=null){
+                    rSyntaxTextArea.setLineWrap((Boolean)evt.getNewValue());
+                }else if(evt.getPropertyName().equals(ApplicationSettings.AUTOCOMPLETE_STATUS)&&autoCompletion!=null){
+                    autoCompletion.setAutoCompleteEnabled((Boolean)evt.getNewValue());
                 }
             }
         });
@@ -144,9 +148,9 @@ public final class EditorTopComponent extends TopComponent {
         autoCompletion = new AutoCompletion(provider);
         autoCompletion.setAutoActivationDelay(ApplicationSettings.INSTANCE.getAutoCompleteDelay());
         autoCompletion.setAutoActivationEnabled(true);
-        autoCompletion.setAutoCompleteEnabled(true);
+        autoCompletion.setAutoCompleteEnabled(ApplicationSettings.INSTANCE.getAutoCompleteStatus());
         autoCompletion.install(rSyntaxTextArea);
-
+        rSyntaxTextArea.setLineWrap(ApplicationSettings.INSTANCE.getLineWrapStatus());
         InputStream is = null;
         try {
             is = getClass().getResource("/latexstudio/editor/resources/welcome.tex").openStream();

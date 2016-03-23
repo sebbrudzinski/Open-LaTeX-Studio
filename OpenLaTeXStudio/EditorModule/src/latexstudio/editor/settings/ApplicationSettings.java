@@ -25,6 +25,8 @@ public final class ApplicationSettings extends Properties {
     private static final String USER_LASTDIR    = "user.lastdir";
     private static final String LATEX_PATH      = "latex.path";
     public static final String AUTOCOMPLETE_DELAY = "autocomplete.delay";
+    public static final String LINEWRAP_STATUS = "linewrap.status";
+    public static final String AUTOCOMPLETE_STATUS = "autocomplete.status";
     
     private static final int DEFAULT_AUTO_COMPLETE_DELAY = 700;
     
@@ -94,5 +96,23 @@ public final class ApplicationSettings extends Properties {
         }catch(NumberFormatException ex){
             return DEFAULT_AUTO_COMPLETE_DELAY;
         }
+    }
+    
+    public void setLineWrapStatus(boolean lineWrapStatus){
+        pcs.firePropertyChange(LINEWRAP_STATUS, getLineWrapStatus(), lineWrapStatus);
+        setProperty(LINEWRAP_STATUS, String.valueOf(lineWrapStatus));
+    }
+    
+    public boolean getLineWrapStatus(){
+        return Boolean.parseBoolean(getProperty(LINEWRAP_STATUS));
+    }
+    
+    public void setAutoCompleteStatus(boolean autoCompleteStatus){
+        pcs.firePropertyChange(AUTOCOMPLETE_STATUS, getAutoCompleteStatus(), autoCompleteStatus);
+        setProperty(AUTOCOMPLETE_STATUS, String.valueOf(autoCompleteStatus));
+    }
+    
+    public boolean getAutoCompleteStatus(){
+        return Boolean.parseBoolean(getProperty(AUTOCOMPLETE_STATUS));
     }
 }
