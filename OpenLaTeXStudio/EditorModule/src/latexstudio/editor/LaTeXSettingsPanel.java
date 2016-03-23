@@ -7,6 +7,7 @@ package latexstudio.editor;
 
 import java.awt.EventQueue;
 import java.io.File;
+import javax.swing.JCheckBox;
 import javax.swing.JOptionPane;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
@@ -25,7 +26,7 @@ final class LaTeXSettingsPanel extends javax.swing.JPanel {
         this.controller = controller;
         initComponents();
         // TODO listen to changes in form fields and call controller.changed()
-        prepareAutoCompleteDelayFieldDocumentListener();
+        prepareAutoCompleteComponents();
     }
 
     /**
@@ -39,9 +40,10 @@ final class LaTeXSettingsPanel extends javax.swing.JPanel {
         jPanel1 = new javax.swing.JPanel();
         jTextField1 = new javax.swing.JTextField();
         jButton1 = new javax.swing.JButton();
-        jLabel1 = new javax.swing.JLabel();
-        jLabel2 = new javax.swing.JLabel();
-        jFormattedTextField1 = new javax.swing.JFormattedTextField();
+        autoCompleteTextLabel = new javax.swing.JLabel();
+        autocompleteMSLabel = new javax.swing.JLabel();
+        autoCompleteDelayTextField = new javax.swing.JFormattedTextField();
+        autoCompleteCheckBox = new javax.swing.JCheckBox();
 
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(org.openide.util.NbBundle.getMessage(LaTeXSettingsPanel.class, "LaTeXSettingsPanel.jPanel1.border.title"))); // NOI18N
         jPanel1.setToolTipText(org.openide.util.NbBundle.getMessage(LaTeXSettingsPanel.class, "LaTeXSettingsPanel.toolTipText")); // NOI18N
@@ -77,14 +79,16 @@ final class LaTeXSettingsPanel extends javax.swing.JPanel {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        org.openide.awt.Mnemonics.setLocalizedText(jLabel1, org.openide.util.NbBundle.getMessage(LaTeXSettingsPanel.class, "LaTeXSettingsPanel.jLabel1.text")); // NOI18N
+        org.openide.awt.Mnemonics.setLocalizedText(autoCompleteTextLabel, org.openide.util.NbBundle.getMessage(LaTeXSettingsPanel.class, "LaTeXSettingsPanel.autoCompleteTextLabel.text")); // NOI18N
 
-        org.openide.awt.Mnemonics.setLocalizedText(jLabel2, org.openide.util.NbBundle.getMessage(LaTeXSettingsPanel.class, "LaTeXSettingsPanel.jLabel2.text")); // NOI18N
+        org.openide.awt.Mnemonics.setLocalizedText(autocompleteMSLabel, org.openide.util.NbBundle.getMessage(LaTeXSettingsPanel.class, "LaTeXSettingsPanel.autocompleteMSLabel.text")); // NOI18N
 
-        jFormattedTextField1.setText(org.openide.util.NbBundle.getMessage(LaTeXSettingsPanel.class, "LaTeXSettingsPanel.jFormattedTextField1.text_1")); // NOI18N
-        jFormattedTextField1.addActionListener(new java.awt.event.ActionListener() {
+        autoCompleteDelayTextField.setText(org.openide.util.NbBundle.getMessage(LaTeXSettingsPanel.class, "LaTeXSettingsPanel.autoCompleteDelayTextField.text_1")); // NOI18N
+
+        org.openide.awt.Mnemonics.setLocalizedText(autoCompleteCheckBox, org.openide.util.NbBundle.getMessage(LaTeXSettingsPanel.class, "LaTeXSettingsPanel.autoCompleteCheckBox.text")); // NOI18N
+        autoCompleteCheckBox.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jFormattedTextField1ActionPerformed(evt);
+                autoCompleteCheckBoxActionPerformed(evt);
             }
         });
 
@@ -94,36 +98,49 @@ final class LaTeXSettingsPanel extends javax.swing.JPanel {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel1)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jFormattedTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel2)
-                        .addGap(0, 0, Short.MAX_VALUE)))
-                .addContainerGap())
+                .addComponent(autoCompleteCheckBox)
+                .addGap(18, 18, 18)
+                .addComponent(autoCompleteTextLabel)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(autoCompleteDelayTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(autocompleteMSLabel)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(layout.createSequentialGroup()
+                .addGap(12, 12, 12)
+                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel1)
-                    .addComponent(jLabel2)
-                    .addComponent(jFormattedTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(35, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, 0)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
+                            .addComponent(autoCompleteTextLabel)
+                            .addComponent(autoCompleteDelayTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(autocompleteMSLabel)))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(77, 77, 77)
+                        .addComponent(autoCompleteCheckBox)))
+                .addContainerGap(109, Short.MAX_VALUE))
         );
 
         jPanel1.getAccessibleContext().setAccessibleName(org.openide.util.NbBundle.getMessage(LaTeXSettingsPanel.class, "LaTeXSettingsPanel.jPanel1.AccessibleContext.accessibleName")); // NOI18N
     }// </editor-fold>//GEN-END:initComponents
     
-    private void prepareAutoCompleteDelayFieldDocumentListener(){
+    private void prepareAutoCompleteComponents(){
+        prepareAutoCompleteDelayTextFieldDocumentListener();
+        boolean autoCompleteStatus = ApplicationSettings.INSTANCE.getAutoCompleteStatus();
+        autoCompleteCheckBox.setSelected(autoCompleteStatus);
+        setAutoCompleteComponentsEnabled(autoCompleteStatus);
+    }
+    
+    private void prepareAutoCompleteDelayTextFieldDocumentListener(){
         
-        jFormattedTextField1.getDocument().addDocumentListener(new DocumentListener() {
+        autoCompleteDelayTextField.getDocument().addDocumentListener(new DocumentListener() {
             @Override
             public void insertUpdate(DocumentEvent e) {
                 onUpdated(e);
@@ -193,33 +210,50 @@ final class LaTeXSettingsPanel extends javax.swing.JPanel {
         }
     }//GEN-LAST:event_jButton1ActionPerformed
 
-    private void jFormattedTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jFormattedTextField1ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jFormattedTextField1ActionPerformed
-
+    private void autoCompleteCheckBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_autoCompleteCheckBoxActionPerformed
+        JCheckBox autoCompleteCheckBox = (JCheckBox)evt.getSource();
+        setAutoCompleteComponentsEnabled(autoCompleteCheckBox.isSelected());
+        controller.changed();
+        
+    }//GEN-LAST:event_autoCompleteCheckBoxActionPerformed
+    
+    private void setAutoCompleteComponentsEnabled(boolean enable){
+        autoCompleteDelayTextField.setEnabled(enable);
+        autoCompleteTextLabel.setEnabled(enable);
+        autocompleteMSLabel.setEnabled(enable);
+    }
+    
     void load() {
         jTextField1.setText( ApplicationSettings.INSTANCE.getLatexPath() );
-        jFormattedTextField1.setText(String.valueOf(ApplicationSettings.INSTANCE.getAutoCompleteDelay()));
+        autoCompleteDelayTextField.setText(String.valueOf(ApplicationSettings.INSTANCE.getAutoCompleteDelay()));
     }
     
     void store() {
         ApplicationSettings.INSTANCE.setLatexPath( jTextField1.getText() );
         
-        int autoCompleteDelay = Integer.parseInt(jFormattedTextField1.getText());
-        ApplicationSettings.INSTANCE.setAutoCompleteDelay(autoCompleteDelay);
-        
+        final boolean autoCompleteStatus = autoCompleteCheckBox.isSelected();
+        if(autoCompleteStatus){
+            final int autoCompleteDelay = Integer.parseInt(autoCompleteDelayTextField.getText());
+            ApplicationSettings.INSTANCE.setAutoCompleteDelay(autoCompleteDelay);
+            ApplicationSettings.INSTANCE.setAutoCompleteStatus(true);
+        }else{
+            ApplicationSettings.INSTANCE.setAutoCompleteStatus(false);
+        }
         ApplicationSettings.INSTANCE.save();
     }
 
     boolean valid() {
         //check validation of audo delay text field
         //it will make sure ok button is disabled when input is not a valid number.
-        try{
-            int autoCompleteDelay = Integer.parseInt(jFormattedTextField1.getText());
-            if(autoCompleteDelay<0||autoCompleteDelay>9999)
+        final boolean autoCompleteStatus = autoCompleteCheckBox.isSelected();
+        if(autoCompleteStatus){
+            try{
+                int autoCompleteDelay = Integer.parseInt(autoCompleteDelayTextField.getText());
+                if(autoCompleteDelay<0||autoCompleteDelay>9999)
+                    return false;
+            }catch(NumberFormatException ex){
                 return false;
-        }catch(NumberFormatException ex){
-            return false;
+            }
         }
         
         return true;
@@ -227,10 +261,11 @@ final class LaTeXSettingsPanel extends javax.swing.JPanel {
     
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JCheckBox autoCompleteCheckBox;
+    private javax.swing.JFormattedTextField autoCompleteDelayTextField;
+    private javax.swing.JLabel autoCompleteTextLabel;
+    private javax.swing.JLabel autocompleteMSLabel;
     private javax.swing.JButton jButton1;
-    private javax.swing.JFormattedTextField jFormattedTextField1;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JTextField jTextField1;
     // End of variables declaration//GEN-END:variables
