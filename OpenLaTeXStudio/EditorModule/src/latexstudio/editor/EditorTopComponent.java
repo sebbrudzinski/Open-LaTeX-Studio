@@ -67,7 +67,7 @@ public final class EditorTopComponent extends TopComponent {
     private AutoCompletion autoCompletion = null;
     private static final ApplicationLogger LOGGER = new ApplicationLogger("Cloud Support");
     private static final int AUTO_COMPLETE_DELAY = 700;
-    
+
     public EditorTopComponent() {
         initComponents();
         setName(Bundle.CTL_EditorTopComponent());
@@ -75,20 +75,20 @@ public final class EditorTopComponent extends TopComponent {
         setToolTipText(Bundle.HINT_EditorTopComponent());
         putClientProperty(TopComponent.PROP_CLOSING_DISABLED, Boolean.TRUE);
         putClientProperty(TopComponent.PROP_UNDOCKING_DISABLED, Boolean.TRUE);
-        
+
         ApplicationSettings.INSTANCE.addPropertyChangeListener(new PropertyChangeListener() {
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
-                if(evt.getPropertyName().equals(ApplicationSettings.AUTOCOMPLETE_DELAY)&&autoCompletion!=null){
-                    autoCompletion.setAutoActivationDelay((Integer)evt.getNewValue());
-                }else if(evt.getPropertyName().equals(ApplicationSettings.LINEWRAP_STATUS)&&rSyntaxTextArea!=null){
-                    rSyntaxTextArea.setLineWrap((Boolean)evt.getNewValue());
-                }else if(evt.getPropertyName().equals(ApplicationSettings.AUTOCOMPLETE_STATUS)&&autoCompletion!=null){
-                    autoCompletion.setAutoCompleteEnabled((Boolean)evt.getNewValue());
+                if (evt.getPropertyName().equals(ApplicationSettings.AUTOCOMPLETE_DELAY) && autoCompletion != null) {
+                    autoCompletion.setAutoActivationDelay((Integer) evt.getNewValue());
+                } else if (evt.getPropertyName().equals(ApplicationSettings.LINEWRAP_STATUS) && rSyntaxTextArea != null) {
+                    rSyntaxTextArea.setLineWrap((Boolean) evt.getNewValue());
+                } else if (evt.getPropertyName().equals(ApplicationSettings.AUTOCOMPLETE_STATUS) && autoCompletion != null) {
+                    autoCompletion.setAutoCompleteEnabled((Boolean) evt.getNewValue());
                 }
             }
         });
-        
+
         displayCloudStatus();
     }
 
@@ -141,7 +141,9 @@ public final class EditorTopComponent extends TopComponent {
     }//GEN-LAST:event_rSyntaxTextAreaKeyReleased
 
     private void rSyntaxTextAreaKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_rSyntaxTextAreaKeyTyped
-        if (currentFile == null || evt.isControlDown()) return;
+        if (currentFile == null || evt.isControlDown()) {
+            return;
+        }
         setDisplayName(currentFile.getName() + '*');
     }//GEN-LAST:event_rSyntaxTextAreaKeyTyped
 
@@ -348,8 +350,8 @@ public final class EditorTopComponent extends TopComponent {
                     info = client.getAccountInfo();
                     isConnected = true;
                 } catch (DbxException ex) {
-                    Exceptions.printStackTrace(ex);
-}
+                    // simply stay working locally.
+                }
             }
         }
 
