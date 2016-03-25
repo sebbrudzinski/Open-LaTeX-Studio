@@ -14,7 +14,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Locale;
 import javax.swing.JOptionPane;
-import latexstudio.editor.settings.SettingsService;
+import latexstudio.editor.settings.ApplicationSettings;
 import org.apache.pdfbox.io.IOUtils;
 import org.openide.util.Exceptions;
 
@@ -28,7 +28,7 @@ public final class DbxUtil {
     }
 
     public static DbxClient getDbxClient() {
-        String accessToken = SettingsService.loadApplicationSettings().getDropboxToken();
+        String accessToken = ApplicationSettings.INSTANCE.getDropboxToken();
         if (accessToken == null) {
             JOptionPane.showMessageDialog(null, 
                 "The authentication token has not been set.\n"

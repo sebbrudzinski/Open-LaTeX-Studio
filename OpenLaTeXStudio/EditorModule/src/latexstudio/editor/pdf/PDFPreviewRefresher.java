@@ -15,6 +15,7 @@ import javax.swing.JViewport;
 import latexstudio.editor.EditorTopComponent;
 import latexstudio.editor.files.FileService;
 import latexstudio.editor.runtime.CommandLineBuilder;
+import latexstudio.editor.settings.ApplicationSettings;
 import latexstudio.editor.util.ApplicationUtils;
 import org.openide.util.Exceptions;
 
@@ -81,7 +82,7 @@ public class PDFPreviewRefresher implements Runnable {
                 .withOutputDirectory(ApplicationUtils.getAppDirectory())
                 .withJobname("preview")
                 .withWorkingFile(etc.getCurrentFile())
-                .withLatexPath(etc.getLatexPath())
+                .withLatexPath( ApplicationSettings.INSTANCE.getLatexPath() )
         );
     }
 

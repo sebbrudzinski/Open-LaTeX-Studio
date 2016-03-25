@@ -16,6 +16,7 @@ import latexstudio.editor.files.FileChooserService;
 import latexstudio.editor.files.FileChooserService.DialogType;
 import latexstudio.editor.runtime.CommandLineBuilder;
 import latexstudio.editor.runtime.CommandLineExecutor;
+import latexstudio.editor.settings.ApplicationSettings;
 import latexstudio.editor.util.ApplicationUtils;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
@@ -85,7 +86,7 @@ public final class GeneratePDF implements ActionListener {
             .withOutputDirectory(file.getParentFile().getAbsolutePath())
             .withJobname(filename)
             .withWorkingFile(etc.getCurrentFile())
-            .withLatexPath(etc.getLatexPath())
+            .withLatexPath( ApplicationSettings.INSTANCE.getLatexPath() )
             .withLogger(new ApplicationLogger("pdflatex")));  
     }
 }

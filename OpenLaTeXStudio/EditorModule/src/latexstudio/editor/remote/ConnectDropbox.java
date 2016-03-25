@@ -21,7 +21,6 @@ import javax.swing.JButton;
 import javax.swing.JOptionPane;
 import latexstudio.editor.ApplicationLogger;
 import latexstudio.editor.settings.ApplicationSettings;
-import latexstudio.editor.settings.SettingsService;
 import latexstudio.editor.util.ApplicationUtils;
 import latexstudio.editor.util.PropertyService;
 import org.openide.awt.ActionID;
@@ -97,11 +96,7 @@ public final class ConnectDropbox implements ActionListener {
             try {
                 DbxAuthFinish authFinish = webAuth.finish(userToken);
                 userToken = authFinish.accessToken;
-                
-                ApplicationSettings appSettings = SettingsService.loadApplicationSettings();
-                appSettings.setDropboxToken(userToken);
-                SettingsService.saveApplicationSettings(appSettings);
-                
+
                 // getting dbx client displayName
                 DbxClient client = DbxUtil.getDbxClient();
                 DbxAccountInfo info = null;
@@ -111,8 +106,11 @@ public final class ConnectDropbox implements ActionListener {
                     additional = " (" + info.displayName + ")";
                 }
                 
-                LOGGER.log("Successfully connected application with Dropbox account" + additional + ".");
+                ApplicationSettings.INSTANCE.setDropboxToken(userToken);
+                ApplicationSettings.INSTANCE.save();
+                LOGGER.log("Successfully connected application with Dropbox account.");
                 CloudStatus.getInstance().setStatus(CloudStatus.STATUS_DBX_CONNECTED, additional);
+                
             } catch (DbxException ex) {
                 JOptionPane.showMessageDialog(null,
                         "Invalid access token! Open LaTeX Studio has NOT been connected with Dropbox.\n Please try again and provide correct access token.",

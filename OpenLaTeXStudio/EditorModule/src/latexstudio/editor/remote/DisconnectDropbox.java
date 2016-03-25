@@ -13,7 +13,6 @@ import latexstudio.editor.ApplicationLogger;
 import latexstudio.editor.DropboxRevisionsTopComponent;
 import latexstudio.editor.TopComponentFactory;
 import latexstudio.editor.settings.ApplicationSettings;
-import latexstudio.editor.settings.SettingsService;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.awt.ActionRegistration;
@@ -39,7 +38,7 @@ public final class DisconnectDropbox implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         int currentCloudStatus = CloudStatus.getInstance().getStatus();
         CloudStatus.getInstance().setStatus(CloudStatus.STATUS_CONNECTING);
-        
+
         DbxClient client = DbxUtil.getDbxClient();
 
         if (client == null) {
@@ -58,11 +57,10 @@ public final class DisconnectDropbox implements ActionListener {
                 drtc.updateRevisionsList(null);
                 drtc.close();
 
-                ApplicationSettings appSettings = SettingsService.loadApplicationSettings();
-                appSettings.setDropboxToken("");
-                SettingsService.saveApplicationSettings(appSettings);
+                ApplicationSettings.INSTANCE.setDropboxToken("");
+                ApplicationSettings.INSTANCE.save();
                 LOGGER.log("Successfully disconnected from Dropbox account.");
-            CloudStatus.getInstance().setStatus(CloudStatus.STATUS_DISCONNECTED);
+                CloudStatus.getInstance().setStatus(CloudStatus.STATUS_DISCONNECTED);
 
             } catch (DbxException ex) {
                 DbxUtil.showDbxAccessDeniedPrompt();
