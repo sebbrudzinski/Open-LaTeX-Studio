@@ -96,9 +96,6 @@ public final class ConnectDropbox implements ActionListener {
             try {
                 DbxAuthFinish authFinish = webAuth.finish(userToken);
                 userToken = authFinish.accessToken;
-                
-                ApplicationSettings.INSTANCE.setDropboxToken(userToken);
-                ApplicationSettings.INSTANCE.save();
 
                 // getting dbx client displayName
                 DbxClient client = DbxUtil.getDbxClient();
@@ -108,6 +105,9 @@ public final class ConnectDropbox implements ActionListener {
                     info = client.getAccountInfo();
                     additional = " (" + info.displayName + ")";
                 }
+                
+                ApplicationSettings.INSTANCE.setDropboxToken(userToken);
+                ApplicationSettings.INSTANCE.save();
                 LOGGER.log("Successfully connected application with Dropbox account.");
                 CloudStatus.getInstance().setStatus(CloudStatus.STATUS_DBX_CONNECTED, additional);
                 
