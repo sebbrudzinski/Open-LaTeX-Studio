@@ -5,6 +5,9 @@
  */
 package latexstudio.editor;
 
+import com.dropbox.core.DbxAccountInfo;
+import com.dropbox.core.DbxClient;
+import com.dropbox.core.DbxException;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.BufferedReader;
@@ -14,7 +17,9 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
 import javax.swing.text.BadLocationException;
+import latexstudio.editor.remote.Cloud;
 import latexstudio.editor.remote.DbxState;
+import latexstudio.editor.remote.DbxUtil;
 import latexstudio.editor.settings.ApplicationSettings;
 import latexstudio.editor.util.ApplicationUtils;
 import org.apache.commons.io.IOUtils;
@@ -60,6 +65,8 @@ public final class EditorTopComponent extends TopComponent {
     private DbxState dbxState;
 
     private AutoCompletion autoCompletion = null;
+    private static final ApplicationLogger LOGGER = new ApplicationLogger("Cloud Support");
+
     public EditorTopComponent() {
         initComponents();
         setName(Bundle.CTL_EditorTopComponent());
@@ -67,20 +74,21 @@ public final class EditorTopComponent extends TopComponent {
         setToolTipText(Bundle.HINT_EditorTopComponent());
         putClientProperty(TopComponent.PROP_CLOSING_DISABLED, Boolean.TRUE);
         putClientProperty(TopComponent.PROP_UNDOCKING_DISABLED, Boolean.TRUE);
-        
+
         ApplicationSettings.INSTANCE.addPropertyChangeListener(new PropertyChangeListener() {
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
-                if(evt.getPropertyName().equals(ApplicationSettings.AUTOCOMPLETE_DELAY)&&autoCompletion!=null){
-                    autoCompletion.setAutoActivationDelay((Integer)evt.getNewValue());
-                }else if(evt.getPropertyName().equals(ApplicationSettings.LINEWRAP_STATUS)&&rSyntaxTextArea!=null){
-                    rSyntaxTextArea.setLineWrap((Boolean)evt.getNewValue());
-                }else if(evt.getPropertyName().equals(ApplicationSettings.AUTOCOMPLETE_STATUS)&&autoCompletion!=null){
-                    autoCompletion.setAutoCompleteEnabled((Boolean)evt.getNewValue());
+                if (evt.getPropertyName().equals(ApplicationSettings.AUTOCOMPLETE_DELAY) && autoCompletion != null) {
+                    autoCompletion.setAutoActivationDelay((Integer) evt.getNewValue());
+                } else if (evt.getPropertyName().equals(ApplicationSettings.LINEWRAP_STATUS) && rSyntaxTextArea != null) {
+                    rSyntaxTextArea.setLineWrap((Boolean) evt.getNewValue());
+                } else if (evt.getPropertyName().equals(ApplicationSettings.AUTOCOMPLETE_STATUS) && autoCompletion != null) {
+                    autoCompletion.setAutoCompleteEnabled((Boolean) evt.getNewValue());
                 }
             }
         });
 
+        displayCloudStatus();
     }
 
     /**
@@ -132,7 +140,9 @@ public final class EditorTopComponent extends TopComponent {
     }//GEN-LAST:event_rSyntaxTextAreaKeyReleased
 
     private void rSyntaxTextAreaKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_rSyntaxTextAreaKeyTyped
-        if (currentFile == null || evt.isControlDown()) return;
+        if (currentFile == null || evt.isControlDown()) {
+            return;
+        }
         setDisplayName(currentFile.getName() + '*');
     }//GEN-LAST:event_rSyntaxTextAreaKeyTyped
 
@@ -323,5 +333,35 @@ public final class EditorTopComponent extends TopComponent {
 
         return provider;
     }
-}
 
+    private void displayCloudStatus() {
+
+        boolean isConnected = false;
+        String message;
+        DbxAccountInfo info = null;
+
+        // Check Dropbox connection
+        DbxClient client = DbxUtil.getDbxClient();
+        if (client != null) {
+            String userToken = client.getAccessToken();
+            if (userToken != null && !userToken.isEmpty()) {
+                try {
+                    info = client.getAccountInfo();
+                    isConnected = true;
+                } catch (DbxException ex) {
+                    // simply stay working locally.
+                }
+            }
+        }
+
+        if (isConnected) {
+            message = "Connected to Dropbox account as " + info.displayName + ".";
+            Cloud.getInstance().setStatus(Cloud.Status.DBX_CONNECTED, " (" + info.displayName + ")");
+        } else {
+            message = "Working locally.";
+            Cloud.getInstance().setStatus(Cloud.Status.DISCONNECTED);
+        }
+
+        LOGGER.log(message);
+    }
+}
