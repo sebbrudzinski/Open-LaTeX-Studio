@@ -17,7 +17,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
 import javax.swing.text.BadLocationException;
-import latexstudio.editor.remote.CloudStatus;
+import latexstudio.editor.remote.Cloud;
 import latexstudio.editor.remote.DbxState;
 import latexstudio.editor.remote.DbxUtil;
 import latexstudio.editor.settings.ApplicationSettings;
@@ -66,7 +66,6 @@ public final class EditorTopComponent extends TopComponent {
 
     private AutoCompletion autoCompletion = null;
     private static final ApplicationLogger LOGGER = new ApplicationLogger("Cloud Support");
-    private static final int AUTO_COMPLETE_DELAY = 700;
 
     public EditorTopComponent() {
         initComponents();
@@ -357,10 +356,10 @@ public final class EditorTopComponent extends TopComponent {
 
         if (isConnected) {
             message = "Connected to Dropbox account as " + info.displayName + ".";
-            CloudStatus.getInstance().setStatus(CloudStatus.STATUS_DBX_CONNECTED, " (" + info.displayName + ")");
+            Cloud.getInstance().setStatus(Cloud.Status.DBX_CONNECTED, " (" + info.displayName + ")");
         } else {
             message = "Working locally.";
-            CloudStatus.getInstance().setStatus(CloudStatus.STATUS_DISCONNECTED);
+            Cloud.getInstance().setStatus(Cloud.Status.DISCONNECTED);
         }
 
         LOGGER.log(message);

@@ -5,94 +5,101 @@
  */
 package latexstudio.editor.remote;
 
-import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 
 /**
  * Class responsible for displaying the Cloud Support Status.
- * 
+ *
  * @see http://wiki.netbeans.org/BookNBPlatformCookbookCH0211
  * @author Geraldo
  */
-public class CloudStatus {
+public class Cloud {
 
-    private int status = STATUS_DISCONNECTED;
+    private Status status = Status.DISCONNECTED;
 
     private final JLabel label;
 
     /**
-     * Not connected with any cloud service provider
+     * Enum that represents the possible Status for the Cloud Connection
      */
-    public static final int STATUS_DISCONNECTED = 0;
-    
-    /**
-     * Connecting with a cloud service provider
-     */
-    public static final int STATUS_CONNECTING = 1;
-    
-    /**
-     * Connected to Dropbox cloud provider
-     */
-    public static final int STATUS_DBX_CONNECTED = 2;
+    public enum Status {
+        /**
+         * Not connected with any cloud service provider
+         */
+        DISCONNECTED,
+        /**
+         * Connecting with a cloud service provider
+         */
+        CONNECTING,
+        /**
+         * Connected to Dropbox cloud provider
+         */
+        DBX_CONNECTED;
 
-    private static final String[] STATUS_MESSAGES;
+        /**
+         * Get the Description related to the Status
+         * @return Description related to the Status
+         */
+        @Override
+        public String toString() {
+            switch (this) {
+                case DISCONNECTED:
+                    return "Working locally";
+                case CONNECTING:
+                    return "Connecting";
+                case DBX_CONNECTED:
+                    return "Connected to Dropbox";
+                default:
+                    return null;
+            }
+        }
 
-    private static final ImageIcon IMG_DBX_CONNECTED;
-    private static final ImageIcon IMG_CONNECTING;
-    private static final ImageIcon IMG_DISCONNECTED;
-
-    static {
-        IMG_DBX_CONNECTED = new ImageIcon(
-                CloudStatus.class.getResource(
-                        "/latexstudio/editor/resources/icons/dbx-connected.png"));
-        IMG_CONNECTING = new ImageIcon(
-                CloudStatus.class.getResource(
-                        "/latexstudio/editor/resources/icons/connecting.gif"));
-        IMG_DISCONNECTED = new ImageIcon(
-                CloudStatus.class.getResource(
-                        "/latexstudio/editor/resources/icons/disconnected.png"));
-
-        STATUS_MESSAGES = new String[3];
-
-        STATUS_MESSAGES[STATUS_DISCONNECTED] = "Working locally";
-        STATUS_MESSAGES[STATUS_CONNECTING] = "Connecting";
-        STATUS_MESSAGES[STATUS_DBX_CONNECTED] = "Connected to Dropbox";
+        /**
+         * Get the ImageIcon related to the Status
+         * @return 
+         */
+        public ImageIcon getImageIcon() {
+            switch (this) {
+                case DISCONNECTED:
+                    return new ImageIcon(
+                            Cloud.class.getResource(
+                                    "/latexstudio/editor/resources/icons/disconnected.png"));
+                case CONNECTING:
+                    return new ImageIcon(
+                            Cloud.class.getResource(
+                                    "/latexstudio/editor/resources/icons/connecting.gif"));
+                case DBX_CONNECTED:
+                    return new ImageIcon(
+                            Cloud.class.getResource(
+                                    "/latexstudio/editor/resources/icons/dbx-connected.png"));
+                default:
+                    return null;
+            }
+        }
     }
 
-    private static final CloudStatus INSTANCE = new CloudStatus();
+    private static final Cloud INSTANCE = new Cloud();
 
     /**
      * Get the single CloudStatus' instance
+     *
      * @return the single CloudStatus' instance
      */
-    public static CloudStatus getInstance() {
+    public static Cloud getInstance() {
         return INSTANCE;
     }
 
-    /**
-     * Returns the message of the specified status.
-     * @param status One of the constants defined in ConnectionStatus
-     *              started as: STATUS_*
-     * @return The message of the specified status.
-     */
-    public static String getStatusMessage(int status) {
-        if (status >= 0 && status <= STATUS_MESSAGES.length) {
-            return STATUS_MESSAGES[status];
-        }
-        
-        return null;
-    }
-
-    protected CloudStatus() {
-        this.status = STATUS_DISCONNECTED;
-        this.label = new JLabel(IMG_DISCONNECTED);
-        this.label.setToolTipText(getStatusMessage(this.status));
+    private Cloud() {
+        this.status = Status.DISCONNECTED;
+        this.label = new JLabel(this.status.getImageIcon());
+        this.label.setToolTipText(this.status.toString());
     }
 
     /**
      * Returns the label that will be used to display the Connection Status.
+     *
      * @return the label that will be used to display the Connection Status.
      */
     JComponent getComponent() {
@@ -100,43 +107,37 @@ public class CloudStatus {
     }
 
     /**
-     * Returns the current Cloud Status.
-     * One of the constants defined in ConnectionStatus started as: STATUS_*
+     * Returns the current Cloud Status. 
+     * @see Status
+     *
      * @return the current Cloud Status.
      */
-    public int getStatus() {
+    public Status getStatus() {
         return status;
     }
 
     /**
      * Updates the current Cloud Status.
-     * @param newStatus One of the constants defined in ConnectionStatus started as: STATUS_*
+     * @see Status
+     * 
+     * @param newStatus The new Status
      */
-    public void setStatus(int newStatus) {
+    public void setStatus(Status newStatus) {
         this.setStatus(newStatus, "");
     }
 
     /**
      * Updates the current Cloud Status.
-     * @param newStatus One of the constants defined in ConnectionStatus started as: STATUS_*
-     * @param additional An additional text to display next to the status message
+     *
+     * @param newStatus The new Status
+     *
+     * @param additional An additional text to display next to the status
+     * message
      */
-    public void setStatus(int newStatus, String additional) {
+    public void setStatus(Status newStatus, String additional) {
         this.status = newStatus;
-        Icon icon;
-        switch (this.status) {
-            case STATUS_DBX_CONNECTED:
-                icon = IMG_DBX_CONNECTED;
-                break;
-            case STATUS_CONNECTING:
-                icon = IMG_CONNECTING;
-                break;
-            default:
-                icon = IMG_DISCONNECTED;
-                break;
-        }
-        
-        this.label.setToolTipText(getStatusMessage(this.status) + additional);
-        this.label.setIcon(icon);
+
+        this.label.setToolTipText(this.status.toString() + additional);
+        this.label.setIcon(this.status.getImageIcon());
     }
 }

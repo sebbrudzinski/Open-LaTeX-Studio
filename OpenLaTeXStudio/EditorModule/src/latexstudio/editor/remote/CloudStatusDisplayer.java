@@ -12,14 +12,14 @@ import org.openide.util.lookup.ServiceProvider;
 /**
  * Class responsible for providing a customized StatusLineElement.
  * 
- * @see CloudStatus
+ * @see Cloud
  * @see http://wiki.netbeans.org/BookNBPlatformCookbookCH0211
  * @author Geraldo
  */
 @ServiceProvider(service = StatusLineElementProvider.class)
 public class CloudStatusDisplayer implements StatusLineElementProvider {
 
-    private final Component component = CloudStatus.getInstance().getComponent();
+    private final Component component = Cloud.getInstance().getComponent();
 
     /**
      * Returns the CloudStatus component to be displayd at the StatusLineElement.

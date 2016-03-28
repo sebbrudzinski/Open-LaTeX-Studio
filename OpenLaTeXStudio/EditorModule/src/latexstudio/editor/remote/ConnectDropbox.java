@@ -51,8 +51,8 @@ public final class ConnectDropbox implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        int currentCloudStatus = CloudStatus.getInstance().getStatus();
-        CloudStatus.getInstance().setStatus(CloudStatus.STATUS_CONNECTING);
+        Cloud.Status currentCloudStatus = Cloud.getInstance().getStatus();
+        Cloud.getInstance().setStatus(Cloud.Status.CONNECTING);
         
         DbxAppInfo appInfo;
         try {
@@ -64,7 +64,7 @@ public final class ConnectDropbox implements ActionListener {
                         + "You can also contact us at open-latex-studio@googlegroups.com in case of any troubles.",
                 "Development version",
                 JOptionPane.WARNING_MESSAGE);
-            CloudStatus.getInstance().setStatus(CloudStatus.STATUS_DISCONNECTED);
+            Cloud.getInstance().setStatus(Cloud.Status.DISCONNECTED);
             return;
         }
         DbxWebAuthNoRedirect webAuth = new DbxWebAuthNoRedirect(DbxUtil.getDbxConfig(), appInfo);
@@ -96,6 +96,9 @@ public final class ConnectDropbox implements ActionListener {
             try {
                 DbxAuthFinish authFinish = webAuth.finish(userToken);
                 userToken = authFinish.accessToken;
+                
+                ApplicationSettings.INSTANCE.setDropboxToken(userToken);
+                ApplicationSettings.INSTANCE.save();
 
                 // getting dbx client displayName
                 DbxClient client = DbxUtil.getDbxClient();
@@ -106,21 +109,19 @@ public final class ConnectDropbox implements ActionListener {
                     additional = " (" + info.displayName + ")";
                 }
                 
-                ApplicationSettings.INSTANCE.setDropboxToken(userToken);
-                ApplicationSettings.INSTANCE.save();
                 LOGGER.log("Successfully connected application with Dropbox account.");
-                CloudStatus.getInstance().setStatus(CloudStatus.STATUS_DBX_CONNECTED, additional);
+                Cloud.getInstance().setStatus(Cloud.Status.DBX_CONNECTED, additional);
                 
             } catch (DbxException ex) {
                 JOptionPane.showMessageDialog(null,
                         "Invalid access token! Open LaTeX Studio has NOT been connected with Dropbox.\n Please try again and provide correct access token.",
                         "Invalid token",
                         JOptionPane.ERROR_MESSAGE);
-                CloudStatus.getInstance().setStatus(CloudStatus.STATUS_DISCONNECTED);
+                Cloud.getInstance().setStatus(Cloud.Status.DISCONNECTED);
             }
         }
         else {
-            CloudStatus.getInstance().setStatus(currentCloudStatus);
+            Cloud.getInstance().setStatus(currentCloudStatus);
         }
     }
     
