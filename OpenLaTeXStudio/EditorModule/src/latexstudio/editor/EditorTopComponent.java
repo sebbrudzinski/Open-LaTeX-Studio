@@ -1,10 +1,13 @@
-/*//GEN-LINE:variables
+/*                    
  * Copyright (c) 2015 Sebastian Brudzinski
  * 
  * See the file LICENSE for copying permission.
  */
 package latexstudio.editor;
 
+import com.dropbox.core.DbxAccountInfo;
+import com.dropbox.core.DbxClient;
+import com.dropbox.core.DbxException;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.BufferedReader;
@@ -14,7 +17,9 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
 import javax.swing.text.BadLocationException;
+import latexstudio.editor.remote.Cloud;
 import latexstudio.editor.remote.DbxState;
+import latexstudio.editor.remote.DbxUtil;
 import latexstudio.editor.settings.ApplicationSettings;
 import latexstudio.editor.settings.SettingListener;
 import latexstudio.editor.util.ApplicationUtils;
@@ -61,6 +66,8 @@ public final class EditorTopComponent extends TopComponent {
     private DbxState dbxState;
 
     private AutoCompletion autoCompletion = null;
+    private static final ApplicationLogger LOGGER = new ApplicationLogger("Cloud Support");
+
     public EditorTopComponent() {
         initComponents();
         setName(Bundle.CTL_EditorTopComponent());
@@ -68,19 +75,21 @@ public final class EditorTopComponent extends TopComponent {
         setToolTipText(Bundle.HINT_EditorTopComponent());
         putClientProperty(TopComponent.PROP_CLOSING_DISABLED, Boolean.TRUE);
         putClientProperty(TopComponent.PROP_UNDOCKING_DISABLED, Boolean.TRUE);
-                
+
         ApplicationSettings.INSTANCE.addPropertyChangeListener(new PropertyChangeListener() {
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
-                if(evt.getPropertyName().equals(ApplicationSettings.AUTOCOMPLETE_DELAY)&&autoCompletion!=null){
-                    autoCompletion.setAutoActivationDelay((Integer)evt.getNewValue());
+                if (evt.getPropertyName().equals(ApplicationSettings.AUTOCOMPLETE_DELAY) && autoCompletion != null) {
+                    autoCompletion.setAutoActivationDelay((Integer) evt.getNewValue());
+                } else if (evt.getPropertyName().equals(ApplicationSettings.LINEWRAP_STATUS) && rSyntaxTextArea != null) {
+                    rSyntaxTextArea.setLineWrap((Boolean) evt.getNewValue());
                 }
             }
         });
 
+        displayCloudStatus();
     }
 
-    //TODO 20160323 Make type checking work
     @SettingListener( setting = ApplicationSettings.Setting.AUTOCOMPLETE_ENABLED )
     public void setAutocompleteEnabled( String value ) {
         if(autoCompletion != null) {
@@ -96,8 +105,8 @@ public final class EditorTopComponent extends TopComponent {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">                          
     private void initComponents() {
 
-        jScrollPane1 = new javax.swing.JScrollPane();
         rSyntaxTextArea = new org.fife.ui.rsyntaxtextarea.RSyntaxTextArea();
+        rTextScrollPane1 = new org.fife.ui.rtextarea.RTextScrollPane(rSyntaxTextArea);
 
         rSyntaxTextArea.setColumns(20);
         rSyntaxTextArea.setRows(5);
@@ -110,7 +119,9 @@ public final class EditorTopComponent extends TopComponent {
                 rSyntaxTextAreaKeyTyped(evt);
             }
         });
-        jScrollPane1.setViewportView(rSyntaxTextArea);
+
+        rTextScrollPane1.setFoldIndicatorEnabled(true);
+        rTextScrollPane1.setLineNumbersEnabled(true);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -118,14 +129,14 @@ public final class EditorTopComponent extends TopComponent {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 380, Short.MAX_VALUE)
+                .addComponent(rTextScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 709, Short.MAX_VALUE)
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 278, Short.MAX_VALUE)
+                .addComponent(rTextScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 546, Short.MAX_VALUE)
                 .addContainerGap())
         );
     }// </editor-fold>                        
@@ -135,14 +146,16 @@ public final class EditorTopComponent extends TopComponent {
     }                                           
 
     private void rSyntaxTextAreaKeyTyped(java.awt.event.KeyEvent evt) {                                         
-        if (currentFile == null || evt.isControlDown()) return;
+        if (currentFile == null || evt.isControlDown()) {
+            return;
+        }
         setDisplayName(currentFile.getName() + '*');
     }                                        
 
-    // Variables declaration - do not modify                     
-    private javax.swing.JScrollPane jScrollPane1;
+    // Variables declaration - do not modify//GEN-BEGIN:variables
     private org.fife.ui.rsyntaxtextarea.RSyntaxTextArea rSyntaxTextArea;
-    // End of variables declaration                   
+    private org.fife.ui.rtextarea.RTextScrollPane rTextScrollPane1;
+    // End of variables declaration//GEN-END:variables
 
     @Override
     public void componentOpened() {
@@ -150,9 +163,8 @@ public final class EditorTopComponent extends TopComponent {
         CompletionProvider provider = createCompletionProvider();
         autoCompletion = new AutoCompletion(provider);
         autoCompletion.setAutoActivationDelay(ApplicationSettings.INSTANCE.getAutoCompleteDelay());
-        autoCompletion.setAutoActivationEnabled(true);
-        autoCompletion.setAutoCompleteEnabled(true);
         autoCompletion.install(rSyntaxTextArea);
+        rSyntaxTextArea.setLineWrap(ApplicationSettings.INSTANCE.getLineWrapStatus());
 
         ApplicationSettings.INSTANCE.registerSettingListeners(this);
         
@@ -328,5 +340,35 @@ public final class EditorTopComponent extends TopComponent {
 
         return provider;
     }
-}
 
+    private void displayCloudStatus() {
+
+        boolean isConnected = false;
+        String message;
+        DbxAccountInfo info = null;
+
+        // Check Dropbox connection
+        DbxClient client = DbxUtil.getDbxClient();
+        if (client != null) {
+            String userToken = client.getAccessToken();
+            if (userToken != null && !userToken.isEmpty()) {
+                try {
+                    info = client.getAccountInfo();
+                    isConnected = true;
+                } catch (DbxException ex) {
+                    // simply stay working locally.
+                }
+            }
+        }
+
+        if (isConnected) {
+            message = "Connected to Dropbox account as " + info.displayName + ".";
+            Cloud.getInstance().setStatus(Cloud.Status.DBX_CONNECTED, " (" + info.displayName + ")");
+        } else {
+            message = "Working locally.";
+            Cloud.getInstance().setStatus(Cloud.Status.DISCONNECTED);
+        }
+
+        LOGGER.log(message);
+    }
+}

@@ -121,7 +121,18 @@
                     </run-dependency>
                 </dependency>
             </module-dependencies>
-            <public-packages/>
+            <public-packages>
+                <package>latexstudio.editor</package>
+                <package>latexstudio.editor.files</package>
+                <package>latexstudio.editor.menu</package>
+                <package>latexstudio.editor.pdf</package>
+                <package>latexstudio.editor.remote</package>
+                <package>latexstudio.editor.runtime</package>
+                <package>latexstudio.editor.settings</package>
+                <package>latexstudio.editor.toolbar</package>
+                <package>latexstudio.editor.util</package>
+                <package>latexstudio.lib</package>
+            </public-packages>
         </data>
     </configuration>
 </project>

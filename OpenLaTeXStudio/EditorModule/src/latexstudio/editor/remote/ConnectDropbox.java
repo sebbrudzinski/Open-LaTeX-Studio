@@ -5,8 +5,10 @@
  */
 package latexstudio.editor.remote;
 
+import com.dropbox.core.DbxAccountInfo;
 import com.dropbox.core.DbxAppInfo;
 import com.dropbox.core.DbxAuthFinish;
+import com.dropbox.core.DbxClient;
 import com.dropbox.core.DbxException;
 import com.dropbox.core.DbxWebAuthNoRedirect;
 import java.awt.Desktop;
@@ -45,11 +47,14 @@ public final class ConnectDropbox implements ActionListener {
     private static final String APP_SECRET = PropertyService.
             readProperties(PROPERTIES).getProperty("dropbox.appSecret");
     
-    private static final ApplicationLogger LOGGER = new ApplicationLogger("Dropbox");
+    private static final ApplicationLogger LOGGER = new ApplicationLogger("Cloud Support");
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        DbxAppInfo appInfo = null;
+        Cloud.Status currentCloudStatus = Cloud.getInstance().getStatus();
+        Cloud.getInstance().setStatus(Cloud.Status.CONNECTING);
+        
+        DbxAppInfo appInfo;
         try {
             appInfo = new DbxAppInfo(APP_KEY, APP_SECRET);
         } catch (IllegalArgumentException ex) {
@@ -59,11 +64,12 @@ public final class ConnectDropbox implements ActionListener {
                         + "You can also contact us at open-latex-studio@googlegroups.com in case of any troubles.",
                 "Development version",
                 JOptionPane.WARNING_MESSAGE);
+            Cloud.getInstance().setStatus(Cloud.Status.DISCONNECTED);
             return;
         }
         DbxWebAuthNoRedirect webAuth = new DbxWebAuthNoRedirect(DbxUtil.getDbxConfig(), appInfo);
         final String authorizeUrl = webAuth.start();
-
+        
         class OpenUrlAction implements ActionListener {
             @Override public void actionPerformed(ActionEvent e) {
                 try {
@@ -93,13 +99,29 @@ public final class ConnectDropbox implements ActionListener {
                 
                 ApplicationSettings.INSTANCE.setDropboxToken(userToken);
                 ApplicationSettings.INSTANCE.save();
+
+                // getting dbx client displayName
+                DbxClient client = DbxUtil.getDbxClient();
+                DbxAccountInfo info = null;
+                String additional = "";
+                if(client != null) {
+                    info = client.getAccountInfo();
+                    additional = " (" + info.displayName + ")";
+                }
+                
                 LOGGER.log("Successfully connected application with Dropbox account.");
+                Cloud.getInstance().setStatus(Cloud.Status.DBX_CONNECTED, additional);
+                
             } catch (DbxException ex) {
                 JOptionPane.showMessageDialog(null,
                         "Invalid access token! Open LaTeX Studio has NOT been connected with Dropbox.\n Please try again and provide correct access token.",
                         "Invalid token",
                         JOptionPane.ERROR_MESSAGE);
+                Cloud.getInstance().setStatus(Cloud.Status.DISCONNECTED);
             }
+        }
+        else {
+            Cloud.getInstance().setStatus(currentCloudStatus);
         }
     }
     
