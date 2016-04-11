@@ -35,7 +35,7 @@ public final class ApplicationSettings extends Properties {
     
     private static final int DEFAULT_AUTO_COMPLETE_DELAY = 700;
     
-    private final EnumMap<Setting,ArrayList<Pair<Object,Method>>> settingListeners = new EnumMap<Setting,ArrayList<Pair<Object,Method>>>(Setting.class);
+    private final EnumMap<Setting,ArrayList<Pair<Object,Method>>> settingListeners = new EnumMap<>(Setting.class);
     
     private final PropertyChangeSupport pcs = new PropertyChangeSupport(this);
     
@@ -119,22 +119,16 @@ public final class ApplicationSettings extends Properties {
     
     public void registerSettingListeners(Object o) {
         for(Method m : o.getClass().getMethods()) {
-            for(Annotation a : m.getAnnotations()) {
-                if( a instanceof SettingListener ) {
-                    Setting s = ((SettingListener) a).setting();
-                    //TODO 20160323 Type validation
-                    settingListeners.get(s).add(Pair.of(o,m));
-                    try {
-                        m.invoke(o, getSettingValue(s));
-                    } catch (IllegalAccessException ex) {
-                        Exceptions.printStackTrace(ex);
-                    } catch (IllegalArgumentException ex) {
-                        Exceptions.printStackTrace(ex);
-                    } catch (InvocationTargetException ex) {
-                        Exceptions.printStackTrace(ex);
-                    }
-                    break;
+            for(Annotation a : m.getAnnotationsByType( SettingListener.class )) {
+                Setting s = ((SettingListener) a).setting();
+                //TODO 20160323 Type validation
+                settingListeners.get(s).add(Pair.of(o,m));
+                try {
+                    m.invoke(o, getSettingValue(s));
+                } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
+                    Exceptions.printStackTrace(ex);
                 }
+                break;
             }
         }
     }
@@ -143,11 +137,7 @@ public final class ApplicationSettings extends Properties {
         for( Pair<Object,Method> p : settingListeners.get(setting)) {
             try {
                 p.second().invoke(p.first(), value);
-            } catch (IllegalAccessException ex) {
-                Exceptions.printStackTrace(ex);
-            } catch (IllegalArgumentException ex) {
-                Exceptions.printStackTrace(ex);
-            } catch (InvocationTargetException ex) {
+            } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
                 Exceptions.printStackTrace(ex);
             }
         }
