@@ -8,6 +8,7 @@ package latexstudio.editor.menu;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import javax.swing.JOptionPane;
 import latexstudio.editor.ApplicationLogger;
 import latexstudio.editor.EditorTopComponent;
 import latexstudio.editor.TopComponentFactory;
@@ -45,6 +46,10 @@ public final class SaveFile implements ActionListener {
         String content = etc.getEditorContent();
         File file = etc.getCurrentFile();
         if (file == null) file = FileChooserService.getSelectedFile("tex", "TeX files", DialogType.SAVE, true);
+        
+        //Confirm if to overwrite an exsiting file.
+        file = SaveConfirmDialog.confirmFileSave(JOptionPane.NO_OPTION, file, etc.getCurrentFile());
+
         if (file != null) {
             FileService.writeToFile(file.getAbsolutePath(), content);
             LOGGER.log("Saving file " + file.getAbsolutePath());

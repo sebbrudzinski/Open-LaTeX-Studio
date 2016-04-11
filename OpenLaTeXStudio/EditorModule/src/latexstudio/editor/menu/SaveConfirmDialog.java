@@ -15,7 +15,7 @@ import latexstudio.editor.files.FileChooserService;
  * @param reply reply from the JOptionPane dialog
  * @param file the selected file
  * @param currentFIle current file saved in Editor Top Component
- * @re
+ * @return the selected file object
  */
 public class SaveConfirmDialog {
     public static File confirmFileSave(int reply, File file, File currentFile) {

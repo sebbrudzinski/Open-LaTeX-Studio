@@ -40,17 +40,8 @@ public final class SaveAs implements ActionListener {
         String content = etc.getEditorContent();
         File file = FileChooserService.getSelectedFile("tex", "TeX files", DialogType.SAVE, true);
         
-        int reply = JOptionPane.NO_OPTION;
-        while (file != null && file.exists() && reply == JOptionPane.NO_OPTION) {            
-            reply = JOptionPane.showConfirmDialog(null,
-                            file.getAbsoluteFile() + " already exists. Do you want to overwrite it?",
-                            "File already exists.",
-                            JOptionPane.YES_NO_OPTION);
-            
-            if (reply == JOptionPane.NO_OPTION) {
-                file = FileChooserService.getSelectedFile("tex", "TeX files", DialogType.SAVE, true);
-            }
-        }
+        //Confirm if to overwrite an exsiting file.
+        file = SaveConfirmDialog.confirmFileSave(JOptionPane.NO_OPTION, file, etc.getCurrentFile());
         
         if (file != null) {
             FileService.writeToFile(file.getAbsolutePath(), content);
