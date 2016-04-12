@@ -38,10 +38,7 @@ public final class SaveAs implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {                
         String content = etc.getEditorContent();
-        File file = FileChooserService.getSelectedFile("tex", "TeX files", DialogType.SAVE, true);
-        
-        //Confirm if to overwrite an exsiting file.
-        file = SaveConfirmDialog.confirmFileSave(JOptionPane.NO_OPTION, file, etc.getCurrentFile());
+        File file = FileChooserService.getFileWithConfirmation(etc.getCurrentFile(), "tex", "TeX files", DialogType.SAVEAS, true);
         
         if (file != null) {
             FileService.writeToFile(file.getAbsolutePath(), content);
