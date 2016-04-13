@@ -111,13 +111,19 @@ public final class FileChooserService {
     /**
     * Get the selected file with Saving Confirmation
     * @author WhiteHsu
+    * @param currentFile the current file
+    * @param extention the default saving file extention in the Dialog
+    * @param description the default saving description in the Dialog
+    * @param type Dialog Type to determine different confirmation behaviors
+    * @param fixExtention if allow to change file extention in the Dialog
+    * @return the selected file object
     */
     public static File getFileWithConfirmation(File currentFile, String extension, String description, DialogType type, boolean fixExtension) {
         File file = currentFile;
         if(file == null || type == DialogType.SAVEAS)
-            file = FileChooserService.getSelectedFile(extension, description, type, fixExtension);
+            file = getSelectedFile(extension, description, type, fixExtension);
         
-        file = FileChooserService.confirmFileSave(file, currentFile);
+        file = confirmFileSave(file, currentFile);
         
         return file;
     }
@@ -129,9 +135,9 @@ public final class FileChooserService {
     * @param currentFIle current file saved in Editor Top Component
     * @return the selected file object
     */
-    public static File confirmFileSave(File file, File currentFile) {
+    private static File confirmFileSave(File file, File currentFile) {
         int reply = JOptionPane.NO_OPTION;
-        while (file != null && file.exists() && file != currentFile && reply == JOptionPane.NO_OPTION) {            
+        while (file != null && file.exists() && !file.equals(currentFile) && reply == JOptionPane.NO_OPTION) {            
             reply = JOptionPane.showConfirmDialog(null,
                             file.getAbsoluteFile() + " already exists. Do you want to overwrite it?",
                             "File already exists",
