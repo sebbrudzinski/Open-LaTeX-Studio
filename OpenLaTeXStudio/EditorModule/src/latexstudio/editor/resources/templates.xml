@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates>
+        <formal_letter1>
+            <name>Formal Letter</name>
+            <filename>formal_letter_2.tex</filename>
+            <description>Formal letter description</description>
+            <source>http://www.latextemplates.com/template/professional-formal-letter</source>
+        </formal_letter1>
+        <cv>
+            <name>Stylish CV</name>
+            <filename>cv_6.tex</filename>
+            <description>Stylish CV description</description>
+            <source>http://www.latextemplates.com/template/stylish-cv</source>1
+        </cv>
+</templates>
