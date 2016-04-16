@@ -55,7 +55,9 @@ public class OpenTemplatePanel extends javax.swing.JPanel {
 
         descriptionArea.setEditable(false);
         descriptionArea.setColumns(20);
+        descriptionArea.setLineWrap(true);
         descriptionArea.setRows(5);
+        descriptionArea.setWrapStyleWord(true);
         descriptionArea.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createEtchedBorder(), org.openide.util.NbBundle.getMessage(OpenTemplatePanel.class, "OpenTemplatePanel.descriptionArea.border.title"))); // NOI18N
         jScrollPane2.setViewportView(descriptionArea);
 
@@ -88,7 +90,7 @@ public class OpenTemplatePanel extends javax.swing.JPanel {
                         .addComponent(openSourcePageButton)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(loadTemplateButton, javax.swing.GroupLayout.PREFERRED_SIZE, 132, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 444, Short.MAX_VALUE)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 503, Short.MAX_VALUE)
                     .addComponent(sourceField))
                 .addContainerGap())
         );

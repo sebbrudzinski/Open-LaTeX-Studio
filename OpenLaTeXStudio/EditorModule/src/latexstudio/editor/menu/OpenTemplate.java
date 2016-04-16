@@ -47,6 +47,7 @@ public final class OpenTemplate extends JDialog implements ActionListener {
         setResizable(false);
         setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
         setLayout(new BorderLayout(10, 10));
+        setModalityType(ModalityType.APPLICATION_MODAL);
 
         add(new OpenTemplatePanel(this, getListModelWithTemplates(readXML())), BorderLayout.CENTER);
         pack();

@@ -3,13 +3,15 @@
         <formal_letter1>
             <name>Formal Letter</name>
             <filename>formal_letter_2.tex</filename>
-            <description>Formal letter description</description>
+            <description>This formal letter template is suitable for individuals representing a professional institution such as a university, company or organization. This is most evident in the large header at the top of the letter where there is space for a logo and a large institution name along with your name and title. A block for your information is neatly tucked away underneath the header line on the right with a vertically-overlapping block for the addressee information underneath on the left. Finally, the content of the letter is laid out in neat justified paragraphs with the signature on the bottom aligning with the date at the top of the letter. The template uses the GFS Didot font which is available as a free LaTeX package bundled with most LaTeX distributions.</description>
             <source>http://www.latextemplates.com/template/professional-formal-letter</source>
         </formal_letter1>
         <cv>
             <name>Stylish CV</name>
             <filename>cv_6.tex</filename>
-            <description>Stylish CV description</description>
-            <source>http://www.latextemplates.com/template/stylish-cv</source>1
+            <description>This template features a stylish header and footer which include your name and contact information. Work experience and education are housed in custom gray boxes which, along with the large header and footer, instantly draw the eyes of the reader to the most important information in the CV. The template is just one page suitable for a recent graduate, but can be expanded to several pages for a longer CV. This CV is the companion to this cover letter.
+
+Important notes: this template needs to be compiled with XeLaTeX. There should be a setting in your LaTeX distribution to change to XeLaTeX. This template also uses a font (Adobe Garamond Pro) which is not distributed with Windows or Linux by default. This will need to be changed to an available font for the template to compile.</description>
+            <source>http://www.latextemplates.com/template/stylish-cv</source>
         </cv>
 </templates>
