@@ -47,14 +47,12 @@
                           <Group type="102" alignment="1" attributes="0">
                               <Component id="openSourcePageButton" min="-2" max="-2" attributes="0"/>
                               <EmptySpace max="32767" attributes="0"/>
-                              <Component id="loadTemplateButton" min="-2" pref="132" max="-2" attributes="0"/>
+                              <Component id="loadTemplateButton" min="-2" pref="136" max="-2" attributes="0"/>
                           </Group>
-                          <Group type="102" attributes="0">
-                              <Component id="jScrollPane2" pref="626" max="32767" attributes="0"/>
-                              <EmptySpace max="-2" attributes="0"/>
-                          </Group>
-                          <Component id="sourceField" alignment="1" max="32767" attributes="0"/>
+                          <Component id="sourceField" alignment="0" max="32767" attributes="0"/>
+                          <Component id="jScrollPane2" alignment="1" pref="626" max="32767" attributes="0"/>
                       </Group>
+                      <EmptySpace max="-2" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -67,8 +65,8 @@
                       <Component id="sourceField" min="-2" pref="56" max="-2" attributes="0"/>
                       <EmptySpace type="separate" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                          <Component id="openSourcePageButton" pref="42" max="32767" attributes="0"/>
                           <Component id="loadTemplateButton" max="32767" attributes="0"/>
-                          <Component id="openSourcePageButton" min="-2" pref="42" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace min="-2" pref="58" max="-2" attributes="0"/>
                   </Group>
@@ -120,6 +118,12 @@
               <Properties>
                 <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
                   <ResourceString bundle="latexstudio/editor/menu/Bundle.properties" key="OpenTemplatePanel.loadTemplateButton.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
+                </Property>
+                <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                  <Dimension value="[134, 32]"/>
+                </Property>
+                <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                  <Dimension value="[134, 32]"/>
                 </Property>
               </Properties>
               <Events>
