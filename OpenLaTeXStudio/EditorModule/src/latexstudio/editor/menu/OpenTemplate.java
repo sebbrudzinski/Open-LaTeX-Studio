@@ -1,27 +1,26 @@
 package latexstudio.editor.menu;
 
 import java.awt.BorderLayout;
-import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
-import javax.swing.BorderFactory;
-import javax.swing.JButton;
+import java.io.IOException;
+import java.util.ArrayList;
+import javax.swing.DefaultListModel;
 import javax.swing.JDialog;
-import javax.swing.JList;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
-import javax.swing.border.EtchedBorder;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
+import org.w3c.dom.Document;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 import latexstudio.editor.EditorTopComponent;
 import latexstudio.editor.TopComponentFactory;
-import latexstudio.editor.files.FileChooserService;
-import latexstudio.editor.util.ApplicationUtils;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.awt.ActionRegistration;
 import org.openide.util.NbBundle;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.w3c.dom.Text;
+import org.xml.sax.SAXException;
 
 @ActionID(
         category = "File",
@@ -33,160 +32,89 @@ import org.openide.util.NbBundle;
 @ActionReference(path = "Menu/File", position = 1201)
 @NbBundle.Messages("CTL_OpenTemplate=Open Template")
 
-/**
- * Dialog window that allow user to either open a preinstalled LaTeX template or use his own
-*/
-public final class OpenTemplate extends JDialog implements ActionListener
-{
+public final class OpenTemplate extends JDialog implements ActionListener {
 
-    private static final String pathToTemplatesDirectory = ApplicationUtils.getAppDirectory()
-            + System.getProperty("file.separator") + "Templates";
+    private static final String pathToTemplatesDirectory = "/latexstudio/editor/resources/templates/";
 
     private final EditorTopComponent etc = new TopComponentFactory<EditorTopComponent>()
             .getTopComponent(EditorTopComponent.class.getSimpleName());
 
-    private JList<TemplateFile> preinstalledTemplatesList;
-    private JPanel preinstalledTemplatesPanel, customTemplatePanel, inputPanel, okPanel;
-    private JButton choosePath;
-    final JTextField customTemplatePath;
-
-    private OpenTemplate()
-    {
+    private OpenTemplate() {
         //Dialog window properties
         setTitle("Choose Template");
         setLocationRelativeTo(etc);
         setLayout(new BorderLayout(10, 10));
         setResizable(false);
         setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+        setLayout(new BorderLayout(10, 10));
 
-        initPanels();
-
-        //Components initialization
-        preinstalledTemplatesList = new JList<TemplateFile>(getPreinstalledTemplates());
-        preinstalledTemplatesList.setSelectedIndex(0);
-        preinstalledTemplatesList.addListSelectionListener(new ListSelectionListener()
-        {
-            @Override
-            public void valueChanged(ListSelectionEvent e)
-            {
-               customTemplatePath.setText("");
-            }
-        });
-
-        customTemplatePath = new JTextField(20);
-        choosePath = new JButton("Choose path");
-        choosePath.addActionListener(new ActionListener()
-        {
-            @Override
-            public void actionPerformed(ActionEvent e)
-            {
-                File selectedFile = FileChooserService.getSelectedFile("tex", "TeX files", FileChooserService.DialogType.OPEN);
-                if (selectedFile != null && selectedFile.exists())
-                {
-                    customTemplatePath.setText(selectedFile.getAbsolutePath());
-                }
-            }
-        });
-
-        JButton okButton = new JButton("OK");
-        okButton.addActionListener(new ActionListener()
-        {
-            @Override
-            public void actionPerformed(ActionEvent e)
-            {
-                File file = new File(customTemplatePath.getText());
-                if (file != null && file.exists()) //When user choosed correct file
-                {
-                    OpenFile.openFile(etc, file);
-                }
-                else //When user choosed wrong file / selected template from list
-                {
-                    OpenFile.openFile(etc, preinstalledTemplatesList.getSelectedValue().getFile());
-                }
-
-                dispose();
-            }
-        });
-
-        //Adds comonents to panels and panels to dialog window
-        preinstalledTemplatesPanel.add(preinstalledTemplatesList);
-        inputPanel.add(preinstalledTemplatesPanel);
-
-        customTemplatePanel.add(customTemplatePath);
-        customTemplatePanel.add(choosePath);
-        inputPanel.add(customTemplatePanel);
-
-        okPanel.add(okButton);
-
-        add(inputPanel, BorderLayout.CENTER);
-        add(okPanel, BorderLayout.SOUTH);
-
+        add(new OpenTemplatePanel(this, getListModelWithTemplates(readXML())), BorderLayout.CENTER);
         pack();
     }
 
-    private void initPanels()
-    {
-        preinstalledTemplatesPanel = new JPanel();
-        preinstalledTemplatesPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED),
-                "Choose preinstalled template"));
+    /**
+     @return Array of nodes that contain informations about preinstalled
+     templates
+     */
+    private ArrayList<Element> readXML() {
+        try {
+            Document templatesXML = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(getClass().getResourceAsStream("/latexstudio/editor/resources/templates.xml"));
 
-        customTemplatePanel = new JPanel();
-        customTemplatePanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED),
-                "Or use your own template"));
+            Element rootElement = templatesXML.getDocumentElement();
+            NodeList templatesNodeList = rootElement.getChildNodes();
 
-        okPanel = new JPanel();
-
-        inputPanel = new JPanel(new GridLayout(2, 1, 10, 10));
+            ArrayList<Element> templates = new ArrayList<Element>();
+            for (int i = 0; i < templatesNodeList.getLength(); i++) {
+                Node node = templatesNodeList.item(i);
+                if (node instanceof Element) {
+                    templates.add((Element) node);
+                }
+            }
+            
+            return templates;
+        } catch (IOException e) {
+        } catch (SAXException e) {
+        } catch (ParserConfigurationException e) {
+        }
+        return null;
+    }
+    
+    /**
+    
+    @param path template filename
+    @return template full path
+    */
+    private String getFullPathToTemplate(String path) {
+        return pathToTemplatesDirectory + path;
     }
 
-    private TemplateFile[] getPreinstalledTemplates()
-    {
-        //TODO make Templates directory self creating at installing (or building) 
-        //and include there some templates to use
+    private DefaultListModel<Template> getListModelWithTemplates(ArrayList<Element> elements) {
+        DefaultListModel<Template> listModel = new DefaultListModel<Template>();
+        for (Element e : elements) {
+            listModel.addElement(getTemplateFromElement(e.getChildNodes()));
+        }
+        return listModel;
+    }
 
-        File[] templatesFiles = new File(pathToTemplatesDirectory).listFiles();
-        TemplateFile[] templates = new TemplateFile[templatesFiles.length];
-
-        for (int i = 0; i < templatesFiles.length; i++)
-        {
-            templates[i] = new TemplateFile(templatesFiles[i]);
+    private Template getTemplateFromElement(NodeList templateNodes) {
+        ArrayList<Element> templateElements = new ArrayList<Element>(4);
+        for (int i = 0; i < templateNodes.getLength(); i++) {
+            Node node = templateNodes.item(i);
+            if (node instanceof Element) {
+                templateElements.add((Element) node);
+            }
         }
 
-        return templates;
+        Text name = (Text) templateElements.get(0).getFirstChild();
+        Text filename = (Text) templateElements.get(1).getFirstChild();
+        Text description = (Text) templateElements.get(2).getFirstChild();
+        Text source = (Text) templateElements.get(3).getFirstChild();
+
+        return new Template(name.getData(), getFullPathToTemplate(filename.getData()), description.getData(), source.getData());
     }
 
-    //Invoked, when users clicks OpenTemplate menu item 
     @Override
-    public void actionPerformed(ActionEvent e)
-    {
+    public void actionPerformed(ActionEvent e) {
         this.setVisible(true);
-    }
-
-}
-
-/*
- * This class exist to avoid extending File class, becouse
- * you can't Override listFiles() method (to return TemplateFile[] array for example)
- * It is just for printing only names of files (without whole path)
- */
-class TemplateFile
-{
-
-    private File file;
-
-    public TemplateFile(File file)
-    {
-        this.file = file;
-    }
-
-    public File getFile()
-    {
-        return file;
-    }
-
-    @Override
-    public String toString()
-    {
-        return file.getName().substring(0, file.getName().length() - 4);
     }
 }
