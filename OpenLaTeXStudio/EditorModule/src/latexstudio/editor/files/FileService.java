@@ -68,7 +68,7 @@ public final class FileService {
     public static String readFromStream(InputStream stream){
         Scanner sc = null;
         String content = "";
-       
+        
         try{
             sc = new Scanner(stream);
             StringBuilder sb = new StringBuilder();

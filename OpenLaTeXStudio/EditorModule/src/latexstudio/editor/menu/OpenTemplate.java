@@ -10,8 +10,10 @@ import javax.swing.JDialog;
 import org.w3c.dom.Document;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import latexstudio.editor.ApplicationLogger;
 import latexstudio.editor.EditorTopComponent;
 import latexstudio.editor.TopComponentFactory;
+import latexstudio.editor.util.ApplicationUtils;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.awt.ActionRegistration;
@@ -34,10 +36,10 @@ import org.xml.sax.SAXException;
 
 public final class OpenTemplate extends JDialog implements ActionListener {
 
-    private static final String pathToTemplatesDirectory = "/latexstudio/editor/resources/templates/";
-
     private final EditorTopComponent etc = new TopComponentFactory<EditorTopComponent>()
             .getTopComponent(EditorTopComponent.class.getSimpleName());
+
+    private static final ApplicationLogger LOGGER = new ApplicationLogger("Templates xml info");
 
     private OpenTemplate() {
         //Dialog window properties
@@ -59,7 +61,7 @@ public final class OpenTemplate extends JDialog implements ActionListener {
      */
     private ArrayList<Element> readXML() {
         try {
-            Document templatesXML = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(getClass().getResourceAsStream("/latexstudio/editor/resources/templates.xml"));
+            Document templatesXML = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(getClass().getResourceAsStream(ApplicationUtils.pathToTemplatesFile));
 
             Element rootElement = templatesXML.getDocumentElement();
             NodeList templatesNodeList = rootElement.getChildNodes();
@@ -71,22 +73,22 @@ public final class OpenTemplate extends JDialog implements ActionListener {
                     templates.add((Element) node);
                 }
             }
-            
+
             return templates;
-        } catch (IOException e) {
-        } catch (SAXException e) {
-        } catch (ParserConfigurationException e) {
+        } catch (IOException | SAXException | ParserConfigurationException e) {
+            LOGGER.log("Templates data couldn't be read.");
+            e.printStackTrace();
         }
         return null;
     }
-    
+
     /**
-    
-    @param path template filename
-    @return template full path
-    */
+
+     @param path template filename
+     @return template full path
+     */
     private String getFullPathToTemplate(String path) {
-        return pathToTemplatesDirectory + path;
+        return ApplicationUtils.pathToTemplatesDirectory + path;
     }
 
     private DefaultListModel<Template> getListModelWithTemplates(ArrayList<Element> elements) {
@@ -106,12 +108,34 @@ public final class OpenTemplate extends JDialog implements ActionListener {
             }
         }
 
-        Text name = (Text) templateElements.get(0).getFirstChild();
-        Text filename = (Text) templateElements.get(1).getFirstChild();
-        Text description = (Text) templateElements.get(2).getFirstChild();
-        Text source = (Text) templateElements.get(3).getFirstChild();
+        Template template = new Template();
 
-        return new Template(name.getData(), getFullPathToTemplate(filename.getData()), description.getData(), source.getData());
+        for (Element templateElement : templateElements) {
+            Text elementText = (Text) templateElement.getFirstChild();
+            String elementString = elementText.getData();
+
+            switch (templateElement.getTagName()) {
+                case "name": {
+                    template.setName(elementString);
+                }
+                break;
+
+                case "filename": {
+                    template.setPath(getFullPathToTemplate(elementString));
+                }
+                break;
+
+                case "description": {
+                    template.setDescription(elementString);
+                }
+                break;
+
+                case "source": {
+                    template.setSource(elementString);
+                }
+            }
+        }
+        return template;
     }
 
     @Override

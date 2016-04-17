@@ -1,64 +1,64 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <templates>
-        <formal_letter1>
+        <template>
             <name>Formal Letter</name>
             <filename>formal_letter_2.tex</filename>
             <description>This formal letter template is suitable for individuals representing a professional institution such as a university, company or organization. This is most evident in the large header at the top of the letter where there is space for a logo and a large institution name along with your name and title. A block for your information is neatly tucked away underneath the header line on the right with a vertically-overlapping block for the addressee information underneath on the left. Finally, the content of the letter is laid out in neat justified paragraphs with the signature on the bottom aligning with the date at the top of the letter. The template uses the GFS Didot font which is available as a free LaTeX package bundled with most LaTeX distributions.</description>
             <source>http://www.latextemplates.com/template/professional-formal-letter</source>
-        </formal_letter1>
+        </template>
         
-        <cv>
+        <template>
             <name>Stylish CV</name>
             <filename>cv_6.tex</filename>
             <description>This template features a stylish header and footer which include your name and contact information. Work experience and education are housed in custom gray boxes which, along with the large header and footer, instantly draw the eyes of the reader to the most important information in the CV. The template is just one page suitable for a recent graduate, but can be expanded to several pages for a longer CV. This CV is the companion to this cover letter.
 
 Important notes: this template needs to be compiled with XeLaTeX. There should be a setting in your LaTeX distribution to change to XeLaTeX. This template also uses a font (Adobe Garamond Pro) which is not distributed with Windows or Linux by default. This will need to be changed to an available font for the template to compile.</description>
             <source>http://www.latextemplates.com/template/stylish-cv</source>
-        </cv>
+        </template>
         
-        <title_page1>
+        <template>
             <name>Multi-Purpose Title Page</name>
             <filename>title_page_2.tex</filename>
             <description>This title page is suited to almost any document type. It clearly shows the title in a large font highlighted by a colored box. The color of this box can be changed to give the title a different highlight.
 
 The template compiles as a standalone document to act as a starting point for creating a document but it includes instructions for integrating this title page into an existing document.</description>
             <source>http://www.latextemplates.com/template/multi-purpose-large-font-title-page</source>
-        </title_page1>
+        </template>
         
-        <presentation1>
+        <template>
             <name>Beamer Presentation</name>
             <filename>presentation_1.tex</filename>
             <description>This presentation template uses the well-known Beamer class and shows how effortless presentation-making with LaTeX can be. The template has examples of most of the features that are typically found in a presentation, including the following example slides: title, overview, paragraphs of text, bullet points, blocks of highlighted text, multiple columns, tables, theorems, verbatim text, figures, citations, references and conclusions/acknowledgments. Examples of how to use sections and subsections show how a presentation can be broken down into distinct pieces for automatic inclusion on the overview slide. A list of Beamer themes and color profiles is also included in the template to allow customization of the presentation’s appearance.</description>
             <source>http://www.latextemplates.com/template/beamer-presentation</source>
-        </presentation1>
+        </template>
             
-        <simple_essay1>
+        <template>
             <name>Simple Sectioned Essay</name>
             <filename>essay_1.tex</filename>
             <description>This is a simple sectioned essay template suitable for university essays which generally require more content. The template is clearly structured into a section, sub-section and sub-sub-section format and would suit the typical essay layout of an introduction, content section 1, content section 2 and conclusion.
 
 The template starts with a table of contents section and contains examples of inserting images, numbered lists and referencing.</description>
             <source>http://www.latextemplates.com/template/simple-sectioned-essay</source>
-        </simple_essay1>
+        </template>
         
-        <assignment1>
+        <template>
             <name>General Purpose Assignment</name>
             <filename>assignment_1.tex</filename>
             <description>This template is suitable for assignments/homework that are given in a clear structured order with multiple questions. Each question can be given a custom name and consists of the question text followed by the answer in a frame. Sections within each question (e.g. 1(a), 1(b), etc) are also permissible in the same format.</description>
             <source>http://www.latextemplates.com/template/structured-general-purpose-assignment</source>
-        </assignment1>
+        </template>
         
-        <article1>
+        <template>
             <name>Journal Article</name>
             <filename>article_2.tex</filename>
             <description>This article template aims to emulate scientific journal publications by using a conservative thin document style. The format of the template follows the typical journal publication including an abstract for summarizing the article, introduction, methods, results and discussion. Examples of an equation, table and list are included.</description>
             <source>http://www.latextemplates.com/template/journal-article</source>
-        </article1>
+        </template>
         
-        <cover_letter1>
+        <template>
             <name>Plain Cover Letter</name>
             <filename>cover_letter_1.tex</filename>
             <description>A plain cover letter template with your name and address at the top in bold. The layout is traditional and is best suited to single-page letters. The format offers plenty of space for a longer cover letter and includes a description of the content that should be written in each paragraph.</description>
             <source>http://www.latextemplates.com/template/plain-cover-letter</source>
-        </cover_letter1>
+        </template>
 </templates>
