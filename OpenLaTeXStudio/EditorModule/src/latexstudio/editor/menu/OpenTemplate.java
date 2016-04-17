@@ -1,3 +1,8 @@
+/* 
+ * Copyright (c) 2016 Sebastian Brudzinski
+ * 
+ * See the file LICENSE for copying permission.
+ */
 package latexstudio.editor.menu;
 
 import java.awt.BorderLayout;
@@ -115,24 +120,21 @@ public final class OpenTemplate extends JDialog implements ActionListener {
             String elementString = elementText.getData();
 
             switch (templateElement.getTagName()) {
-                case "name": {
+                case "name": 
                     template.setName(elementString);
-                }
                 break;
 
-                case "filename": {
+                case "filename": 
                     template.setPath(getFullPathToTemplate(elementString));
-                }
                 break;
 
-                case "description": {
+                case "description": 
                     template.setDescription(elementString);
-                }
                 break;
 
-                case "source": {
+                case "source": 
                     template.setSource(elementString);
-                }
+                break;
             }
         }
         return template;

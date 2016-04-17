@@ -1,5 +1,5 @@
 /* 
- * Copyright (c) 2015 Sebastian Brudzinski
+ * Copyright (c) 2016 Sebastian Brudzinski
  * 
  * See the file LICENSE for copying permission.
  */
@@ -11,9 +11,6 @@ public class Template {
     private String path;
     private String description;
     private String source;
-
-    public Template() {
-    }
 
     public void setName(String name) {
         this.name = name;
