@@ -57,7 +57,7 @@ public final class DisconnectDropbox implements ActionListener {
                 drtc.updateRevisionsList(null);
                 drtc.close();
 
-                ApplicationSettings.INSTANCE.setDropboxToken("");
+                ApplicationSettings.Setting.DROPBOX_TOKEN.setValue("");
                 ApplicationSettings.INSTANCE.save();
                 LOGGER.log("Successfully disconnected from Dropbox account.");
                 Cloud.getInstance().setStatus(Cloud.Status.DISCONNECTED);

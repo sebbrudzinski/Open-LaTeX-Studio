@@ -32,7 +32,7 @@ public final class FileChooserService {
         chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 
         // retreiving last directory selected by the user
-        String currentDirectory = ApplicationSettings.INSTANCE.getUserLastDir();
+        String currentDirectory = (String) ApplicationSettings.Setting.USER_LASTDIR.getValue();
         if(currentDirectory != null && currentDirectory.length() > 0) {
             chooser.setCurrentDirectory(new File(currentDirectory));
         }
@@ -42,7 +42,7 @@ public final class FileChooserService {
             File file = chooser.getSelectedFile();
             
             // storing last directory selected by the user
-            ApplicationSettings.INSTANCE.setUserLastDir(file.getAbsolutePath());
+            ApplicationSettings.Setting.USER_LASTDIR.setValue(file.getAbsolutePath());
             ApplicationSettings.INSTANCE.save();
             
             return file;
@@ -60,7 +60,7 @@ public final class FileChooserService {
         FileNameExtensionFilter filter = new FileNameExtensionFilter(description, extension);
         chooser.setFileFilter(filter);
 
-        String currentDirectory = ApplicationSettings.INSTANCE.getUserLastDir();
+        String currentDirectory = (String) ApplicationSettings.Setting.USER_LASTDIR.getValue();
         if(currentDirectory != null && currentDirectory.length() > 0) {
             chooser.setCurrentDirectory(new File(currentDirectory));
         }
@@ -91,7 +91,7 @@ public final class FileChooserService {
                 }
                 
                 // storing last directory selected by the user
-                ApplicationSettings.INSTANCE.setUserLastDir(file.getAbsolutePath());
+                ApplicationSettings.Setting.USER_LASTDIR.setValue(file.getAbsolutePath());
                 ApplicationSettings.INSTANCE.save();
 
                 return file;

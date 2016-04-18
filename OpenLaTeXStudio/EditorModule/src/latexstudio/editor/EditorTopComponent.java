@@ -76,24 +76,27 @@ public final class EditorTopComponent extends TopComponent {
         putClientProperty(TopComponent.PROP_CLOSING_DISABLED, Boolean.TRUE);
         putClientProperty(TopComponent.PROP_UNDOCKING_DISABLED, Boolean.TRUE);
 
-        ApplicationSettings.INSTANCE.addPropertyChangeListener(new PropertyChangeListener() {
-            @Override
-            public void propertyChange(PropertyChangeEvent evt) {
-                if (evt.getPropertyName().equals(ApplicationSettings.AUTOCOMPLETE_DELAY) && autoCompletion != null) {
-                    autoCompletion.setAutoActivationDelay((Integer) evt.getNewValue());
-                } else if (evt.getPropertyName().equals(ApplicationSettings.LINEWRAP_STATUS) && rSyntaxTextArea != null) {
-                    rSyntaxTextArea.setLineWrap((Boolean) evt.getNewValue());
-                }
-            }
-        });
-
         displayCloudStatus();
     }
 
     @SettingListener( setting = ApplicationSettings.Setting.AUTOCOMPLETE_ENABLED )
-    public void setAutocompleteEnabled( String value ) {
+    public void setAutocompleteEnabled( boolean value ) {
         if(autoCompletion != null) {
-            autoCompletion.setAutoActivationEnabled(Boolean.parseBoolean(value));
+            autoCompletion.setAutoActivationEnabled( value );
+        }
+    }
+    
+    @SettingListener( setting = ApplicationSettings.Setting.AUTOCOMPLETE_DELAY )
+    public void setAutocompleteDelay( int value ) {
+        if(autoCompletion != null) {
+            autoCompletion.setAutoActivationDelay( value );
+        }
+    }
+    
+    @SettingListener( setting = ApplicationSettings.Setting.LINEWRAP_ENABLED )
+    public void setLinewrapEnabled( boolean value ) {
+        if(rSyntaxTextArea != null) {
+            rSyntaxTextArea.setLineWrap( value );
         }
     }
     
@@ -162,9 +165,7 @@ public final class EditorTopComponent extends TopComponent {
         ApplicationUtils.deleteTempFiles();
         CompletionProvider provider = createCompletionProvider();
         autoCompletion = new AutoCompletion(provider);
-        autoCompletion.setAutoActivationDelay(ApplicationSettings.INSTANCE.getAutoCompleteDelay());
         autoCompletion.install(rSyntaxTextArea);
-        rSyntaxTextArea.setLineWrap(ApplicationSettings.INSTANCE.getLineWrapStatus());
 
         ApplicationSettings.INSTANCE.registerSettingListeners(this);
         

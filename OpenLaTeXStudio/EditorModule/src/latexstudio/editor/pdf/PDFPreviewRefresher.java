@@ -82,7 +82,7 @@ public class PDFPreviewRefresher implements Runnable {
                 .withOutputDirectory(ApplicationUtils.getAppDirectory())
                 .withJobname("preview")
                 .withWorkingFile(etc.getCurrentFile())
-                .withLatexPath( ApplicationSettings.INSTANCE.getLatexPath() )
+                .withLatexPath( (String) ApplicationSettings.Setting.LATEX_PATH.getValue() )
         );
     }
 

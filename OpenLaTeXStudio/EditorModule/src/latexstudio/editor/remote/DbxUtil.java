@@ -28,7 +28,7 @@ public final class DbxUtil {
     }
 
     public static DbxClient getDbxClient() {
-        String accessToken = ApplicationSettings.INSTANCE.getDropboxToken();
+        String accessToken = (String) ApplicationSettings.Setting.DROPBOX_TOKEN.getValue();
         if (accessToken == null) {
             JOptionPane.showMessageDialog(null, 
                 "The authentication token has not been set.\n"

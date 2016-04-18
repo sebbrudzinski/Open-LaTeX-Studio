@@ -27,17 +27,8 @@ import org.openide.util.Pair;
 public final class ApplicationSettings extends Properties {
     
     public static final ApplicationSettings INSTANCE = new ApplicationSettings();
-    private static final String DROPBOX_TOKEN   = "dropbox.token";
-    private static final String USER_LASTDIR    = "user.lastdir";
-    private static final String LATEX_PATH      = "latex.path";
-    public static final String AUTOCOMPLETE_DELAY = "autocomplete.delay";
-    public static final String LINEWRAP_STATUS = "linewrap.status";
-    
-    private static final int DEFAULT_AUTO_COMPLETE_DELAY = 700;
     
     private final EnumMap<Setting,ArrayList<Pair<Object,Method>>> settingListeners = new EnumMap<>(Setting.class);
-    
-    private final PropertyChangeSupport pcs = new PropertyChangeSupport(this);
     
     private ApplicationSettings() {
         for( Setting s : Setting.values() ){
@@ -62,61 +53,6 @@ public final class ApplicationSettings extends Properties {
         }
     }
     
-    public void addPropertyChangeListener(PropertyChangeListener l) {
-        pcs.addPropertyChangeListener(l);
-    }
-
-    public void removePropertyChangeListener(PropertyChangeListener l) {
-        pcs.removePropertyChangeListener(l);
-    }
-    
-    public void setDropboxToken(String token) {
-        setProperty(DROPBOX_TOKEN, token);
-    }
-    
-    public String getDropboxToken() {
-        return getProperty(DROPBOX_TOKEN);
-    }
-    
-    public void setLatexPath(String path) {
-        setProperty(LATEX_PATH, path);
-        
-    }
-    
-    public String getLatexPath() {
-        return getProperty(LATEX_PATH);
-    }
-    
-    public void setUserLastDir(String dir) {
-        setProperty(USER_LASTDIR, dir);
-    }
-    
-    public String getUserLastDir() {
-        return getProperty(USER_LASTDIR);
-    }
-    
-    public void setAutoCompleteDelay(int delay){
-        pcs.firePropertyChange(AUTOCOMPLETE_DELAY, getAutoCompleteDelay(), delay);
-        setProperty(AUTOCOMPLETE_DELAY, String.valueOf(delay));
-    }
-    
-    public int getAutoCompleteDelay(){
-        try{
-            return Integer.parseInt(getProperty(AUTOCOMPLETE_DELAY));
-        }catch(NumberFormatException ex){
-            return DEFAULT_AUTO_COMPLETE_DELAY;
-        }
-    }
-    
-    public void setLineWrapStatus(boolean lineWrapStatus){
-        pcs.firePropertyChange(LINEWRAP_STATUS, getLineWrapStatus(), lineWrapStatus);
-        setProperty(LINEWRAP_STATUS, String.valueOf(lineWrapStatus));
-    }
-    
-    public boolean getLineWrapStatus(){
-        return Boolean.parseBoolean(getProperty(LINEWRAP_STATUS));
-    }
-    
     public void registerSettingListeners(Object o) {
         for(Method m : o.getClass().getMethods()) {
             for(Annotation a : m.getAnnotationsByType( SettingListener.class )) {
@@ -124,7 +60,7 @@ public final class ApplicationSettings extends Properties {
                 //TODO 20160323 Type validation
                 settingListeners.get(s).add(Pair.of(o,m));
                 try {
-                    m.invoke(o, getSettingValue(s));
+                    m.invoke(o, s.getValue());
                 } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
                     Exceptions.printStackTrace(ex);
                 }
@@ -133,50 +69,104 @@ public final class ApplicationSettings extends Properties {
         }
     }
             
-    private void fireSettingChange(Setting setting, String value) {
+    /**
+     * Publish the new setting value to all listeners. The type of <code>value</value> is assumed to match the setting.
+     * @param setting
+     * @param value
+     */
+    private void fireSettingChange(Setting setting, Object value) {
         for( Pair<Object,Method> p : settingListeners.get(setting)) {
             try {
-                p.second().invoke(p.first(), value);
+                p.second().invoke(p.first(), value );
             } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
                 Exceptions.printStackTrace(ex);
             }
         }
     }
     
-    public String getSettingValue(Setting setting) {
+    private String getSettingValue(Setting setting) {
         return getProperty(setting.storageName, setting.getDefaultValue());
     }
     
-    public void setSettingValue(Setting setting, String value) {
+    private void setSettingValue(Setting setting, Object value) {
+        setProperty(setting.storageName, value.toString());
         fireSettingChange(setting, value);
-        setProperty(setting.storageName, value);
     }
     
     public static enum Setting {
-        AUTOCOMPLETE_ENABLED( "autocomplete.enabled", "true", SettingType.BOOLEAN );
+        DROPBOX_TOKEN( "dropbox.token", "", SettingType.STRING ),
+        LATEX_PATH( "latex.path", "", SettingType.STRING ),
+        USER_LASTDIR( "user.lastdir", "", SettingType.STRING ),
+        AUTOCOMPLETE_ENABLED( "autocomplete.enabled", "true", SettingType.BOOLEAN ),
+        AUTOCOMPLETE_DELAY( "autocomplete.delay", "700", SettingType.INT ),
+        LINEWRAP_ENABLED( "linewrap.enabled", "true", SettingType.BOOLEAN );
+        
         
         private final String storageName;
         private final String defaultValue;
-        private final SettingType type;
+        private final SettingType valueType;
         
-        Setting(String storageName, String defaultValue, SettingType type) {
+        Setting(String storageName, String defaultValue, SettingType valueType) {
             this.storageName = storageName;
             this.defaultValue = defaultValue;
-            this.type = type;
+            this.valueType = valueType;
         }
         
         public String getDefaultValue() {
             return defaultValue;
         }
         
-        public SettingType getSettingType() {
-            return type;
+        public Class<?> getSettingType() {
+            return valueType.getValueClass();
+        }
+        
+        public Object getValue() {
+            String value = ApplicationSettings.INSTANCE.getSettingValue(this);
+            Object typedValue = null;
+            
+            switch( valueType ) {
+                case STRING:
+                    typedValue = String.valueOf(value);
+                    break;
+                case INT:
+                    typedValue = Integer.valueOf(value);
+                    break;
+                case BOOLEAN:
+                    typedValue = Boolean.valueOf(value);
+            }
+            
+            return typedValue;
+        }
+        
+        public void setValue( Object value ) throws IllegalArgumentException {
+            if( valueType.getValueClass().isInstance(value) )
+            {
+                ApplicationSettings.INSTANCE.setSettingValue(this, value );
+                ApplicationSettings.INSTANCE.fireSettingChange(this, value);
+            }
+            else
+            {
+                throw new IllegalArgumentException( "Supplied setting value: " + value.toString() + " is not an instance of the value type of " + this.toString() + " which is " + this.getSettingType() + "." );
+            }
         }
     }
     
+    /**
+     * Wrapper class to restrict the possible value types of settings
+     */
     public static enum SettingType {
-        INT,
-        STRING,
-        BOOLEAN;
+        INT( Integer.class ),
+        STRING( String.class ),
+        BOOLEAN( Boolean.class);
+        
+        private final Class<?> valueClass;
+        
+        SettingType( Class<?> valueClass ) {
+            this.valueClass = valueClass;
+        }
+        
+        public Class<?> getValueClass() {
+            return valueClass;
+        }
     }
 }

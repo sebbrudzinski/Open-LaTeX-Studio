@@ -171,7 +171,7 @@ public final class LaTeXSettingsPanel extends javax.swing.JPanel {
              * @param e 
              */
             public void onUpdated(DocumentEvent e) {
-                final Document doc = (Document)e.getDocument();
+                final Document doc = e.getDocument();
                 if(doc.getLength()>4){
                     EventQueue.invokeLater(new Runnable() {
                         @Override
@@ -193,9 +193,19 @@ public final class LaTeXSettingsPanel extends javax.swing.JPanel {
 
     }
     
+    @SettingListener( setting = ApplicationSettings.Setting.LATEX_PATH )
+    public void setLatexPath( String value ) {
+        jTextField1.setText(value);
+    }
+    
     @SettingListener( setting = ApplicationSettings.Setting.AUTOCOMPLETE_ENABLED )
-    public void setAutocompleteEnabled( String value ) {
-        autoCompleteCheckBox.setSelected(Boolean.valueOf(value));
+    public void setAutocompleteEnabled( boolean value ) {
+        autoCompleteCheckBox.setSelected( value );
+    }
+    
+    @SettingListener( setting = ApplicationSettings.Setting.AUTOCOMPLETE_DELAY )
+    public void setAutocompleteDelay( int value ) {
+        autoCompleteDelayTextField.setText( String.valueOf(value) );
     }
     
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
@@ -244,18 +254,13 @@ public final class LaTeXSettingsPanel extends javax.swing.JPanel {
     void load() {
         ApplicationSettings.INSTANCE.registerSettingListeners(this);
         
-        jTextField1.setText( ApplicationSettings.INSTANCE.getLatexPath() );
-        autoCompleteDelayTextField.setText(String.valueOf(ApplicationSettings.INSTANCE.getAutoCompleteDelay()));
-        
         prepareAutoCompleteComponents();
     }
     
     void store() {
-        ApplicationSettings.INSTANCE.setLatexPath( jTextField1.getText() );
-        
-        ApplicationSettings.INSTANCE.setSettingValue(ApplicationSettings.Setting.AUTOCOMPLETE_ENABLED, String.valueOf(autoCompleteCheckBox.isSelected()));
-        
-        ApplicationSettings.INSTANCE.setAutoCompleteDelay( Integer.parseInt(autoCompleteDelayTextField.getText()) );
+        ApplicationSettings.Setting.LATEX_PATH.setValue( jTextField1.getText() );
+        ApplicationSettings.Setting.AUTOCOMPLETE_ENABLED.setValue( autoCompleteCheckBox.isSelected() );
+        ApplicationSettings.Setting.AUTOCOMPLETE_DELAY.setValue( Integer.parseInt(autoCompleteDelayTextField.getText()) );
         
         ApplicationSettings.INSTANCE.save();
     }
