@@ -97,7 +97,7 @@ public final class ConnectDropbox implements ActionListener {
                 DbxAuthFinish authFinish = webAuth.finish(userToken);
                 userToken = authFinish.accessToken;
                 
-                ApplicationSettings.INSTANCE.setDropboxToken(userToken);
+                ApplicationSettings.Setting.DROPBOX_TOKEN.setValue(userToken);
                 ApplicationSettings.INSTANCE.save();
 
                 // getting dbx client displayName

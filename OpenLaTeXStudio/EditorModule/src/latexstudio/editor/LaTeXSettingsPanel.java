@@ -7,7 +7,6 @@ package latexstudio.editor;
 
 import java.awt.EventQueue;
 import java.io.File;
-import javax.swing.JCheckBox;
 import javax.swing.JOptionPane;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
@@ -15,10 +14,11 @@ import javax.swing.text.BadLocationException;
 import javax.swing.text.Document;
 import latexstudio.editor.files.FileChooserService;
 import latexstudio.editor.settings.ApplicationSettings;
+import latexstudio.editor.settings.SettingListener;
 import latexstudio.editor.util.ApplicationUtils;
 import org.openide.util.Exceptions;
 
-final class LaTeXSettingsPanel extends javax.swing.JPanel {
+public final class LaTeXSettingsPanel extends javax.swing.JPanel {
 
     private final LaTeXSettingsOptionsPanelController controller;
             
@@ -26,7 +26,6 @@ final class LaTeXSettingsPanel extends javax.swing.JPanel {
         this.controller = controller;
         initComponents();
         // TODO listen to changes in form fields and call controller.changed()
-        prepareAutoCompleteComponents();
     }
 
     /**
@@ -127,11 +126,9 @@ final class LaTeXSettingsPanel extends javax.swing.JPanel {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -149,9 +146,7 @@ final class LaTeXSettingsPanel extends javax.swing.JPanel {
     
     private void prepareAutoCompleteComponents(){
         prepareAutoCompleteDelayTextFieldDocumentListener();
-        boolean autoCompleteStatus = ApplicationSettings.INSTANCE.getAutoCompleteStatus();
-        autoCompleteCheckBox.setSelected(autoCompleteStatus);
-        setAutoCompleteComponentsEnabled(autoCompleteStatus);
+        setAutoCompleteComponentsEnabled(autoCompleteCheckBox.isSelected());
     }
     
     private void prepareAutoCompleteDelayTextFieldDocumentListener(){
@@ -176,7 +171,7 @@ final class LaTeXSettingsPanel extends javax.swing.JPanel {
              * @param e 
              */
             public void onUpdated(DocumentEvent e) {
-                final Document doc = (Document)e.getDocument();
+                final Document doc = e.getDocument();
                 if(doc.getLength()>4){
                     EventQueue.invokeLater(new Runnable() {
                         @Override
@@ -196,6 +191,21 @@ final class LaTeXSettingsPanel extends javax.swing.JPanel {
         });
         
 
+    }
+    
+    @SettingListener( setting = ApplicationSettings.Setting.LATEX_PATH )
+    public void setLatexPath( String value ) {
+        jTextField1.setText(value);
+    }
+    
+    @SettingListener( setting = ApplicationSettings.Setting.AUTOCOMPLETE_ENABLED )
+    public void setAutocompleteEnabled( boolean value ) {
+        autoCompleteCheckBox.setSelected( value );
+    }
+    
+    @SettingListener( setting = ApplicationSettings.Setting.AUTOCOMPLETE_DELAY )
+    public void setAutocompleteDelay( int value ) {
+        autoCompleteDelayTextField.setText( String.valueOf(value) );
     }
     
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
@@ -227,7 +237,9 @@ final class LaTeXSettingsPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void autoCompleteCheckBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_autoCompleteCheckBoxActionPerformed
-        JCheckBox autoCompleteCheckBox = (JCheckBox)evt.getSource();
+        if( ! autoCompleteCheckBox.equals(evt.getSource()) ) {
+            return;
+        }
         setAutoCompleteComponentsEnabled(autoCompleteCheckBox.isSelected());
         controller.changed();
         
@@ -240,26 +252,21 @@ final class LaTeXSettingsPanel extends javax.swing.JPanel {
     }
     
     void load() {
-        jTextField1.setText( ApplicationSettings.INSTANCE.getLatexPath() );
-        autoCompleteDelayTextField.setText(String.valueOf(ApplicationSettings.INSTANCE.getAutoCompleteDelay()));
+        ApplicationSettings.INSTANCE.registerSettingListeners(this);
+        
+        prepareAutoCompleteComponents();
     }
     
     void store() {
-        ApplicationSettings.INSTANCE.setLatexPath( jTextField1.getText() );
+        ApplicationSettings.Setting.LATEX_PATH.setValue( jTextField1.getText() );
+        ApplicationSettings.Setting.AUTOCOMPLETE_ENABLED.setValue( autoCompleteCheckBox.isSelected() );
+        ApplicationSettings.Setting.AUTOCOMPLETE_DELAY.setValue( Integer.parseInt(autoCompleteDelayTextField.getText()) );
         
-        final boolean autoCompleteStatus = autoCompleteCheckBox.isSelected();
-        if(autoCompleteStatus){
-            final int autoCompleteDelay = Integer.parseInt(autoCompleteDelayTextField.getText());
-            ApplicationSettings.INSTANCE.setAutoCompleteDelay(autoCompleteDelay);
-            ApplicationSettings.INSTANCE.setAutoCompleteStatus(true);
-        }else{
-            ApplicationSettings.INSTANCE.setAutoCompleteStatus(false);
-        }
         ApplicationSettings.INSTANCE.save();
     }
 
     boolean valid() {
-        //check validation of audo delay text field
+        //check validation of auto delay text field
         //it will make sure ok button is disabled when input is not a valid number.
         final boolean autoCompleteStatus = autoCompleteCheckBox.isSelected();
         if(autoCompleteStatus){

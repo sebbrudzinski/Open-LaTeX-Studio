@@ -37,7 +37,7 @@ public final class LineWrap extends AbstractAction implements Presenter.Menu, Ac
     @Override
     public void actionPerformed(ActionEvent e) {
         JCheckBoxMenuItem linewrapMenuItem = (JCheckBoxMenuItem)e.getSource();
-        ApplicationSettings.INSTANCE.setLineWrapStatus(linewrapMenuItem.isSelected());
+        ApplicationSettings.Setting.LINEWRAP_ENABLED.setValue(linewrapMenuItem.isSelected());
         ApplicationSettings.INSTANCE.save();
     }
     
@@ -45,7 +45,7 @@ public final class LineWrap extends AbstractAction implements Presenter.Menu, Ac
     public JMenuItem getMenuPresenter() {
        JCheckBoxMenuItem menuItem = new JCheckBoxMenuItem(WORD_WRAP,null);
        menuItem.addActionListener(this);
-       menuItem.setSelected(ApplicationSettings.INSTANCE.getLineWrapStatus());
+       menuItem.setSelected((boolean) ApplicationSettings.Setting.LINEWRAP_ENABLED.getValue());
        return menuItem; 
     }
     
