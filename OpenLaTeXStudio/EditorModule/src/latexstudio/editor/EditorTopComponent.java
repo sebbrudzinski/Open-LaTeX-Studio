@@ -8,8 +8,6 @@ package latexstudio.editor;
 import com.dropbox.core.DbxAccountInfo;
 import com.dropbox.core.DbxClient;
 import com.dropbox.core.DbxException;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
@@ -249,7 +247,6 @@ public final class EditorTopComponent extends TopComponent {
             } else {
                 carretCoordinates--;
                 rSyntaxTextArea.select(carretCoordinates, rSyntaxTextArea.getSelectionEnd());
-
             }
 
         }
@@ -282,11 +279,10 @@ public final class EditorTopComponent extends TopComponent {
         } else {
             try {
                 int currentOffsetFromLineStart = rSyntaxTextArea.getCaretOffsetFromLineStart();
-                int currentCaretPosition = 0;
-                int lineStartPosition = 0;
-                currentCaretPosition = rSyntaxTextArea.getCaretPosition();
-                lineStartPosition = currentCaretPosition - currentOffsetFromLineStart;
+                int currentCaretPosition = rSyntaxTextArea.getCaretPosition();
+                int lineStartPosition = currentCaretPosition - currentOffsetFromLineStart;
                 int lineLength = rSyntaxTextArea.getLineEndOffsetOfCurrentLine();
+                
                 String firstChar = rSyntaxTextArea.getText(lineStartPosition, lineLength - lineStartPosition);
                 if (firstChar.startsWith("%")) {
                     rSyntaxTextArea.replaceRange("", lineStartPosition, lineStartPosition + 1);
@@ -343,7 +339,7 @@ public final class EditorTopComponent extends TopComponent {
     }
 
     private void displayCloudStatus() {
-
+        
         boolean isConnected = false;
         String message;
         DbxAccountInfo info = null;

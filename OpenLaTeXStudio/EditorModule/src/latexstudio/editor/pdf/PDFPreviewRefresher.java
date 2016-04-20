@@ -30,8 +30,6 @@ public class PDFPreviewRefresher implements Runnable {
     private final EditorTopComponent etc;
     private final PDFDisplay pdfDisplay;
     
-    private static final Logger LOGGER = Logger.getLogger(PDFPreviewRefresher.class.getName());
-    
     public PDFPreviewRefresher(JScrollPane jScrollPane, JLabel jLabel,EditorTopComponent etc, PDFDisplay pdfDisplay) {
         this.jScrollPane = jScrollPane;
         this.jLabel = jLabel;

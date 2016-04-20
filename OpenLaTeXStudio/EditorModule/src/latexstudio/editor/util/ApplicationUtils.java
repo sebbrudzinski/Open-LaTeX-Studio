@@ -26,8 +26,8 @@ public final class ApplicationUtils {
     
     public static final String PDFLATEX = "pdflatex";
     
-    public static final String pathToTemplatesDirectory = "/latexstudio/editor/resources/templates/";
-    public static final String pathToTemplatesFile = "/latexstudio/editor/resources/templates.xml";
+    public static final String TEMPLATES_DIR = "/latexstudio/editor/resources/templates/";
+    public static final String TEMPLATES_FILE = "/latexstudio/editor/resources/templates.xml";
 
     private ApplicationUtils() {
     }

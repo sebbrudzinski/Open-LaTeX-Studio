@@ -9,7 +9,6 @@ import com.dropbox.core.DbxClient;
 import com.dropbox.core.DbxException;
 import com.dropbox.core.DbxRequestConfig;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Locale;
@@ -54,11 +53,7 @@ public final class DbxUtil {
         try {
             outputStream = new FileOutputStream(outputFile);
             client.getFile(remoteEntry.getPath(), remoteEntry.getRevision(), outputStream);
-        } catch (FileNotFoundException ex) {
-            Exceptions.printStackTrace(ex);
-        } catch (DbxException ex) {
-            Exceptions.printStackTrace(ex);
-        } catch (IOException ex) {
+        } catch (DbxException | IOException ex) {
             Exceptions.printStackTrace(ex);
         } finally {
             IOUtils.closeQuietly(outputStream);

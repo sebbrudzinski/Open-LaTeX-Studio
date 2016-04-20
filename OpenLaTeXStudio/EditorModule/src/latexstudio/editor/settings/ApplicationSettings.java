@@ -5,8 +5,6 @@
  */
 package latexstudio.editor.settings;
 
-import java.beans.PropertyChangeListener;
-import java.beans.PropertyChangeSupport;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -139,13 +137,10 @@ public final class ApplicationSettings extends Properties {
         }
         
         public void setValue( Object value ) throws IllegalArgumentException {
-            if( valueType.getValueClass().isInstance(value) )
-            {
+            if( valueType.getValueClass().isInstance(value) ) {
                 ApplicationSettings.INSTANCE.setSettingValue(this, value );
                 ApplicationSettings.INSTANCE.fireSettingChange(this, value);
-            }
-            else
-            {
+            } else {
                 throw new IllegalArgumentException( "Supplied setting value: " + value.toString() + " is not an instance of the value type of " + this.toString() + " which is " + this.getSettingType() + "." );
             }
         }

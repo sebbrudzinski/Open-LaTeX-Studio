@@ -5,12 +5,10 @@
  */
 package latexstudio.editor.files;
 
-import java.awt.event.ActionEvent;
 import java.io.File;
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.JOptionPane;
-import latexstudio.editor.EditorTopComponent;
 import latexstudio.editor.settings.ApplicationSettings;
 
 /**
@@ -25,7 +23,6 @@ public final class FileChooserService {
     }
 
     public enum DialogType {
-
         SAVE, SAVEAS, OPEN, PDF;
     }
 

@@ -33,7 +33,6 @@ public final class PDFPreviewBuilder {
             pageImage = pdfPage.convertToImage();
             int width = (int) (newScale * pageImage.getWidth());
             int height = (int) (newScale * pageImage.getHeight());
-            int type = pageImage.getType();
             
             return pageImage.getScaledInstance(width, height, SCALE_TYPE);
             

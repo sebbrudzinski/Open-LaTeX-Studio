@@ -10,6 +10,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 import javax.swing.DefaultListModel;
 import javax.swing.JDialog;
 import org.w3c.dom.Document;
@@ -64,14 +65,14 @@ public final class OpenTemplate extends JDialog implements ActionListener {
      @return Array of nodes that contain informations about preinstalled
      templates
      */
-    private ArrayList<Element> readXML() {
+    private List<Element> readXML() {
         try {
-            Document templatesXML = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(getClass().getResourceAsStream(ApplicationUtils.pathToTemplatesFile));
+            Document templatesXML = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(getClass().getResourceAsStream(ApplicationUtils.TEMPLATES_FILE));
 
             Element rootElement = templatesXML.getDocumentElement();
             NodeList templatesNodeList = rootElement.getChildNodes();
 
-            ArrayList<Element> templates = new ArrayList<Element>();
+            List<Element> templates = new ArrayList<>();
             for (int i = 0; i < templatesNodeList.getLength(); i++) {
                 Node node = templatesNodeList.item(i);
                 if (node instanceof Element) {
@@ -81,7 +82,7 @@ public final class OpenTemplate extends JDialog implements ActionListener {
 
             return templates;
         } catch (IOException | SAXException | ParserConfigurationException e) {
-            LOGGER.log("Templates data couldn't be read.");
+            LOGGER.log("Templates data couldn't be read. This might indicate an error with the application.");
             e.printStackTrace();
         }
         return null;
@@ -93,11 +94,11 @@ public final class OpenTemplate extends JDialog implements ActionListener {
      @return template full path
      */
     private String getFullPathToTemplate(String path) {
-        return ApplicationUtils.pathToTemplatesDirectory + path;
+        return ApplicationUtils.TEMPLATES_DIR + path;
     }
 
-    private DefaultListModel<Template> getListModelWithTemplates(ArrayList<Element> elements) {
-        DefaultListModel<Template> listModel = new DefaultListModel<Template>();
+    private DefaultListModel<Template> getListModelWithTemplates(List<Element> elements) {
+        DefaultListModel<Template> listModel = new DefaultListModel<>();
         for (Element e : elements) {
             listModel.addElement(getTemplateFromElement(e.getChildNodes()));
         }
@@ -105,7 +106,7 @@ public final class OpenTemplate extends JDialog implements ActionListener {
     }
 
     private Template getTemplateFromElement(NodeList templateNodes) {
-        ArrayList<Element> templateElements = new ArrayList<Element>(4);
+        List<Element> templateElements = new ArrayList<>(4);
         for (int i = 0; i < templateNodes.getLength(); i++) {
             Node node = templateNodes.item(i);
             if (node instanceof Element) {

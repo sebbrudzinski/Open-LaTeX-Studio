@@ -16,7 +16,6 @@ import java.util.List;
 import javax.swing.DefaultListSelectionModel;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
-import latexstudio.editor.ApplicationLogger;
 import latexstudio.editor.DropboxRevisionsTopComponent;
 import latexstudio.editor.EditorTopComponent;
 import latexstudio.editor.TopComponentFactory;

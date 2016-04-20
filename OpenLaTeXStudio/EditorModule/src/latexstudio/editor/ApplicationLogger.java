@@ -28,7 +28,7 @@ public class ApplicationLogger {
     }
     
     public void log(String message) {
-		Date currentDate = new Date();
+	Date currentDate = new Date();
         otc.logToOutput(loggerDateFormat.format(currentDate) + " [" + loggerName + "] " + message);
     }
     
