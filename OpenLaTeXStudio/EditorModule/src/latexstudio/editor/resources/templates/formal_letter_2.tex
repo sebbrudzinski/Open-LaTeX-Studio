@@ -1,0 +1,74 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Full Size Formal Letter
+% LaTeX Template
+% Version 1.2 (8/2/13)
+%
+% This template has been downloaded from:
+% http://www.LaTeXTemplates.com
+%
+% Original author:
+% Micha Elmueller (http://micha.elmueller.net/)
+%
+% License:
+% CC BY-NC-SA 3.0 (http://creativecommons.org/licenses/by-nc-sa/3.0/)
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%----------------------------------------------------------------------------------------
+%	DOCUMENT CONFIGURATIONS
+%----------------------------------------------------------------------------------------
+
+\documentclass[
+	pagenumber=false, % Removes page numbers from page 2 onwards
+	parskip=half, % Separates paragraphs with some whitespace, use parskip=full for more space or comment out to return to default
+	fromalign=right, % Aligns the from address to the right
+	foldmarks=true, % Prints small fold marks on the left of the page
+	addrfield=true % Set to false to hide the addressee section - you will then want to adjust the height of the body of the letter on the page by adding the following in this section: \makeatletter \@setplength{refvpos}{\useplength{toaddrvpos}} \makeatletter
+	]{scrlttr2}
+
+\usepackage[english]{babel} % Explicitly load the babel package to stop an error occurring on some LaTeX installations
+
+\renewcommand*{\raggedsignature}{\raggedright} % Stop the signature from indenting
+
+%----------------------------------------------------------------------------------------
+%	YOUR INFORMATION AND LETTER DATE
+%----------------------------------------------------------------------------------------
+
+\setkomavar{fromname}{John Smith} % Your name used in the from address
+\setkomavar{fromaddress}{123 Broadway \\ City, State 12345} % Your address
+\setkomavar{signature}{John Smith} % Your name used in the signature
+
+\date{\today} % Date of the letter
+
+%----------------------------------------------------------------------------------------
+ 
+\begin{document}
+
+%----------------------------------------------------------------------------------------
+%	ADDRESSEE
+%----------------------------------------------------------------------------------------
+ 
+\begin{letter}{Director \\ Corporation \\ 123 Pleasant Lane \\ City, State 12345} % Addressee name and address
+
+%----------------------------------------------------------------------------------------
+%	LETTER CONTENT
+%----------------------------------------------------------------------------------------
+
+\opening{Dear Sir or Madam,}
+
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam aliquet tellus vel justo porta et semper libero rutrum. Duis vestibulum sagittis aliquam. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus ac velit eu dolor lobortis fringilla. Quisque imperdiet porta ante in pretium. Maecenas facilisis varius metus et blandit. Proin rhoncus arcu non ante elementum non vehicula sem varius. Morbi feugiat, elit eget tristique posuere, urna eros vestibulum nibh, at tempus neque justo nec enim.
+
+Curabitur id est enim. Suspendisse potenti. Fusce eleifend sodales tortor, a interdum tortor sollicitudin vel. Morbi vel tellus enim, eget hendrerit ligula. Proin molestie suscipit erat, eget consectetur orci convallis at. Ut vestibulum, odio vitae blandit dignissim, dui magna auctor leo, at molestie augue magna sed nisi. Phasellus ipsum magna, fringilla id tempor id, tristique vitae mauris. Maecenas sed orci vel eros consectetur ultrices.
+
+Mauris enim velit, feugiat at venenatis eu, scelerisque vitae mauris. Nullam accumsan facilisis mauris sagittis iaculis. Mauris condimentum dictum libero. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Nullam consequat malesuada feugiat. Vestibulum tempor commodo turpis id gravida.
+
+\closing{Sincerely,}
+
+\setkomavar*{enclseparator}{Attached} % Change the default "encl:" to "Attached:"
+\encl{Copyright permission form} % Attached documents
+
+%----------------------------------------------------------------------------------------
+
+\end{letter}
+ 
+\end{document}

@@ -9,8 +9,10 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
+import java.util.Scanner;
 import org.apache.pdfbox.io.IOUtils;
 import org.openide.util.Exceptions;
 
@@ -61,5 +63,26 @@ public final class FileService {
         }
         
         return content;
+    }
+    
+    public static String readFromStream(InputStream stream){
+        Scanner sc = null;
+        String content = "";
+        
+        try{
+            sc = new Scanner(stream);
+            StringBuilder sb = new StringBuilder();
+            
+            while(sc.hasNextLine())
+            {
+                sb.append(sc.nextLine());
+                sb.append(System.lineSeparator());
+            }
+            return sb.toString();
+        }
+        finally{
+            IOUtils.closeQuietly(stream);
+            sc.close();
+        }
     }
 }
