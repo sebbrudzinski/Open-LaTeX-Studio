@@ -42,7 +42,8 @@ public class OpenTemplatePanel extends javax.swing.JPanel {
      */
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
-    private void initComponents() {
+    private void initComponents()
+    {
 
         jSplitPane1 = new javax.swing.JSplitPane();
         jPanel2 = new javax.swing.JPanel();
@@ -58,7 +59,7 @@ public class OpenTemplatePanel extends javax.swing.JPanel {
 
         jSplitPane1.setDividerLocation(200);
 
-        jScrollPane2.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createEtchedBorder(), org.openide.util.NbBundle.getMessage(OpenTemplatePanel.class, "OpenTemplatePanel.descriptionArea.border.title"))); // NOI18N
+        jScrollPane2.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createEtchedBorder(), org.openide.util.NbBundle.getMessage(OpenTemplatePanel.class, "OpenTemplatePanel.jScrollPane2.border.title"))); // NOI18N
 
         descriptionArea.setEditable(false);
         descriptionArea.setColumns(20);
@@ -67,6 +68,8 @@ public class OpenTemplatePanel extends javax.swing.JPanel {
         descriptionArea.setWrapStyleWord(true);
         descriptionArea.setBorder(null);
         jScrollPane2.setViewportView(descriptionArea);
+        descriptionArea.getAccessibleContext().setAccessibleName(org.openide.util.NbBundle.getMessage(OpenTemplatePanel.class, "OpenTemplatePanel.descriptionArea.AccessibleContext.accessibleName")); // NOI18N
+        descriptionArea.getAccessibleContext().setAccessibleDescription(org.openide.util.NbBundle.getMessage(OpenTemplatePanel.class, "OpenTemplatePanel.descriptionArea.AccessibleContext.accessibleDescription")); // NOI18N
 
         sourceField.setEditable(false);
         sourceField.setText(org.openide.util.NbBundle.getMessage(OpenTemplatePanel.class, "OpenTemplatePanel.sourceField.text")); // NOI18N
@@ -75,15 +78,19 @@ public class OpenTemplatePanel extends javax.swing.JPanel {
         org.openide.awt.Mnemonics.setLocalizedText(loadTemplateButton, org.openide.util.NbBundle.getMessage(OpenTemplatePanel.class, "OpenTemplatePanel.loadTemplateButton.text")); // NOI18N
         loadTemplateButton.setMaximumSize(new java.awt.Dimension(134, 32));
         loadTemplateButton.setMinimumSize(new java.awt.Dimension(134, 32));
-        loadTemplateButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
+        loadTemplateButton.addActionListener(new java.awt.event.ActionListener()
+        {
+            public void actionPerformed(java.awt.event.ActionEvent evt)
+            {
                 loadTemplateButtonActionPerformed(evt);
             }
         });
 
         org.openide.awt.Mnemonics.setLocalizedText(openSourcePageButton, org.openide.util.NbBundle.getMessage(OpenTemplatePanel.class, "OpenTemplatePanel.openSourcePageButton.text")); // NOI18N
-        openSourcePageButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
+        openSourcePageButton.addActionListener(new java.awt.event.ActionListener()
+        {
+            public void actionPerformed(java.awt.event.ActionEvent evt)
+            {
                 openSourcePageButtonActionPerformed(evt);
             }
         });
@@ -122,8 +129,10 @@ public class OpenTemplatePanel extends javax.swing.JPanel {
         templatesList.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createEtchedBorder(), org.openide.util.NbBundle.getMessage(OpenTemplatePanel.class, "OpenTemplatePanel.templatesList.border.title"))); // NOI18N
         templatesList.setModel(listModel);
         templatesList.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
-        templatesList.addListSelectionListener(new javax.swing.event.ListSelectionListener() {
-            public void valueChanged(javax.swing.event.ListSelectionEvent evt) {
+        templatesList.addListSelectionListener(new javax.swing.event.ListSelectionListener()
+        {
+            public void valueChanged(javax.swing.event.ListSelectionEvent evt)
+            {
                 templatesListValueChanged(evt);
             }
         });
