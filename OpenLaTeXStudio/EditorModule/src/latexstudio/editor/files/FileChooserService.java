@@ -143,7 +143,7 @@ public final class FileChooserService {
                             "File already exists",
                             JOptionPane.YES_NO_OPTION);
             
-            if (reply == JOptionPane.NO_OPTION) {
+            if (reply != JOptionPane.YES_OPTION) {
                 file = FileChooserService.getSelectedFile("tex", "TeX files", FileChooserService.DialogType.SAVE, true);
             }
         }
