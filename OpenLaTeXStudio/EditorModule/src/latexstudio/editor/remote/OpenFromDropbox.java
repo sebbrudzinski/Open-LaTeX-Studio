@@ -18,6 +18,7 @@ import javax.swing.JList;
 import javax.swing.JOptionPane;
 import latexstudio.editor.DropboxRevisionsTopComponent;
 import latexstudio.editor.EditorTopComponent;
+import latexstudio.editor.RevisionDisplayTopComponent;
 import latexstudio.editor.TopComponentFactory;
 import latexstudio.editor.files.FileService;
 import latexstudio.editor.util.ApplicationUtils;
@@ -41,6 +42,8 @@ public final class OpenFromDropbox implements ActionListener {
             .getTopComponent(EditorTopComponent.class.getSimpleName());
     private final DropboxRevisionsTopComponent drtc = new TopComponentFactory<DropboxRevisionsTopComponent>()
             .getTopComponent(DropboxRevisionsTopComponent.class.getSimpleName());
+    private final RevisionDisplayTopComponent revtc = new TopComponentFactory<RevisionDisplayTopComponent>()
+            .getTopComponent(RevisionDisplayTopComponent.class.getSimpleName());
 
     @Override
     public void actionPerformed(ActionEvent e) {
@@ -69,6 +72,8 @@ public final class OpenFromDropbox implements ActionListener {
             DbxEntryDto entry = (DbxEntryDto) list.getSelectedValue();
             String localPath = ApplicationUtils.getAppDirectory() + File.separator + entry.getName();
             File outputFile = DbxUtil.downloadRemoteFile(entry, localPath);
+            
+            revtc.close();
 
             drtc.updateRevisionsList(entry.getPath());
             drtc.open();

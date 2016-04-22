@@ -17,6 +17,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import javax.swing.JOptionPane;
 import latexstudio.editor.EditorTopComponent;
+import latexstudio.editor.RevisionDisplayTopComponent;
 import latexstudio.editor.TopComponentFactory;
 import latexstudio.editor.util.ApplicationUtils;
 import org.apache.commons.io.IOUtils;
@@ -39,6 +40,8 @@ public final class UploadToDropbox implements ActionListener {
 
     private final EditorTopComponent etc = new TopComponentFactory<EditorTopComponent>()
             .getTopComponent(EditorTopComponent.class.getSimpleName());
+    private final RevisionDisplayTopComponent revtc = new TopComponentFactory<RevisionDisplayTopComponent>()
+            .getTopComponent(RevisionDisplayTopComponent.class.getSimpleName());
 
     @Override
     public void actionPerformed(ActionEvent e) {
@@ -70,6 +73,7 @@ public final class UploadToDropbox implements ActionListener {
                         "Successfuly uploaded file " + uploadedFile.name + " (" + uploadedFile.humanSize + ")",
                         "File uploaded to Dropbox",
                         JOptionPane.INFORMATION_MESSAGE);
+                revtc.close();
             } catch (DbxException ex) {
                 DbxUtil.showDbxAccessDeniedPrompt();
             } catch (IOException ex) {
