@@ -60,7 +60,7 @@ import org.openide.windows.TopComponent;
 })
 public final class DropboxRevisionsTopComponent extends TopComponent {
 
-    private DefaultListModel<DbxEntryRevision> dlm = new DefaultListModel<DbxEntryRevision>();
+    private DefaultListModel<DbxEntryRevision> dlm = new DefaultListModel<>();
     private static final ApplicationLogger LOGGER = new ApplicationLogger("Cloud Support");
 
     private final RevisionDisplayTopComponent revtc = new TopComponentFactory<RevisionDisplayTopComponent>()

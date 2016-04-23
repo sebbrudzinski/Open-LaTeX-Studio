@@ -53,7 +53,7 @@ public final class OpenFromDropbox implements ActionListener {
             return;
         }
         
-        List<DbxEntryDto> dbxEntries = new ArrayList<DbxEntryDto>();
+        List<DbxEntryDto> dbxEntries = new ArrayList<>();
                              
         try {
             for (DbxEntry entry : client.searchFileAndFolderNames("/", ".tex")) {
@@ -64,12 +64,12 @@ public final class OpenFromDropbox implements ActionListener {
             return; //No point continuing
         }
         
-        JList list = new JList(dbxEntries.toArray());
+        JList<DbxEntryDto> list = new JList(dbxEntries.toArray());
         list.setSelectionMode(DefaultListSelectionModel.SINGLE_SELECTION);
         int option = JOptionPane.showConfirmDialog(null, list, "Open file from Dropbox", JOptionPane.OK_CANCEL_OPTION);
         
         if (option == JOptionPane.OK_OPTION && !list.isSelectionEmpty()) {
-            DbxEntryDto entry = (DbxEntryDto) list.getSelectedValue();
+            DbxEntryDto entry = list.getSelectedValue();
             String localPath = ApplicationUtils.getAppDirectory() + File.separator + entry.getName();
             File outputFile = DbxUtil.downloadRemoteFile(entry, localPath);
             

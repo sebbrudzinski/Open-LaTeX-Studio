@@ -13,7 +13,7 @@ import java.io.InputStream;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.util.Scanner;
-import org.apache.pdfbox.io.IOUtils;
+import org.apache.commons.io.IOUtils;
 import org.openide.util.Exceptions;
 
 /**
@@ -26,62 +26,33 @@ public final class FileService {
     }
     
     public static void writeToFile(String filename, String content) {
-        PrintWriter writer = null;
-        try {
-            writer = new PrintWriter(filename, "UTF-8");
+        try (PrintWriter writer = new PrintWriter(filename, "UTF-8")) {
             writer.print(content);
-        } catch (FileNotFoundException ex) {
+        } catch (FileNotFoundException | UnsupportedEncodingException ex) {
             //Should never happen
             Exceptions.printStackTrace(ex);
-        } catch (UnsupportedEncodingException ex) {
-            //Should never happen
-            Exceptions.printStackTrace(ex);
-        } finally {
-            writer.close();
         }
     }
     
     public static String readFromFile(String filename) {  
-        BufferedReader br = null;
-        String content = "";
+        try (FileReader reader = new FileReader(filename)) {
+            return IOUtils.toString(reader);
+        } catch (IOException ex) {
+            Exceptions.printStackTrace(ex);
+        }
         
+        return null;
+    }
+    
+    public static String readFromStream(InputStream stream) {
         try {
-            br = new BufferedReader(new FileReader(filename));
-            StringBuilder sb = new StringBuilder();
-            String line = br.readLine();
-
-            while (line != null) {
-                sb.append(line);
-                sb.append(System.lineSeparator());
-                line = br.readLine();
-            }
-            content = sb.toString();
+            return IOUtils.toString(stream);
         } catch (IOException ex) {
             Exceptions.printStackTrace(ex);
         } finally {
-            IOUtils.closeQuietly(br);
-        }
-        
-        return content;
-    }
-    
-    public static String readFromStream(InputStream stream){
-        Scanner sc = null;
-        
-        try{
-            sc = new Scanner(stream);
-            StringBuilder sb = new StringBuilder();
-            
-            while(sc.hasNextLine())
-            {
-                sb.append(sc.nextLine());
-                sb.append(System.lineSeparator());
-            }
-            return sb.toString();
-        }
-        finally{
             IOUtils.closeQuietly(stream);
-            sc.close();
         }
+        
+        return null;
     }
 }

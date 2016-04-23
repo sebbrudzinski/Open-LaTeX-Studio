@@ -48,7 +48,7 @@ public final class OpenFile implements ActionListener {
       * @param etc editor component, where you want to open specified file
       * @param file file, that exists and isn't a folder
      */
-    public static void openFile(EditorTopComponent etc, File file) {
+    public void openFile(EditorTopComponent etc, File file) {
         if (file != null && file.exists() && !file.isDirectory()) {
             String content = FileService.readFromFile(file.getAbsolutePath());
             etc.setEditorContent(content);
@@ -56,7 +56,7 @@ public final class OpenFile implements ActionListener {
         }
     }
 
-    public static void openFile(EditorTopComponent etc, InputStream file) {
+    public void openFile(EditorTopComponent etc, InputStream file) {
         etc.setEditorContent(FileService.readFromStream(file));
     }
 }

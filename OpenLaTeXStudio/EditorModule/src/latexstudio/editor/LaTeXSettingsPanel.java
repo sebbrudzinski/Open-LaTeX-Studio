@@ -144,12 +144,12 @@ public final class LaTeXSettingsPanel extends javax.swing.JPanel {
         jPanel1.getAccessibleContext().setAccessibleName(org.openide.util.NbBundle.getMessage(LaTeXSettingsPanel.class, "LaTeXSettingsPanel.jPanel1.AccessibleContext.accessibleName")); // NOI18N
     }// </editor-fold>//GEN-END:initComponents
     
-    private void prepareAutoCompleteComponents(){
+    private void prepareAutoCompleteComponents() {
         prepareAutoCompleteDelayTextFieldDocumentListener();
         setAutoCompleteComponentsEnabled(autoCompleteCheckBox.isSelected());
     }
     
-    private void prepareAutoCompleteDelayTextFieldDocumentListener(){
+    private void prepareAutoCompleteDelayTextFieldDocumentListener() {
         
         autoCompleteDelayTextField.getDocument().addDocumentListener(new DocumentListener() {
             @Override
@@ -172,13 +172,14 @@ public final class LaTeXSettingsPanel extends javax.swing.JPanel {
              */
             public void onUpdated(DocumentEvent e) {
                 final Document doc = e.getDocument();
-                if(doc.getLength()>4){
+                if (doc.getLength() > 4){
                     EventQueue.invokeLater(new Runnable() {
                         @Override
                         public void run() {
                             try {
-                                if(doc.getLength()>4)
-                                    doc.remove(4, doc.getLength()-4);
+                                if (doc.getLength() > 4) {
+                                    doc.remove(4, doc.getLength() - 4);
+                                }
                             } catch (BadLocationException ex) {
                                 Exceptions.printStackTrace(ex);
                             }
@@ -210,14 +211,14 @@ public final class LaTeXSettingsPanel extends javax.swing.JPanel {
     
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         File directory = FileChooserService.getSelectedDirectory("Choose");
-        File pdfLatexExe;
         String fname = (ApplicationUtils.isWindows()? "/pdflatex.exe" : "/pdflatex");
+        
         if (directory != null) {
-            pdfLatexExe = new File(directory.toString() + fname);
+            File pdfLatexExe = new File(directory.toString() + fname);
             int reply = JOptionPane.NO_OPTION;
             while (!pdfLatexExe.exists() && reply == JOptionPane.NO_OPTION) {
                 reply = JOptionPane.showConfirmDialog(null,
-                        "We could not find the pdflatex in the selected path. Do you confirm the selection?",
+                        "pdflatex has not been found on the selected path. Do you confirm the selection?",
                         "Pdflatex not found",
                         JOptionPane.YES_NO_OPTION);
 
@@ -237,7 +238,7 @@ public final class LaTeXSettingsPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void autoCompleteCheckBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_autoCompleteCheckBoxActionPerformed
-        if( ! autoCompleteCheckBox.equals(evt.getSource()) ) {
+        if(!autoCompleteCheckBox.equals(evt.getSource())) {
             return;
         }
         setAutoCompleteComponentsEnabled(autoCompleteCheckBox.isSelected());
@@ -272,8 +273,9 @@ public final class LaTeXSettingsPanel extends javax.swing.JPanel {
         if(autoCompleteStatus){
             try{
                 int autoCompleteDelay = Integer.parseInt(autoCompleteDelayTextField.getText());
-                if(autoCompleteDelay<0||autoCompleteDelay>9999)
+                if (autoCompleteDelay < 0 || autoCompleteDelay > 9999) {
                     return false;
+                }
             }catch(NumberFormatException ex){
                 return false;
             }

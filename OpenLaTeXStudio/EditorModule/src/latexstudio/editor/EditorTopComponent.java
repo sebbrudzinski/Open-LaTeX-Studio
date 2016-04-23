@@ -227,56 +227,44 @@ public final class EditorTopComponent extends TopComponent {
     }
 
     private String findStartSymbol() {
-        String highlightedTextArea2 = null;
-        boolean toggle = true;
         int carretCoordinates;
-        while (toggle) {
+        while (true) {
             carretCoordinates = rSyntaxTextArea.getSelectionStart();
             if (rSyntaxTextArea.getSelectedText().startsWith("\n") || rSyntaxTextArea.getSelectionStart() == 0) {
-                toggle = false;
                 if (rSyntaxTextArea.getSelectionStart() != 0) {
                     rSyntaxTextArea.select(carretCoordinates + 1, rSyntaxTextArea.getSelectionEnd());
-                    highlightedTextArea2 = rSyntaxTextArea.getSelectedText();
-                    return highlightedTextArea2;
                 } else {
                     rSyntaxTextArea.select(carretCoordinates, rSyntaxTextArea.getSelectionEnd());
-                    highlightedTextArea2 = rSyntaxTextArea.getSelectedText();
-                    return highlightedTextArea2;
                 }
-
+                return rSyntaxTextArea.getSelectedText();
             } else {
                 carretCoordinates--;
                 rSyntaxTextArea.select(carretCoordinates, rSyntaxTextArea.getSelectionEnd());
             }
-
         }
-        highlightedTextArea2 = rSyntaxTextArea.getSelectedText();
-        return highlightedTextArea2;
     }
 
     public void commentOutText() {
         String highlightedTextArea = rSyntaxTextArea.getSelectedText();
-        if (highlightedTextArea != null) {
+        
+        if (highlightedTextArea != null) { // Some text is highlighted case
             highlightedTextArea = findStartSymbol();
+            
             if (highlightedTextArea.startsWith("%")) {
                 rSyntaxTextArea.replaceSelection(highlightedTextArea.replace("%", ""));
-
             } else {
                 String[] array = highlightedTextArea.split("\n");
-                String tempStr = "";
+                StringBuilder commentedCodeBuilder = new StringBuilder();
                 for (int i = 0; i < array.length; i++) {
+                    array[i] = "%" + array[i];
                     if (i != array.length - 1) {
-                        array[i] = "%" + array[i] + "\n";
-                        tempStr = tempStr + array[i];
-                    } else {
-                        array[i] = "%" + array[i];
-                        tempStr = tempStr + array[i];
+                         array[i] = array[i] + "\n";
                     }
-
+                    commentedCodeBuilder.append(array[i]);
                 }
-                rSyntaxTextArea.replaceSelection(tempStr);
+                rSyntaxTextArea.replaceSelection(commentedCodeBuilder.toString());
             }
-        } else {
+        } else {  // Nothing is highlighted case
             try {
                 int currentOffsetFromLineStart = rSyntaxTextArea.getCaretOffsetFromLineStart();
                 int currentCaretPosition = rSyntaxTextArea.getCaretPosition();
