@@ -1,0 +1,4 @@
+language: java
+sudo: false
+before_script: cd OpenLaTeXStudio
+script: mvn clean verify
