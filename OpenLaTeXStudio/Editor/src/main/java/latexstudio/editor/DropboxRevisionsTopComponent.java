@@ -99,7 +99,7 @@ public final class DropboxRevisionsTopComponent extends TopComponent {
                 "Revision", "Modified", "File size", "Review"
             }
         ) {
-            boolean[] canEdit = new boolean [] {
+            private boolean[] canEdit = new boolean [] {
                 false, false, false, false
             };
 

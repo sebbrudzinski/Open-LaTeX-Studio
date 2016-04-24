@@ -119,8 +119,7 @@ public final class ConnectDropbox implements ActionListener {
                         JOptionPane.ERROR_MESSAGE);
                 Cloud.getInstance().setStatus(Cloud.Status.DISCONNECTED);
             }
-        }
-        else {
+        } else {
             Cloud.getInstance().setStatus(currentCloudStatus);
         }
     }

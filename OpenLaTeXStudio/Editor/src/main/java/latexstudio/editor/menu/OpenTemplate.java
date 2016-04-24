@@ -123,19 +123,20 @@ public final class OpenTemplate extends JDialog implements ActionListener {
             switch (templateElement.getTagName()) {
                 case "name": 
                     template.setName(elementString);
-                break;
+                    break;
 
                 case "filename": 
                     template.setPath(getFullPathToTemplate(elementString));
-                break;
+                    break;
 
                 case "description": 
                     template.setDescription(elementString);
-                break;
+                    break;
 
                 case "source": 
                     template.setSource(elementString);
-                break;
+                    break;
+                default:
             }
         }
         return template;

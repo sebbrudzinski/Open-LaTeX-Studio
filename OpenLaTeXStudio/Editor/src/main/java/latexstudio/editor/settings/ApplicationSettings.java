@@ -91,7 +91,7 @@ public final class ApplicationSettings extends Properties {
         fireSettingChange(setting, value);
     }
     
-    public static enum Setting {
+    public enum Setting {
         DROPBOX_TOKEN( "dropbox.token", "", SettingType.STRING ),
         LATEX_PATH( "latex.path", "", SettingType.STRING ),
         USER_LASTDIR( "user.lastdir", "", SettingType.STRING ),
@@ -122,7 +122,7 @@ public final class ApplicationSettings extends Properties {
             String value = ApplicationSettings.INSTANCE.getSettingValue(this);
             Object typedValue = null;
             
-            switch( valueType ) {
+            switch(valueType) {
                 case STRING:
                     typedValue = String.valueOf(value);
                     break;
@@ -131,6 +131,9 @@ public final class ApplicationSettings extends Properties {
                     break;
                 case BOOLEAN:
                     typedValue = Boolean.valueOf(value);
+                    break;
+                default:
+                    
             }
             
             return typedValue;
@@ -149,7 +152,7 @@ public final class ApplicationSettings extends Properties {
     /**
      * Wrapper class to restrict the possible value types of settings
      */
-    public static enum SettingType {
+    public enum SettingType {
         INT( Integer.class ),
         STRING( String.class ),
         BOOLEAN( Boolean.class);

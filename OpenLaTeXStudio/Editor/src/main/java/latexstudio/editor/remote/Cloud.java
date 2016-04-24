@@ -15,7 +15,7 @@ import javax.swing.JLabel;
  * @see http://wiki.netbeans.org/BookNBPlatformCookbookCH0211
  * @author Geraldo
  */
-public class Cloud {
+public final class Cloud {
 
     private Status status = Status.DISCONNECTED;
 
