@@ -114,8 +114,9 @@ public final class FileChooserService {
     */
     public static File getFileWithConfirmation(File currentFile, String extension, String description, DialogType type, boolean fixExtension) {
         File file = currentFile;
-        if(file == null || type == DialogType.SAVEAS)
+        if (file == null || type == DialogType.SAVEAS) {
             file = getSelectedFile(extension, description, type, fixExtension);
+        }
         
         file = confirmFileSave(file, currentFile);
         

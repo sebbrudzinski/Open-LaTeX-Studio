@@ -7,7 +7,6 @@ package latexstudio.editor.pdf;
 
 import java.awt.Point;
 import latexstudio.editor.runtime.CommandLineExecutor;
-import java.util.logging.Logger;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;

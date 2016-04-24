@@ -8,9 +8,9 @@ package latexstudio.editor;
 import com.dropbox.core.DbxClient;
 import com.dropbox.core.DbxEntry;
 import com.dropbox.core.DbxException;
-import com.sun.glass.events.KeyEvent;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -99,7 +99,7 @@ public final class DropboxRevisionsTopComponent extends TopComponent {
                 "Revision", "Modified", "File size", "Review"
             }
         ) {
-            boolean[] canEdit = new boolean [] {
+            private boolean[] canEdit = new boolean [] {
                 false, false, false, false
             };
 
