@@ -8,9 +8,9 @@ package latexstudio.editor;
 import com.dropbox.core.DbxClient;
 import com.dropbox.core.DbxEntry;
 import com.dropbox.core.DbxException;
-import com.sun.glass.events.KeyEvent;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -258,7 +258,7 @@ public final class DropboxRevisionsTopComponent extends TopComponent {
 
         jTable1.setModel(model);
         ButtonColumn buttonColumn = new ButtonColumn(jTable1, showVersion, REVIEW_COLUMN);
-        buttonColumn.setMnemonic(KeyEvent.VK_D);
+        buttonColumn.setMnemonic(KeyEvent.VK_DOWN);
     }
 
     public DefaultListModel<DbxEntryRevision> getDlm() {
