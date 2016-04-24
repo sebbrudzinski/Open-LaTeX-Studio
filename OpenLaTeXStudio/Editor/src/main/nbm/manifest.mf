@@ -1,0 +1,4 @@
+Manifest-Version: 1.0
+OpenIDE-Module-Layer: openlatexstudio/layer.xml
+OpenIDE-Module-Localizing-Bundle: openlatexstudio/Bundle.properties
+

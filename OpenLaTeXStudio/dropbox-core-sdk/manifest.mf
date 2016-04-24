@@ -1,5 +1,0 @@
-Manifest-Version: 1.0
-OpenIDE-Module: latexstudio.dropbox
-OpenIDE-Module-Localizing-Bundle: latexstudio/dropbox/Bundle.properties
-OpenIDE-Module-Specification-Version: 1.0
-
