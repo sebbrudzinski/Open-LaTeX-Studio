@@ -258,7 +258,7 @@ public final class DropboxRevisionsTopComponent extends TopComponent {
 
         jTable1.setModel(model);
         ButtonColumn buttonColumn = new ButtonColumn(jTable1, showVersion, REVIEW_COLUMN);
-        buttonColumn.setMnemonic(KeyEvent.VK_DOWN);
+        buttonColumn.setMnemonic(KeyEvent.VK_D);
     }
 
     public DefaultListModel<DbxEntryRevision> getDlm() {
