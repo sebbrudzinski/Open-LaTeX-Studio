@@ -36,27 +36,31 @@ public final class OpenFile implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        File file = FileChooserService.getSelectedFile("tex", "TeX files", DialogType.OPEN);
-        if (file != null) {
-            openFile(etc, file);
+        if (etc.canOpen()) {
+            File file = FileChooserService.getSelectedFile("tex", "TeX files", DialogType.OPEN);
+            if (file != null) {
+                openFile(etc, file);
+            }
         }
     }
 
     /**
-      * Opens file content in EditorTopComponent
-      *
-      * @param etc editor component, where you want to open specified file
-      * @param file file, that exists and isn't a folder
+     * Opens file content in EditorTopComponent
+     *
+     * @param etc editor component, where you want to open specified file
+     * @param file file, that exists and isn't a folder
      */
     public void openFile(EditorTopComponent etc, File file) {
         if (file != null && file.exists() && !file.isDirectory()) {
             String content = FileService.readFromFile(file.getAbsolutePath());
             etc.setEditorContent(content);
             etc.setCurrentFile(file);
+            etc.setModified(false);
         }
     }
 
     public void openFile(EditorTopComponent etc, InputStream file) {
         etc.setEditorContent(FileService.readFromStream(file));
+        etc.setModified(false);
     }
 }

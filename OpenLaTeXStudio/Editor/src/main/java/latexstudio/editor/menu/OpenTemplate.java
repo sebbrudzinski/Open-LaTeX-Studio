@@ -62,8 +62,8 @@ public final class OpenTemplate extends JDialog implements ActionListener {
     }
 
     /**
-     @return Array of nodes that contain informations about preinstalled
-     templates
+     * @return Array of nodes that contain informations about preinstalled
+     * templates
      */
     private List<Element> readXML() {
         try {
@@ -89,9 +89,9 @@ public final class OpenTemplate extends JDialog implements ActionListener {
     }
 
     /**
-
-     @param path template filename
-     @return template full path
+     *
+     * @param path template filename
+     * @return template full path
      */
     private String getFullPathToTemplate(String path) {
         return ApplicationUtils.TEMPLATES_DIR + path;
@@ -121,19 +121,19 @@ public final class OpenTemplate extends JDialog implements ActionListener {
             String elementString = elementText.getData();
 
             switch (templateElement.getTagName()) {
-                case "name": 
+                case "name":
                     template.setName(elementString);
                     break;
 
-                case "filename": 
+                case "filename":
                     template.setPath(getFullPathToTemplate(elementString));
                     break;
 
-                case "description": 
+                case "description":
                     template.setDescription(elementString);
                     break;
 
-                case "source": 
+                case "source":
                     template.setSource(elementString);
                     break;
                 default:
@@ -144,6 +144,8 @@ public final class OpenTemplate extends JDialog implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        this.setVisible(true);
+        if (etc.canOpen()) {
+            this.setVisible(true);
+        }
     }
 }

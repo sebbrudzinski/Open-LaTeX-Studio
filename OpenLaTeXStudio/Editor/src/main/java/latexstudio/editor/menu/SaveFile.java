@@ -35,16 +35,20 @@ import org.openide.util.NbBundle.Messages;
 })
 @Messages("CTL_SaveFile=Save")
 public final class SaveFile implements ActionListener {
-    
+
     private final EditorTopComponent etc = new TopComponentFactory<EditorTopComponent>()
             .getTopComponent(EditorTopComponent.class.getSimpleName());
     private static final ApplicationLogger LOGGER = new ApplicationLogger("Open LaTeX Studio");
 
     @Override
-    public void actionPerformed(ActionEvent e) {                
-        String content = etc.getEditorContent();       
+    public void actionPerformed(ActionEvent e) {
+        saveFile(etc);
+    }
+
+    public static void saveFile(EditorTopComponent etc) {
+        String content = etc.getEditorContent();
         File file = FileChooserService.getFileWithConfirmation(etc.getCurrentFile(), "tex", "TeX files", DialogType.SAVE, true);
-        
+
         if (file != null) {
             FileService.writeToFile(file.getAbsolutePath(), content);
             LOGGER.log("Saving file " + file.getAbsolutePath());
