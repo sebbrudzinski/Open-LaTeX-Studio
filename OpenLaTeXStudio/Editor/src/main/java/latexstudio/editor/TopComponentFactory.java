@@ -18,7 +18,7 @@ public final class TopComponentFactory<T> {
      * Retrieves top component. 
      * @param name name of the top component
      * 
-     * @return top component, casted approperiately
+     * @return top component, casted appropriately
      */
     public T getTopComponent(String name) {
         TopComponent tc = WindowManager.getDefault().findTopComponent(name);

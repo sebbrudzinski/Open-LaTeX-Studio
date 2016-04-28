@@ -16,7 +16,6 @@ import java.io.InputStreamReader;
 import java.net.URL;
 import javax.swing.JOptionPane;
 import javax.swing.text.BadLocationException;
-import latexstudio.editor.menu.SaveFile;
 import latexstudio.editor.remote.Cloud;
 import latexstudio.editor.remote.DbxState;
 import latexstudio.editor.remote.DbxUtil;
@@ -68,6 +67,8 @@ public final class EditorTopComponent extends TopComponent {
 
     private AutoCompletion autoCompletion = null;
     private static final ApplicationLogger LOGGER = new ApplicationLogger("Cloud Support");
+    
+    private FileActions fileActions;
 
     public EditorTopComponent() {
         initComponents();
@@ -76,7 +77,8 @@ public final class EditorTopComponent extends TopComponent {
         setToolTipText(Bundle.HINT_EditorTopComponent());
         putClientProperty(TopComponent.PROP_CLOSING_DISABLED, Boolean.TRUE);
         putClientProperty(TopComponent.PROP_UNDOCKING_DISABLED, Boolean.TRUE);
-
+        fileActions = new FileActions(this);
+        
         displayCloudStatus();
     }
 
@@ -369,12 +371,16 @@ public final class EditorTopComponent extends TopComponent {
 
         LOGGER.log(message);
     }
+    
+    public FileActions fileAction(){
+        return fileActions;
+    }
 
     public boolean canOpen() {
         if (isModified()) {
-            int userChoice = JOptionPane.showConfirmDialog(this, "Save changes?", "Confirm", JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
+            int userChoice = JOptionPane.showConfirmDialog(this, "This document has been modified. Do you want to save it first?", "Save document", JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
             if (userChoice == JOptionPane.YES_OPTION) {
-                SaveFile.saveFile(this);
+                fileActions.saveFile();
                 return true;
             } else if (userChoice == JOptionPane.NO_OPTION) {
                 return true;

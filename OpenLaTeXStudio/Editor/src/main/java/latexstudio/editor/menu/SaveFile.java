@@ -7,13 +7,9 @@ package latexstudio.editor.menu;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
 import latexstudio.editor.ApplicationLogger;
 import latexstudio.editor.EditorTopComponent;
 import latexstudio.editor.TopComponentFactory;
-import latexstudio.editor.files.FileChooserService;
-import latexstudio.editor.files.FileChooserService.DialogType;
-import latexstudio.editor.files.FileService;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.awt.ActionReferences;
@@ -42,17 +38,6 @@ public final class SaveFile implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        saveFile(etc);
-    }
-
-    public static void saveFile(EditorTopComponent etc) {
-        String content = etc.getEditorContent();
-        File file = FileChooserService.getFileWithConfirmation(etc.getCurrentFile(), "tex", "TeX files", DialogType.SAVE, true);
-
-        if (file != null) {
-            FileService.writeToFile(file.getAbsolutePath(), content);
-            LOGGER.log("Saving file " + file.getAbsolutePath());
-            etc.setCurrentFile(file);
-        }
+        etc.fileAction().saveFile();
     }
 }
