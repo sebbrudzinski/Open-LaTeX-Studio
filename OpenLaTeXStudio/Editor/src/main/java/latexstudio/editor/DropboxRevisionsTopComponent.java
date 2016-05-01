@@ -26,7 +26,7 @@ import latexstudio.editor.remote.DbxUtil;
 import latexstudio.editor.util.ApplicationUtils;
 import latexstudio.lib.ButtonColumn;
 import org.apache.commons.io.FileUtils;
-import org.apache.pdfbox.io.IOUtils;
+import org.apache.commons.io.IOUtils;
 import org.netbeans.api.settings.ConvertAsProperties;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;

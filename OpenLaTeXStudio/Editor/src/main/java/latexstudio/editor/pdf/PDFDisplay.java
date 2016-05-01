@@ -33,7 +33,7 @@ public class PDFDisplay {
     public JPanel drawPreviewOnJPanel() {
         JPanel pdfImagePanel = new JPanel();
         
-        Image generatedImage = PDFPreviewBuilder.buildPDFPreview(PDFService.getPDFPage(selectedPage), viewZoom);
+        Image generatedImage = PDFPreviewBuilder.buildPDFPreview(selectedPage, viewZoom);
         
         if (generatedImage != null) {
             ImageIcon icon = new ImageIcon(generatedImage);
