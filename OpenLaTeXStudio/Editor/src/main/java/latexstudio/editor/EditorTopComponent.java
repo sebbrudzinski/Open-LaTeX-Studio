@@ -375,21 +375,23 @@ public final class EditorTopComponent extends TopComponent {
     public FileActions fileAction(){
         return fileActions;
     }
+    
+    public enum CanOpenState { SAVE_AND_OPEN, OPEN, CANCEL }
 
-    public boolean canOpen() {
+    public Enum canOpen() {
+        
         if (isModified()) {
             int userChoice = JOptionPane.showConfirmDialog(this, "This document has been modified. Do you want to save it first?", "Save document", JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
             if (userChoice == JOptionPane.YES_OPTION) {
-                fileActions.saveFile();
-                return true;
+                return CanOpenState.SAVE_AND_OPEN;
             } else if (userChoice == JOptionPane.NO_OPTION) {
-                return true;
+                return CanOpenState.OPEN;
             } else {
-                return false;
+                return CanOpenState.CANCEL;
             }
 
         } else {
-            return true;
+            return CanOpenState.OPEN;
         }
     }
 }

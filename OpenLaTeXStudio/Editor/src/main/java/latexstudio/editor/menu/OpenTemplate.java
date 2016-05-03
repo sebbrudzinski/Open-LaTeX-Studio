@@ -144,7 +144,13 @@ public final class OpenTemplate extends JDialog implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        if (etc.canOpen()) {
+        Enum canOpen = etc.canOpen();
+        
+        if (canOpen == EditorTopComponent.CanOpenState.SAVE_AND_OPEN) {
+            etc.fileAction().saveFile();
+            this.setVisible(true);
+            
+        } else if (canOpen == EditorTopComponent.CanOpenState.OPEN) {
             this.setVisible(true);
         }
     }

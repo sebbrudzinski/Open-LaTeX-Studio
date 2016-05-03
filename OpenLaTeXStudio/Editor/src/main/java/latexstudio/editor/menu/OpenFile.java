@@ -34,12 +34,14 @@ public final class OpenFile implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        if (etc.canOpen()) {
-            File file = FileChooserService.getSelectedFile("tex", "TeX files", DialogType.OPEN);
-            if (file != null) {
-                etc.fileAction().openFile(file);
-            }
+        Enum canOpen = etc.canOpen();
+        
+        if (canOpen == EditorTopComponent.CanOpenState.SAVE_AND_OPEN) {
+            etc.fileAction().saveFile();
+            etc.fileAction().openFile(FileChooserService.getSelectedFile("tex", "TeX files", DialogType.OPEN));
+
+        } else if (canOpen == EditorTopComponent.CanOpenState.OPEN) {
+            etc.fileAction().openFile(FileChooserService.getSelectedFile("tex", "TeX files", DialogType.OPEN));
         }
     }
-
 }
