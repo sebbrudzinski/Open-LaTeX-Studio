@@ -69,6 +69,7 @@ public final class EditorTopComponent extends TopComponent {
     private static final ApplicationLogger LOGGER = new ApplicationLogger("Cloud Support");
     
     private FileActions fileActions;
+    private DbxFileActions dbxFileAction;
 
     public EditorTopComponent() {
         initComponents();
@@ -77,7 +78,9 @@ public final class EditorTopComponent extends TopComponent {
         setToolTipText(Bundle.HINT_EditorTopComponent());
         putClientProperty(TopComponent.PROP_CLOSING_DISABLED, Boolean.TRUE);
         putClientProperty(TopComponent.PROP_UNDOCKING_DISABLED, Boolean.TRUE);
+        
         fileActions = new FileActions(this);
+        dbxFileAction = new DbxFileActions(this);
         
         displayCloudStatus();
     }
@@ -231,6 +234,10 @@ public final class EditorTopComponent extends TopComponent {
     public void setCurrentFile(File currentFile) {
         this.currentFile = currentFile;
         setDisplayName(currentFile.getName());
+    }
+
+    public DbxFileActions dbxFileAction() {
+        return dbxFileAction;
     }
 
     public DbxState getDbxState() {

@@ -45,44 +45,6 @@ public final class SaveProgress implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        DbxClient client = DbxUtil.getDbxClient();
-        
-        if (client == null) {
-            return;
-        }
-
-        String sourceFileName = ApplicationUtils.getTempSourceFile();
-        File file = new File(sourceFileName);
-        
-        FileInputStream inputStream = null;
-        try {
-            inputStream = new FileInputStream(file);
-        } catch (FileNotFoundException ex) {
-            Exceptions.printStackTrace(ex);
-        }
-        
-        DbxState dbxState = etc.getDbxState();
-        
-        if (dbxState != null) {
-            try {
-                DbxEntry.File uploadedFile = client.uploadFile(dbxState.getPath(),
-                    DbxWriteMode.update(dbxState.getRevision()), file.length(), inputStream);
-                JOptionPane.showMessageDialog(null, 
-                        "Successfuly updated file " + uploadedFile.name + " (" + uploadedFile.humanSize + ")",
-                        "File updated in Dropbox",
-                        JOptionPane.INFORMATION_MESSAGE);
-                drtc.updateRevisionsList(uploadedFile.path);
-                etc.setDbxState(new DbxState(uploadedFile.path, uploadedFile.rev));
-            } catch (DbxException ex) {
-                DbxUtil.showDbxAccessDeniedPrompt();
-            } catch (IOException ex) {
-                Exceptions.printStackTrace(ex);
-            } finally {
-                IOUtils.closeQuietly(inputStream);
-            }
-        } else {
-            JOptionPane.showMessageDialog(null, "No Dropbox file has been loaded.\n"
-                    + "You must open Dropbox file, before you save it.", "Cannot save progress", JOptionPane.WARNING_MESSAGE);
-        }
+        etc.dbxFileAction().saveProgress(drtc);
     }
 }

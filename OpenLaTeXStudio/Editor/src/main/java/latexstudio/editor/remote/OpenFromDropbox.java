@@ -47,42 +47,14 @@ public final class OpenFromDropbox implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        DbxClient client = DbxUtil.getDbxClient();
+        Enum canOpen = etc.canOpen();
         
-        if (client == null) {
-            return;
+        if(canOpen == EditorTopComponent.CanOpenState.SAVE_AND_OPEN){
+            etc.dbxFileAction().saveProgress(drtc);
+            etc.dbxFileAction().openFromDropbox(drtc, revtc);
         }
-        
-        List<DbxEntryDto> dbxEntries = new ArrayList<>();
-                             
-        try {
-            for (DbxEntry entry : client.searchFileAndFolderNames("/", ".tex")) {
-                dbxEntries.add(new DbxEntryDto(entry));
-            } 
-        } catch (DbxException ex) {
-            DbxUtil.showDbxAccessDeniedPrompt();
-            return; //No point continuing
-        }
-        
-        JList<DbxEntryDto> list = new JList(dbxEntries.toArray());
-        list.setSelectionMode(DefaultListSelectionModel.SINGLE_SELECTION);
-        int option = JOptionPane.showConfirmDialog(null, list, "Open file from Dropbox", JOptionPane.OK_CANCEL_OPTION);
-        
-        if (option == JOptionPane.OK_OPTION && !list.isSelectionEmpty()) {
-            DbxEntryDto entry = list.getSelectedValue();
-            String localPath = ApplicationUtils.getAppDirectory() + File.separator + entry.getName();
-            File outputFile = DbxUtil.downloadRemoteFile(entry, localPath);
-            
-            revtc.close();
-
-            drtc.updateRevisionsList(entry.getPath());
-            drtc.open();
-            drtc.requestActive();
-
-            String content = FileService.readFromFile(outputFile.getAbsolutePath());
-            etc.setEditorContent(content);
-            etc.setCurrentFile(outputFile); 
-            etc.setDbxState(new DbxState(entry.getPath(), entry.getRevision()));
+        else if(canOpen == EditorTopComponent.CanOpenState.OPEN){
+            etc.dbxFileAction().openFromDropbox(drtc, revtc);
         }
     }
 }
