@@ -23,7 +23,7 @@ import org.openide.util.Exceptions;
 
 public class DbxFileActions {
 
-    EditorTopComponent etc;
+    private EditorTopComponent etc;
 
     public DbxFileActions(EditorTopComponent etc) {
         this.etc = etc;
