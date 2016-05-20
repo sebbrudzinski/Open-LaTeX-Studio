@@ -7,6 +7,7 @@ package latexstudio.editor.remote;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import latexstudio.editor.DbxFileActions;
 import latexstudio.editor.DropboxRevisionsTopComponent;
 import latexstudio.editor.EditorTopComponent;
 import latexstudio.editor.TopComponentFactory;
@@ -33,6 +34,6 @@ public final class SaveProgress implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        etc.dbxFileAction().saveProgress(drtc);
+        new DbxFileActions().saveProgress(DbxUtil.getDbxClient(), drtc);
     }
 }

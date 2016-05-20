@@ -7,8 +7,10 @@ package latexstudio.editor.remote;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import latexstudio.editor.DbxFileActions;
 import latexstudio.editor.DropboxRevisionsTopComponent;
 import latexstudio.editor.EditorTopComponent;
+import latexstudio.editor.FileActions;
 import latexstudio.editor.RevisionDisplayTopComponent;
 import latexstudio.editor.TopComponentFactory;
 import org.openide.awt.ActionID;
@@ -36,13 +38,21 @@ public final class OpenFromDropbox implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        Enum canOpen = etc.canOpen();
+        DbxFileActions dbxFileAction = new DbxFileActions();
+        
+        switch (etc.canOpen()) {
+            case SAVE_AND_OPEN:
+                dbxFileAction.saveProgress(DbxUtil.getDbxClient(), drtc);
+                dbxFileAction.openFromDropbox(drtc, revtc);
+                break;
 
-        if (canOpen == EditorTopComponent.CanOpenState.SAVE_AND_OPEN) {
-            etc.dbxFileAction().saveProgress(drtc);
-            etc.dbxFileAction().openFromDropbox(drtc, revtc);
-        } else if (canOpen == EditorTopComponent.CanOpenState.OPEN) {
-            etc.dbxFileAction().openFromDropbox(drtc, revtc);
+            case OPEN:
+                dbxFileAction.openFromDropbox(drtc, revtc);
+                break;
+
+            default:
+                //Do nothing
+                break;
         }
     }
 }

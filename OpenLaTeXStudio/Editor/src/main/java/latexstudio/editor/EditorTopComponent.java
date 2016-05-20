@@ -68,8 +68,6 @@ public final class EditorTopComponent extends TopComponent {
     private AutoCompletion autoCompletion = null;
     private static final ApplicationLogger LOGGER = new ApplicationLogger("Cloud Support");
     
-    private FileActions fileActions;
-    private DbxFileActions dbxFileAction;
 
     public EditorTopComponent() {
         initComponents();
@@ -78,9 +76,6 @@ public final class EditorTopComponent extends TopComponent {
         setToolTipText(Bundle.HINT_EditorTopComponent());
         putClientProperty(TopComponent.PROP_CLOSING_DISABLED, Boolean.TRUE);
         putClientProperty(TopComponent.PROP_UNDOCKING_DISABLED, Boolean.TRUE);
-        
-        fileActions = new FileActions(this);
-        dbxFileAction = new DbxFileActions(this);
         
         displayCloudStatus();
     }
@@ -236,10 +231,6 @@ public final class EditorTopComponent extends TopComponent {
         setDisplayName(currentFile.getName());
     }
 
-    public DbxFileActions dbxFileAction() {
-        return dbxFileAction;
-    }
-
     public DbxState getDbxState() {
         return dbxState;
     }
@@ -379,26 +370,20 @@ public final class EditorTopComponent extends TopComponent {
         LOGGER.log(message);
     }
     
-    public FileActions fileAction(){
-        return fileActions;
-    }
-    
-    public enum CanOpenState { SAVE_AND_OPEN, OPEN, CANCEL }
-
-    public Enum canOpen() {
+    public UnsavedWorkState canOpen() {
         
         if (isModified()) {
             int userChoice = JOptionPane.showConfirmDialog(this, "This document has been modified. Do you want to save it first?", "Save document", JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
             if (userChoice == JOptionPane.YES_OPTION) {
-                return CanOpenState.SAVE_AND_OPEN;
+                return UnsavedWorkState.SAVE_AND_OPEN;
             } else if (userChoice == JOptionPane.NO_OPTION) {
-                return CanOpenState.OPEN;
+                return UnsavedWorkState.OPEN;
             } else {
-                return CanOpenState.CANCEL;
+                return UnsavedWorkState.CANCEL;
             }
 
         } else {
-            return CanOpenState.OPEN;
+            return UnsavedWorkState.OPEN;
         }
     }
 }

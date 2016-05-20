@@ -4,6 +4,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import latexstudio.editor.ApplicationLogger;
 import latexstudio.editor.EditorTopComponent;
+import latexstudio.editor.FileActions;
 import latexstudio.editor.TopComponentFactory;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
@@ -32,7 +33,7 @@ public final class SaveAs implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {               
-        etc.fileAction().saveFileAs();
+        new FileActions().saveFileAs();
     }
 }
 

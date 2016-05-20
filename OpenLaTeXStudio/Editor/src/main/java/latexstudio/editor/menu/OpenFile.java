@@ -8,6 +8,7 @@ package latexstudio.editor.menu;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import latexstudio.editor.EditorTopComponent;
+import latexstudio.editor.FileActions;
 import latexstudio.editor.TopComponentFactory;
 import latexstudio.editor.files.FileChooserService;
 import latexstudio.editor.files.FileChooserService.DialogType;
@@ -15,6 +16,7 @@ import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.awt.ActionRegistration;
 import org.openide.util.NbBundle.Messages;
+import static latexstudio.editor.util.ApplicationUtils.TEX_NAME;
 
 @ActionID(
         category = "File",
@@ -33,14 +35,21 @@ public final class OpenFile implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        Enum canOpen = etc.canOpen();
+        FileActions fileAction = new FileActions();
         
-        if (canOpen == EditorTopComponent.CanOpenState.SAVE_AND_OPEN) {
-            etc.fileAction().saveFile();
-            etc.fileAction().openFile(FileChooserService.getSelectedFile("tex", "TeX files", DialogType.OPEN));
-
-        } else if (canOpen == EditorTopComponent.CanOpenState.OPEN) {
-            etc.fileAction().openFile(FileChooserService.getSelectedFile("tex", "TeX files", DialogType.OPEN));
+        switch (etc.canOpen()) {
+            case SAVE_AND_OPEN:
+                fileAction.saveFile();
+                fileAction.openFile(FileChooserService.getSelectedFile(TEX_NAME, "TeX files", DialogType.OPEN));
+                break;
+            
+            case OPEN:
+                fileAction.openFile(FileChooserService.getSelectedFile(TEX_NAME, "TeX files", DialogType.OPEN));
+                break;
+                
+            default:
+                //Do nothing
+                break;
         }
     }
 }

@@ -12,6 +12,7 @@ import java.net.URI;
 import javax.swing.DefaultListModel;
 import latexstudio.editor.EditorTopComponent;
 import latexstudio.editor.TopComponentFactory;
+import latexstudio.editor.files.FileService;
 import org.openide.util.Exceptions;
 
 /**
@@ -138,7 +139,7 @@ public class OpenTemplatePanel extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void loadTemplateButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loadTemplateButtonActionPerformed
-        etc.fileAction().openFile(getClass().getResourceAsStream(templatesList.getSelectedValue().getPath()));
+        etc.setEditorContent(FileService.readFromStream(getClass().getResourceAsStream(templatesList.getSelectedValue().getPath())));
         etc.setModified(false);
         parent.dispose();
     }//GEN-LAST:event_loadTemplateButtonActionPerformed

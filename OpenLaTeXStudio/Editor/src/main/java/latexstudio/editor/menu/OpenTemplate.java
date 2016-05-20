@@ -18,6 +18,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import latexstudio.editor.ApplicationLogger;
 import latexstudio.editor.EditorTopComponent;
+import latexstudio.editor.FileActions;
 import latexstudio.editor.TopComponentFactory;
 import latexstudio.editor.util.ApplicationUtils;
 import org.openide.awt.ActionID;
@@ -143,15 +144,23 @@ public final class OpenTemplate extends JDialog implements ActionListener {
     }
 
     @Override
-    public void actionPerformed(ActionEvent e) {
-        Enum canOpen = etc.canOpen();
+    public void actionPerformed(ActionEvent e){
+        FileActions fileAction= new FileActions();
         
-        if (canOpen == EditorTopComponent.CanOpenState.SAVE_AND_OPEN) {
-            etc.fileAction().saveFile();
-            this.setVisible(true);
+        switch (etc.canOpen())
+        {
+            case SAVE_AND_OPEN:
+                fileAction.saveFile();
+                this.setVisible(true);
+                break;
             
-        } else if (canOpen == EditorTopComponent.CanOpenState.OPEN) {
-            this.setVisible(true);
+            case OPEN:
+                this.setVisible(true);
+                break;
+                
+            default:
+                //Do nothing
+                break;
         }
     }
 }

@@ -1,5 +1,5 @@
 /* 
- * Copyright (c) 2015 Sebastian Brudzinski
+ * Copyright (c) 2016 Sebastian Brudzinski
  * 
  * See the file LICENSE for copying permission.
  */
@@ -9,6 +9,7 @@ import java.io.File;
 import java.io.InputStream;
 import latexstudio.editor.files.FileChooserService;
 import latexstudio.editor.files.FileService;
+import static latexstudio.editor.util.ApplicationUtils.TEX_NAME;
 
 /**
  * This class provides common editor actions
@@ -17,11 +18,12 @@ import latexstudio.editor.files.FileService;
  */
 public class FileActions {
 
-    private EditorTopComponent etc;
     private static final ApplicationLogger LOGGER = new ApplicationLogger("File Actions");
 
-    public FileActions(EditorTopComponent etc) {
-        this.etc = etc;
+    private final EditorTopComponent etc = new TopComponentFactory<EditorTopComponent>()
+            .getTopComponent(EditorTopComponent.class.getSimpleName());
+
+    public FileActions() {
     }
 
     /**
@@ -30,7 +32,7 @@ public class FileActions {
      * @param file file, that exists and isn't a folder
      */
     public void openFile(File file) {
-        if (file != null && file.exists() && !file.isDirectory()) {
+        if (file.isFile()) {
             String content = FileService.readFromFile(file.getAbsolutePath());
             etc.setEditorContent(content);
             etc.setCurrentFile(file);
@@ -39,28 +41,18 @@ public class FileActions {
     }
 
     /**
-     * Opens file content in EditorTopComponent
-     *
-     * @param file text file InputStream
-     */
-    public void openFile(InputStream file) {
-        etc.setEditorContent(FileService.readFromStream(file));
-        etc.setModified(false);
-    }
-
-    /**
      * Saves current editor content; if file doesn't exist, shows save dialog
      */
     public void saveFile() {
-            String content = etc.getEditorContent();
-            File file = FileChooserService.getFileWithConfirmation(etc.getCurrentFile(), "tex", "TeX files", FileChooserService.DialogType.SAVE, true);
+        String content = etc.getEditorContent();
+        File file = FileChooserService.getFileWithConfirmation(etc.getCurrentFile(), TEX_NAME, "TeX files", FileChooserService.DialogType.SAVE, true);
 
-            if (file != null) {
-                FileService.writeToFile(file.getAbsolutePath(), content);
-                LOGGER.log("Saving file " + file.getAbsolutePath());
-                etc.setCurrentFile(file);
-                etc.setModified(false);
-            }
+        if (file != null) {
+            FileService.writeToFile(file.getAbsolutePath(), content);
+            LOGGER.log("Saving file " + file.getAbsolutePath());
+            etc.setCurrentFile(file);
+            etc.setModified(false);
+        }
     }
 
     /**
@@ -68,7 +60,7 @@ public class FileActions {
      */
     public void saveFileAs() {
         String content = etc.getEditorContent();
-        File file = FileChooserService.getFileWithConfirmation(etc.getCurrentFile(), "tex", "TeX files", FileChooserService.DialogType.SAVEAS, true);
+        File file = FileChooserService.getFileWithConfirmation(etc.getCurrentFile(), TEX_NAME, "TeX files", FileChooserService.DialogType.SAVEAS, true);
 
         if (file != null) {
             FileService.writeToFile(file.getAbsolutePath(), content);
