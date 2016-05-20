@@ -10,7 +10,6 @@ import java.awt.event.ActionListener;
 import latexstudio.editor.DbxFileActions;
 import latexstudio.editor.DropboxRevisionsTopComponent;
 import latexstudio.editor.EditorTopComponent;
-import latexstudio.editor.FileActions;
 import latexstudio.editor.RevisionDisplayTopComponent;
 import latexstudio.editor.TopComponentFactory;
 import org.openide.awt.ActionID;

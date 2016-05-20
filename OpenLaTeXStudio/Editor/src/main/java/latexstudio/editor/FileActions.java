@@ -6,7 +6,6 @@
 package latexstudio.editor;
 
 import java.io.File;
-import java.io.InputStream;
 import latexstudio.editor.files.FileChooserService;
 import latexstudio.editor.files.FileService;
 import static latexstudio.editor.util.ApplicationUtils.TEX_NAME;

@@ -144,20 +144,19 @@ public final class OpenTemplate extends JDialog implements ActionListener {
     }
 
     @Override
-    public void actionPerformed(ActionEvent e){
-        FileActions fileAction= new FileActions();
-        
-        switch (etc.canOpen())
-        {
+    public void actionPerformed(ActionEvent e) {
+        FileActions fileAction = new FileActions();
+
+        switch (etc.canOpen()) {
             case SAVE_AND_OPEN:
                 fileAction.saveFile();
                 this.setVisible(true);
                 break;
-            
+
             case OPEN:
                 this.setVisible(true);
                 break;
-                
+
             default:
                 //Do nothing
                 break;
