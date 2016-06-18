@@ -256,7 +256,8 @@ public final class EditorTopComponent extends TopComponent {
                 String[] array = highlightedTextArea.split("\n");
                 StringBuilder commentedCodeBuilder = new StringBuilder();
                 for (int i = 0; i < array.length; i++) {
-                    array[i] = "%" + array[i];
+                    array[i] = (array[i].charAt(0) == '%') ? array[i] : "%" + array[i];
+//                    array[i] = "%" + array[i];
                     if (i != array.length - 1) {
                          array[i] = array[i] + "\n";
                     }
