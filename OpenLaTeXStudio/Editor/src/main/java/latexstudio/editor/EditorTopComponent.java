@@ -228,8 +228,9 @@ public final class EditorTopComponent extends TopComponent {
 
     public void setCurrentFile(File currentFile) {
         this.currentFile = currentFile;
-        if(currentFile != null)
+        if(currentFile != null){
             setDisplayName(currentFile.getName());
+        }
     }
     
     public DbxState getDbxState() {
