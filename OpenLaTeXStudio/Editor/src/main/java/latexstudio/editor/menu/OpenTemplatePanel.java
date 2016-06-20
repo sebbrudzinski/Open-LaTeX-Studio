@@ -52,6 +52,7 @@ public class OpenTemplatePanel extends javax.swing.JPanel {
         sourceField = new javax.swing.JTextField();
         loadTemplateButton = new javax.swing.JButton();
         openSourcePageButton = new javax.swing.JButton();
+        cancelButton = new javax.swing.JButton();
         jScrollPane3 = new javax.swing.JScrollPane();
         templatesList = new javax.swing.JList<Template>();
 
@@ -91,6 +92,13 @@ public class OpenTemplatePanel extends javax.swing.JPanel {
             }
         });
 
+        org.openide.awt.Mnemonics.setLocalizedText(cancelButton, org.openide.util.NbBundle.getMessage(OpenTemplatePanel.class, "OpenTemplatePanel.cancelButton.text")); // NOI18N
+        cancelButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cancelButtonActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
@@ -103,7 +111,10 @@ public class OpenTemplatePanel extends javax.swing.JPanel {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(loadTemplateButton, javax.swing.GroupLayout.PREFERRED_SIZE, 136, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(sourceField)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 627, Short.MAX_VALUE))
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 627, Short.MAX_VALUE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(cancelButton, javax.swing.GroupLayout.PREFERRED_SIZE, 136, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
@@ -117,7 +128,9 @@ public class OpenTemplatePanel extends javax.swing.JPanel {
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(openSourcePageButton, javax.swing.GroupLayout.DEFAULT_SIZE, 42, Short.MAX_VALUE)
                     .addComponent(loadTemplateButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addGap(58, 58, 58))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(cancelButton, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(10, 10, 10))
         );
 
         jSplitPane1.setRightComponent(jPanel2);
@@ -140,6 +153,7 @@ public class OpenTemplatePanel extends javax.swing.JPanel {
 
     private void loadTemplateButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loadTemplateButtonActionPerformed
         etc.setEditorContent(FileService.readFromStream(getClass().getResourceAsStream(templatesList.getSelectedValue().getPath())));
+        etc.setCurrentFile(null);
         etc.setModified(false);
         parent.dispose();
     }//GEN-LAST:event_loadTemplateButtonActionPerformed
@@ -157,7 +171,12 @@ public class OpenTemplatePanel extends javax.swing.JPanel {
         }
     }//GEN-LAST:event_openSourcePageButtonActionPerformed
 
+    private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelButtonActionPerformed
+        parent.dispose();
+    }//GEN-LAST:event_cancelButtonActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton cancelButton;
     private javax.swing.JTextArea descriptionArea;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane2;
