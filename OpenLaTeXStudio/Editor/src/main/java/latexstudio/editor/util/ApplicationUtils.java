@@ -20,6 +20,7 @@ public final class ApplicationUtils {
     private static final String HOME = System.getProperty("user.home");
     private static final String OS = System.getProperty("os.name");
     private static final String APP_DIR_NAME = ".OpenLaTeXStudio";
+    private static final String APP_VERSION = "1.4.0";
     private static final String PREVIEW_SOURCE_FILENAME = "preview.tex";
     private static final String PREVIEW_PDF_FILENAME = "preview.pdf";
     private static final String SETTINGS_FILENAME = "settings.properties";
@@ -74,6 +75,10 @@ public final class ApplicationUtils {
             tempDir.mkdir();
         }
         return tempDir.getAbsolutePath();
+    }
+    
+    public static String getAppVersion() {
+        return APP_VERSION;
     }
     
     public static void deleteTempFiles() {
