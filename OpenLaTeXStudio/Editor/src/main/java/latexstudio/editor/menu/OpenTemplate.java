@@ -20,6 +20,7 @@ import latexstudio.editor.ApplicationLogger;
 import latexstudio.editor.EditorTopComponent;
 import latexstudio.editor.FileActions;
 import latexstudio.editor.TopComponentFactory;
+import latexstudio.editor.files.FileChooserService;
 import latexstudio.editor.util.ApplicationUtils;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
@@ -149,7 +150,7 @@ public final class OpenTemplate extends JDialog implements ActionListener {
 
         switch (etc.canOpen()) {
             case SAVE_AND_OPEN:
-                fileAction.saveFile();
+                fileAction.saveFile(FileChooserService.DialogType.SAVE);
                 this.setVisible(true);
                 break;
 

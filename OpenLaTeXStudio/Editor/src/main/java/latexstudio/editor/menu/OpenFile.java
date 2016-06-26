@@ -39,7 +39,7 @@ public final class OpenFile implements ActionListener {
         
         switch (etc.canOpen()) {
             case SAVE_AND_OPEN:
-                fileAction.saveFile();
+                fileAction.saveFile(FileChooserService.DialogType.SAVE);
                 fileAction.openFile(FileChooserService.getSelectedFile(TEX_NAME, "TeX files", DialogType.OPEN));
                 break;
             

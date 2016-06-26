@@ -11,6 +11,7 @@ import latexstudio.editor.ApplicationLogger;
 import latexstudio.editor.EditorTopComponent;
 import latexstudio.editor.FileActions;
 import latexstudio.editor.TopComponentFactory;
+import latexstudio.editor.files.FileChooserService;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.awt.ActionReferences;
@@ -39,6 +40,6 @@ public final class SaveFile implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        new FileActions().saveFile();
+        new FileActions().saveFile(FileChooserService.DialogType.SAVE);
     }
 }

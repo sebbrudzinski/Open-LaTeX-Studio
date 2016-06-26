@@ -41,31 +41,20 @@ public class FileActions {
 
     /**
      * Saves current editor content; if file doesn't exist, shows save dialog
+     * 
+     * @param dialogType determines saving action can be either SAVE or SAVEAS
      */
-    public void saveFile() {
-        String content = etc.getEditorContent();
-        File file = FileChooserService.getFileWithConfirmation(etc.getCurrentFile(), TEX_NAME, "TeX files", FileChooserService.DialogType.SAVE, true);
+    public void saveFile(FileChooserService.DialogType dialogType) {
+        if (dialogType == FileChooserService.DialogType.SAVE || dialogType == FileChooserService.DialogType.SAVEAS) {
+            String content = etc.getEditorContent();
+            File file = FileChooserService.getFileWithConfirmation(etc.getCurrentFile(), TEX_NAME, "TeX files", dialogType, true);
 
-        if (file != null) {
-            FileService.writeToFile(file.getAbsolutePath(), content);
-            LOGGER.log("Saving file " + file.getAbsolutePath());
-            etc.setCurrentFile(file);
-            etc.setModified(false);
-        }
-    }
-
-    /**
-     * Shows save dialog to save current file into a new location
-     */
-    public void saveFileAs() {
-        String content = etc.getEditorContent();
-        File file = FileChooserService.getFileWithConfirmation(etc.getCurrentFile(), TEX_NAME, "TeX files", FileChooserService.DialogType.SAVEAS, true);
-
-        if (file != null) {
-            FileService.writeToFile(file.getAbsolutePath(), content);
-            LOGGER.log("Saving file " + file.getAbsolutePath());
-            etc.setCurrentFile(file);
-            etc.setModified(false);
+            if (file != null) {
+                FileService.writeToFile(file.getAbsolutePath(), content);
+                LOGGER.log("Saving file " + file.getAbsolutePath());
+                etc.setCurrentFile(file);
+                etc.setModified(false);
+            }
         }
     }
 }
