@@ -43,8 +43,9 @@ public class PDFDisplay {
         }
         
         updateTotalPages();
-        if(getSelectedPage() != getTotalPages())
+        if(getSelectedPage() != getTotalPages()){
             nextButton.setEnabled(true);
+        }
         
         PDFService.closeDocument();
         return pdfImagePanel;
