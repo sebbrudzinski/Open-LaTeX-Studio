@@ -7,6 +7,7 @@ package latexstudio.editor.pdf;
 
 import java.awt.Image;
 import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
@@ -30,7 +31,7 @@ public class PDFDisplay {
         this.totalPages = PDFService.getTotalPDFPages();
     }
     
-    public JPanel drawPreviewOnJPanel() {
+    public JPanel drawPreviewOnJPanel(JButton nextButton) {
         JPanel pdfImagePanel = new JPanel();
         
         Image generatedImage = PDFPreviewBuilder.buildPDFPreview(PDFService.getPDFPage(selectedPage), viewZoom);
@@ -40,6 +41,10 @@ public class PDFDisplay {
             JLabel picLabel = new JLabel(icon);
             pdfImagePanel.add(picLabel);
         }
+        
+        updateTotalPages();
+        if(getSelectedPage() != getTotalPages())
+            nextButton.setEnabled(true);
         
         PDFService.closeDocument();
         return pdfImagePanel;
