@@ -168,6 +168,21 @@ public final class PDFViewerTopComponent extends TopComponent {
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         boolean pageModified = pdfDisplay.nextPage();
+        pdfDisplay.updateTotalPages();
+        if(pdfDisplay.getSelectedPage()==pdfDisplay.getTotalPages()){
+            if(pdfDisplay.getSelectedPage()>1)
+                jButton1.setEnabled(true);
+            else
+                jButton1.setEnabled(false);
+            jButton2.setEnabled(false);
+        }
+        else{
+            if(pdfDisplay.getSelectedPage()>1)
+                jButton1.setEnabled(true);
+            else
+                jButton1.setEnabled(false);
+            jButton2.setEnabled(true);
+        }
         if (pageModified) {
             refreshDisplayPane();
         }
@@ -175,6 +190,21 @@ public final class PDFViewerTopComponent extends TopComponent {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         boolean pageModified = pdfDisplay.previousPage();
+        pdfDisplay.updateTotalPages();
+        if(pdfDisplay.getSelectedPage()<2){
+            jButton1.setEnabled(false);
+            if(pdfDisplay.getSelectedPage()<pdfDisplay.getTotalPages())
+                jButton2.setEnabled(true);
+            else
+                jButton2.setEnabled(false);
+        }
+        else{
+            jButton1.setEnabled(true);
+            if(pdfDisplay.getSelectedPage()<=pdfDisplay.getTotalPages())
+                jButton2.setEnabled(true);
+            else
+                jButton2.setEnabled(false);
+        } 
         if (pageModified) {
             refreshDisplayPane();
         }
@@ -269,7 +299,7 @@ public final class PDFViewerTopComponent extends TopComponent {
     
     @Override
     public void componentOpened() {       
-        Thread refresher = new Thread(new PDFPreviewRefresher(jScrollPane1, jLabel2, etc, pdfDisplay));
+        Thread refresher = new Thread(new PDFPreviewRefresher(jScrollPane1, jLabel2, etc, pdfDisplay, jButton1, jButton2));
         refresher.start();
     }
 
@@ -279,7 +309,7 @@ public final class PDFViewerTopComponent extends TopComponent {
     }
     
     private void refreshDisplayPane() {
-        JPanel pdfImagePanel = pdfDisplay.drawPreviewOnJPanel();
+        JPanel pdfImagePanel = pdfDisplay.drawPreviewOnJPanel(jButton2);
        
         if (pdfImagePanel != null) {
             JViewport vp = jScrollPane1.getViewport();
