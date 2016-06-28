@@ -41,8 +41,7 @@ public class PDFPreviewRefresher implements Runnable {
         previousButton.setEnabled(false);
         if(pdfDisplay.getTotalPages()>1){
             nextButton.setEnabled(true);
-        }
-        else{
+        } else{
             nextButton.setEnabled(false);
         }
         this.previousButton = previousButton;
