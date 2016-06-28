@@ -170,17 +170,21 @@ public final class PDFViewerTopComponent extends TopComponent {
         boolean pageModified = pdfDisplay.nextPage();
         pdfDisplay.updateTotalPages();
         if(pdfDisplay.getSelectedPage()==pdfDisplay.getTotalPages()){
-            if(pdfDisplay.getSelectedPage()>1)
+            if(pdfDisplay.getSelectedPage()>1){
                 jButton1.setEnabled(true);
-            else
+            }
+            else{
                 jButton1.setEnabled(false);
+            }
             jButton2.setEnabled(false);
         }
         else{
-            if(pdfDisplay.getSelectedPage()>1)
+            if(pdfDisplay.getSelectedPage()>1){
                 jButton1.setEnabled(true);
-            else
+            }
+            else{
                 jButton1.setEnabled(false);
+            }
             jButton2.setEnabled(true);
         }
         if (pageModified) {
@@ -193,17 +197,21 @@ public final class PDFViewerTopComponent extends TopComponent {
         pdfDisplay.updateTotalPages();
         if(pdfDisplay.getSelectedPage()<2){
             jButton1.setEnabled(false);
-            if(pdfDisplay.getSelectedPage()<pdfDisplay.getTotalPages())
+            if(pdfDisplay.getSelectedPage()<pdfDisplay.getTotalPages()){
                 jButton2.setEnabled(true);
-            else
+            }
+            else{
                 jButton2.setEnabled(false);
+            }
         }
         else{
             jButton1.setEnabled(true);
-            if(pdfDisplay.getSelectedPage()<=pdfDisplay.getTotalPages())
+            if(pdfDisplay.getSelectedPage()<=pdfDisplay.getTotalPages()){
                 jButton2.setEnabled(true);
-            else
+            }
+            else{
                 jButton2.setEnabled(false);
+            }
         } 
         if (pageModified) {
             refreshDisplayPane();
