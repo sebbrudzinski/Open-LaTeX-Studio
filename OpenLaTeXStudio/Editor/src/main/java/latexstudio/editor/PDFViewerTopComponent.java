@@ -179,8 +179,7 @@ public final class PDFViewerTopComponent extends TopComponent {
         } else{
             if(pdfDisplay.getSelectedPage()>1){
                 jButton1.setEnabled(true);
-            }
-            else{
+            } else{
                 jButton1.setEnabled(false);
             }
             jButton2.setEnabled(true);
