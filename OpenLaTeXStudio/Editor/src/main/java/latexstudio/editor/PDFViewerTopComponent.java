@@ -172,13 +172,11 @@ public final class PDFViewerTopComponent extends TopComponent {
         if(pdfDisplay.getSelectedPage()==pdfDisplay.getTotalPages()){
             if(pdfDisplay.getSelectedPage()>1){
                 jButton1.setEnabled(true);
-            }
-            else{
+            } else{
                 jButton1.setEnabled(false);
             }
             jButton2.setEnabled(false);
-        }
-        else{
+        } else{
             if(pdfDisplay.getSelectedPage()>1){
                 jButton1.setEnabled(true);
             }
@@ -199,17 +197,14 @@ public final class PDFViewerTopComponent extends TopComponent {
             jButton1.setEnabled(false);
             if(pdfDisplay.getSelectedPage()<pdfDisplay.getTotalPages()){
                 jButton2.setEnabled(true);
-            }
-            else{
+            } else{
                 jButton2.setEnabled(false);
             }
-        }
-        else{
+        } else{
             jButton1.setEnabled(true);
             if(pdfDisplay.getSelectedPage()<=pdfDisplay.getTotalPages()){
                 jButton2.setEnabled(true);
-            }
-            else{
+            } else{
                 jButton2.setEnabled(false);
             }
         } 
