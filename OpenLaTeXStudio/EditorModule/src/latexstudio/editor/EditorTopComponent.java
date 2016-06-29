@@ -16,7 +16,10 @@ import java.util.prefs.PreferenceChangeListener;
 import java.util.prefs.Preferences;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Document;
+import latexstudio.editor.files.FileService;
 import latexstudio.editor.remote.DbxState;
+import latexstudio.editor.settings.ApplicationSettings;
+import latexstudio.editor.settings.SettingsService;
 import latexstudio.editor.util.ApplicationUtils;
 import org.apache.commons.io.IOUtils;
 import org.fife.ui.autocomplete.AutoCompletion;
@@ -61,6 +64,8 @@ public final class EditorTopComponent extends TopComponent {
     private File currentFile;
     private DbxState dbxState;
     private String latexPath;
+    private ApplicationSettings appSettings;
+    private String welcomeDir = "/latexstudio/editor/resources/welcome.tex";
 
     private static final int AUTO_COMPLETE_DELAY = 700;
     public EditorTopComponent() {
@@ -82,6 +87,7 @@ public final class EditorTopComponent extends TopComponent {
         });
 
         latexPath = path;
+        appSettings = SettingsService.loadApplicationSettings();
     }
 
     /**
@@ -150,16 +156,29 @@ public final class EditorTopComponent extends TopComponent {
         ac.setAutoCompleteEnabled(true);
         ac.install(rSyntaxTextArea);
 
-        InputStream is = null;
-        try {
-            is = getClass().getResource("/latexstudio/editor/resources/welcome.tex").openStream();
-            String welcomeMessage = IOUtils.toString(is);
-            rSyntaxTextArea.setText(welcomeMessage);
-            setDirty(true);
-        } catch (IOException ex) {
-            Exceptions.printStackTrace(ex);
-        } finally {
-            IOUtils.closeQuietly(is);
+        String initFileDir = appSettings.getUserLastFile();     
+        if(initFileDir == null) {
+            initFileDir = welcomeDir;
+        }
+        
+        File initFile = new File(initFileDir);
+        if(initFile.exists() && initFile.isFile() && initFile.setReadable(true)) {
+            String content = FileService.readFromFile(initFileDir);
+            setEditorContent(content);
+            setCurrentFile(initFile);
+        } else {
+            InputStream is = null;
+            try {
+                is = getClass().getResource(welcomeDir).openStream();
+                String welcomeMessage = IOUtils.toString(is);
+                rSyntaxTextArea.setText(welcomeMessage);
+                setDirty(true);            
+                setCurrentFile(new File(welcomeDir));
+            } catch (IOException ex) {
+                Exceptions.printStackTrace(ex);
+            } finally {
+                IOUtils.closeQuietly(is);
+            }
         }
     }
 
@@ -199,6 +218,8 @@ public final class EditorTopComponent extends TopComponent {
     public void setCurrentFile(File currentFile) {
         this.currentFile = currentFile;
         setDisplayName(currentFile.getName());
+        appSettings.setUserLastFile(currentFile.getAbsolutePath());
+        SettingsService.saveApplicationSettings(appSettings);
     }
 
     public DbxState getDbxState() {
