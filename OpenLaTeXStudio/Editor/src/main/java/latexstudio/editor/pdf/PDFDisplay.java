@@ -105,6 +105,6 @@ public class PDFDisplay {
     }
     
     public boolean isLastPage(){
-        return getSelectedPage()==getTotalPages();
+        return (getSelectedPage()==getTotalPages());
     }
 }
