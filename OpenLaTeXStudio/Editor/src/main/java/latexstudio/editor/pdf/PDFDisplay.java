@@ -99,4 +99,20 @@ public class PDFDisplay {
     public int getTotalPages() {
         return totalPages;
     }
+    
+    public boolean isFirstPage(){
+        if(getSelectedPage()==1){
+            return true;
+        } else{
+            return false;
+        }
+    }
+    
+    public boolean isLastPage(){
+        if(getSelectedPage()==getTotalPages()){
+            return true;
+        } else{
+            return false;
+        }
+    }
 }
