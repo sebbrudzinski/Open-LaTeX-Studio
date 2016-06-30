@@ -101,18 +101,10 @@ public class PDFDisplay {
     }
     
     public boolean isFirstPage(){
-        if(getSelectedPage()==1){
-            return true;
-        } else{
-            return false;
-        }
+        return (getSelectedPage()==1);
     }
     
     public boolean isLastPage(){
-        if(getSelectedPage()==getTotalPages()){
-            return true;
-        } else{
-            return false;
-        }
+        return getSelectedPage()==getTotalPages();
     }
 }
