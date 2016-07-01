@@ -15,6 +15,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
 import javax.swing.text.BadLocationException;
+import latexstudio.editor.files.FileService;
 import latexstudio.editor.remote.Cloud;
 import latexstudio.editor.remote.DbxState;
 import latexstudio.editor.remote.DbxUtil;
@@ -167,16 +168,24 @@ public final class EditorTopComponent extends TopComponent {
 
         ApplicationSettings.INSTANCE.registerSettingListeners(this);
         
-        InputStream is = null;
-        try {
-            is = getClass().getResource("/openlatexstudio/welcome.tex").openStream();
-            String welcomeMessage = IOUtils.toString(is);
-            rSyntaxTextArea.setText(welcomeMessage);
-            setDirty(true);
-        } catch (IOException ex) {
-            Exceptions.printStackTrace(ex);
-        } finally {
-            IOUtils.closeQuietly(is);
+        String initFileDir = (String) ApplicationSettings.Setting.USER_LASTFILE.getValue();
+        File initFile = new File(initFileDir);
+        if(initFile.exists() && initFile.isFile()) {
+            String content = FileService.readFromFile(initFileDir);
+            setEditorContent(content);
+            setCurrentFile(initFile);
+        } else {
+            InputStream is = null;
+            try {
+                is = getClass().getResource("/openlatexstudio/welcome.tex").openStream();
+                String welcomeMessage = IOUtils.toString(is);
+                rSyntaxTextArea.setText(welcomeMessage);
+                setDirty(true);
+            } catch (IOException ex) {
+                Exceptions.printStackTrace(ex);
+            } finally {
+                IOUtils.closeQuietly(is);
+            }
         }
     }
 
@@ -216,6 +225,8 @@ public final class EditorTopComponent extends TopComponent {
     public void setCurrentFile(File currentFile) {
         this.currentFile = currentFile;
         setDisplayName(currentFile.getName());
+        ApplicationSettings.Setting.USER_LASTFILE.setValue(currentFile.getAbsolutePath());
+        ApplicationSettings.INSTANCE.save();
     }
 
     public DbxState getDbxState() {
