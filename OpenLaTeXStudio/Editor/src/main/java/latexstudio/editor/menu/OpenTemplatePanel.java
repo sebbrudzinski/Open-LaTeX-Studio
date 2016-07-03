@@ -155,6 +155,7 @@ public class OpenTemplatePanel extends javax.swing.JPanel {
         etc.setEditorContent(FileService.readFromStream(getClass().getResourceAsStream(templatesList.getSelectedValue().getPath())));
         etc.setCurrentFile(null);
         etc.setModified(false);
+        etc.setPreviewDisplayed(false);
         parent.dispose();
     }//GEN-LAST:event_loadTemplateButtonActionPerformed
 

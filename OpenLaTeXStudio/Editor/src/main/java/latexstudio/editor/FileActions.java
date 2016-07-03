@@ -36,6 +36,7 @@ public class FileActions {
             etc.setEditorContent(content);
             etc.setCurrentFile(file);
             etc.setModified(false);
+            etc.setPreviewDisplayed(false);
         }
     }
 
@@ -54,6 +55,7 @@ public class FileActions {
                 LOGGER.log("Saving file " + file.getAbsolutePath());
                 etc.setCurrentFile(file);
                 etc.setModified(false);
+                etc.setPreviewDisplayed(false);
             }
         }
     }

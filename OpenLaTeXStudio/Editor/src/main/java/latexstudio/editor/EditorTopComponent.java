@@ -62,6 +62,7 @@ public final class EditorTopComponent extends TopComponent {
 
     private boolean dirty = false;
     private boolean modified = false;
+    private boolean previewDisplayed = true;
     private File currentFile;
     private DbxState dbxState;
 
@@ -212,6 +213,14 @@ public final class EditorTopComponent extends TopComponent {
 
     public void setModified(boolean modified) {
         this.modified = modified;
+    }
+
+    public boolean isPreviewDisplayed() {
+        return previewDisplayed;
+    }
+
+    public void setPreviewDisplayed(boolean previewDisplayed) {
+        this.previewDisplayed = previewDisplayed;
     }
 
     public void undoAction() {
@@ -374,7 +383,7 @@ public final class EditorTopComponent extends TopComponent {
     
     public UnsavedWorkState canOpen() {
         
-        if (isModified()) {
+        if (isModified() && !isPreviewDisplayed()) {
             int userChoice = JOptionPane.showConfirmDialog(this, "This document has been modified. Do you want to save it first?", "Save document", JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
             if (userChoice == JOptionPane.YES_OPTION) {
                 return UnsavedWorkState.SAVE_AND_OPEN;

@@ -22,9 +22,9 @@ import latexstudio.editor.remote.DbxEntryDto;
 import latexstudio.editor.remote.DbxState;
 import latexstudio.editor.remote.DbxUtil;
 import latexstudio.editor.util.ApplicationUtils;
+import static latexstudio.editor.util.ApplicationUtils.TEX_EXTENSION;
 import org.apache.commons.io.IOUtils;
 import org.openide.util.Exceptions;
-import static latexstudio.editor.util.ApplicationUtils.TEX_EXTENSION;
 
 /**
  * Provides methods for manipulating on user's dropbox files
@@ -109,6 +109,7 @@ public class DbxFileActions {
                 etc.setCurrentFile(outputFile);
                 etc.setDbxState(new DbxState(entry.getPath(), entry.getRevision()));
                 etc.setModified(false);
+                etc.setPreviewDisplayed(false);
             }
         } else{
             JOptionPane.showMessageDialog(etc, "No .tex files found!", "Error", JOptionPane.ERROR_MESSAGE);
