@@ -179,8 +179,7 @@ public final class EditorTopComponent extends TopComponent {
             try {
                 is = getClass().getResource("/openlatexstudio/welcome.tex").openStream();
                 String welcomeMessage = IOUtils.toString(is);
-                rSyntaxTextArea.setText(welcomeMessage);
-                setDirty(true);
+                setEditorContent(welcomeMessage);
             } catch (IOException ex) {
                 Exceptions.printStackTrace(ex);
             } finally {

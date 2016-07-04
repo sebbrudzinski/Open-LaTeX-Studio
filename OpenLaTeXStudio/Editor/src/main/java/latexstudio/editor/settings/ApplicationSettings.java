@@ -95,7 +95,7 @@ public final class ApplicationSettings extends Properties {
         DROPBOX_TOKEN( "dropbox.token", "", SettingType.STRING ),
         LATEX_PATH( "latex.path", "", SettingType.STRING ),
         USER_LASTDIR( "user.lastdir", "", SettingType.STRING ),
-        USER_LASTFILE( "user.lastfile", "/openlatexstudio/welcome.tex", SettingType.STRING ),
+        USER_LASTFILE( "user.lastfile", "", SettingType.STRING ),
         AUTOCOMPLETE_ENABLED( "autocomplete.enabled", "true", SettingType.BOOLEAN ),
         AUTOCOMPLETE_DELAY( "autocomplete.delay", "700", SettingType.INT ),
         LINEWRAP_ENABLED( "linewrap.enabled", "true", SettingType.BOOLEAN );
