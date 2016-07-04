@@ -67,9 +67,8 @@ public final class FileChooserService {
         int returnVal = 0;
         switch (type) {
             case SAVE:
-                returnVal = chooser.showSaveDialog(null);
-                break;
             case SAVEAS:
+                chooser.setDialogTitle("Save As");
                 returnVal = chooser.showSaveDialog(null);
                 break;
             case OPEN:
