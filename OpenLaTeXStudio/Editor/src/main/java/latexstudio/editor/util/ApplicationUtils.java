@@ -5,8 +5,14 @@
  */
 package latexstudio.editor.util;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.URL;
+import java.util.regex.Pattern;
+import org.apache.commons.io.IOUtils;
 import org.openide.util.Exceptions;
 
 /**
@@ -20,7 +26,7 @@ public final class ApplicationUtils {
     private static final String HOME = System.getProperty("user.home");
     private static final String OS = System.getProperty("os.name");
     private static final String APP_DIR_NAME = ".OpenLaTeXStudio";
-    private static final String APP_VERSION = "1.4.0";
+    private static final String APP_VERSION_FILENAME = "openlatexstudio/version.txt";
     private static final String PREVIEW_SOURCE_FILENAME = "preview.tex";
     private static final String PREVIEW_PDF_FILENAME = "preview.pdf";
     private static final String SETTINGS_FILENAME = "settings.properties";
@@ -78,7 +84,28 @@ public final class ApplicationUtils {
     }
     
     public static String getAppVersion() {
-        return APP_VERSION;
+        URL url = ApplicationUtils.class.getClassLoader().getResource(APP_VERSION_FILENAME);
+        String version = "UNKNOWN";
+        InputStream is = null;
+        try {
+            is = url.openStream();
+            BufferedReader br = new BufferedReader(new InputStreamReader(is));
+            String line;
+            while ((line = br.readLine()) != null) {
+                // ?!? Allow the use of comments and optionally supplementary info in version.txt           
+                if (!line.startsWith("#")) {                    
+                    String[] pairs = Pattern.compile("=").split(line);             
+                    if (pairs[0].equals("version")) {                        
+                        version = pairs[1];
+                    }
+                }
+            }
+        } catch (IOException ex) {
+            Exceptions.printStackTrace(ex);
+        } finally {
+            IOUtils.closeQuietly(is);
+        }
+        return version;
     }
     
     public static void deleteTempFiles() {

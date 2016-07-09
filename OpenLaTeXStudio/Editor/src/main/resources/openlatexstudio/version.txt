@@ -1,0 +1,2 @@
+# Open LaTeX Studio
+version=${pom.version}
