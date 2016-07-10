@@ -16,6 +16,7 @@ import java.io.InputStreamReader;
 import java.net.URL;
 import javax.swing.JOptionPane;
 import javax.swing.text.BadLocationException;
+import latexstudio.editor.files.FileService;
 import latexstudio.editor.remote.Cloud;
 import latexstudio.editor.remote.DbxState;
 import latexstudio.editor.remote.DbxUtil;
@@ -68,7 +69,6 @@ public final class EditorTopComponent extends TopComponent {
 
     private AutoCompletion autoCompletion = null;
     private static final ApplicationLogger LOGGER = new ApplicationLogger("Cloud Support");
-    
 
     public EditorTopComponent() {
         initComponents();
@@ -77,7 +77,7 @@ public final class EditorTopComponent extends TopComponent {
         setToolTipText(Bundle.HINT_EditorTopComponent());
         putClientProperty(TopComponent.PROP_CLOSING_DISABLED, Boolean.TRUE);
         putClientProperty(TopComponent.PROP_UNDOCKING_DISABLED, Boolean.TRUE);
-        
+
         displayCloudStatus();
     }
 
@@ -173,16 +173,23 @@ public final class EditorTopComponent extends TopComponent {
 
         ApplicationSettings.INSTANCE.registerSettingListeners(this);
 
-        InputStream is = null;
-        try {
-            is = getClass().getResource("/openlatexstudio/welcome.tex").openStream();
-            String welcomeMessage = IOUtils.toString(is);
-            rSyntaxTextArea.setText(welcomeMessage);
-            setDirty(true);
-        } catch (IOException ex) {
-            Exceptions.printStackTrace(ex);
-        } finally {
-            IOUtils.closeQuietly(is);
+        String initFileDir = (String) ApplicationSettings.Setting.USER_LASTFILE.getValue();
+        File initFile = new File(initFileDir);
+        if (initFile.exists() && initFile.isFile()) {
+            String content = FileService.readFromFile(initFileDir);
+            setEditorContent(content);
+            setCurrentFile(initFile);
+        } else {
+            InputStream is = null;
+            try {
+                is = getClass().getResource("/openlatexstudio/welcome.tex").openStream();
+                String welcomeMessage = IOUtils.toString(is);
+                setEditorContent(welcomeMessage);
+            } catch (IOException ex) {
+                Exceptions.printStackTrace(ex);
+            } finally {
+                IOUtils.closeQuietly(is);
+            }
         }
     }
 
@@ -237,11 +244,14 @@ public final class EditorTopComponent extends TopComponent {
 
     public void setCurrentFile(File currentFile) {
         this.currentFile = currentFile;
-        if(currentFile != null){
+
+        if (currentFile != null) {
             setDisplayName(currentFile.getName());
+            ApplicationSettings.Setting.USER_LASTFILE.setValue(currentFile.getAbsolutePath());
+            ApplicationSettings.INSTANCE.save();
         }
     }
-    
+
     public DbxState getDbxState() {
         return dbxState;
     }
@@ -280,7 +290,7 @@ public final class EditorTopComponent extends TopComponent {
                 String[] array = highlightedTextArea.split("\n");
                 StringBuilder commentedCodeBuilder = new StringBuilder();
                 for (int i = 0; i < array.length; i++) {
-                    array[i] = "%" + array[i];
+                    array[i] = (array[i].charAt(0) == '%') ? array[i] : "%" + array[i];
                     if (i != array.length - 1) {
                         array[i] = array[i] + "\n";
                     }
@@ -380,9 +390,9 @@ public final class EditorTopComponent extends TopComponent {
 
         LOGGER.log(message);
     }
-    
+
     public UnsavedWorkState canOpen() {
-        
+
         if (isModified() && !isPreviewDisplayed()) {
             int userChoice = JOptionPane.showConfirmDialog(this, "This document has been modified. Do you want to save it first?", "Save document", JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
             if (userChoice == JOptionPane.YES_OPTION) {
