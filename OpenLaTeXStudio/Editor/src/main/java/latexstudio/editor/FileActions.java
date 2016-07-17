@@ -31,7 +31,7 @@ public class FileActions {
      * @param file file, that exists and isn't a folder
      */
     public void openFile(File file) {
-        if (file.isFile()) {
+        if (file != null && file.isFile()) {
             String content = FileService.readFromFile(file.getAbsolutePath());
             etc.setEditorContent(content);
             etc.setCurrentFile(file);
@@ -42,7 +42,7 @@ public class FileActions {
 
     /**
      * Saves current editor content; if file doesn't exist, shows save dialog
-     * 
+     *
      * @param dialogType determines saving action can be either SAVE or SAVEAS
      */
     public void saveFile(FileChooserService.DialogType dialogType) {
