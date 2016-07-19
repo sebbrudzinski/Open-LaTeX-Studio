@@ -416,26 +416,20 @@ public final class EditorTopComponent extends TopComponent {
 
     private void autoDiscoverLaTeXPath() {
         try {
-            String command;
-
-            if (System.getProperty("os.name").contains("Windows")) {
-                command = "where " + ApplicationUtils.TEX_NAME;
-            } else {
-                command = "which " + ApplicationUtils.TEX_NAME;
-            }
-
+            String command = (ApplicationUtils.isWindows() ? "where " : "which ") + ApplicationUtils.TEX_NAME;
             Process p = Runtime.getRuntime().exec(command);
             p.waitFor();
 
             File path = new File(new Scanner(p.getInputStream()).nextLine());
 
-            if (path != null && path.exists() && path.isFile()) {
+            if (path.exists() && path.isFile() && path.canExecute()) {
                 ApplicationSettings.Setting.LATEX_PATH.setValue(path.getParent());
 
                 ApplicationSettings.INSTANCE.save();
             }
         } catch (IOException | InterruptedException | NoSuchElementException | IllegalStateException ex) {
-            //Leave deafult path
+            LOGGER.log("Couldn't find LaTeX installed on your computer.");
+            LOGGER.log("Go to Tools -> Options -> LaTeX to specify LaTeX directory.");
         }
     }
 }
