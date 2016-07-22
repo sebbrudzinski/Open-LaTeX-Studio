@@ -26,13 +26,15 @@ public final class ApplicationUtils {
     private static final String HOME = System.getProperty("user.home");
     private static final String OS = System.getProperty("os.name");
     private static final String APP_DIR_NAME = ".OpenLaTeXStudio";
-    private static final String APP_VERSION_FILENAME = "openlatexstudio/version.txt";
     private static final String PREVIEW_SOURCE_FILENAME = "preview.tex";
     private static final String PREVIEW_PDF_FILENAME = "preview.pdf";
     private static final String SETTINGS_FILENAME = "settings.properties";
     public static final String TEX_NAME = "tex";
     public static final String TEX_EXTENSION = ".tex";
-    
+    private static final String APP_PROPERTIES = "application.properties";
+    private static final String APP_VERSION = PropertyService.
+            readProperties(APP_PROPERTIES).getProperty("application.version");
+     
     public static final String PDFLATEX = "pdflatex";
     
     public static final String TEMPLATES_DIR = "/openlatexstudio/templates/";
@@ -84,28 +86,7 @@ public final class ApplicationUtils {
     }
     
     public static String getAppVersion() {
-        URL url = ApplicationUtils.class.getClassLoader().getResource(APP_VERSION_FILENAME);
-        String version = "UNKNOWN";
-        InputStream is = null;
-        try {
-            is = url.openStream();
-            BufferedReader br = new BufferedReader(new InputStreamReader(is));
-            String line;
-            while ((line = br.readLine()) != null) {
-                // ?!? Allow the use of comments and optionally supplementary info in version.txt           
-                if (!line.startsWith("#")) {                    
-                    String[] pairs = Pattern.compile("=").split(line);             
-                    if (pairs[0].equals("version")) {                        
-                        version = pairs[1];
-                    }
-                }
-            }
-        } catch (IOException ex) {
-            Exceptions.printStackTrace(ex);
-        } finally {
-            IOUtils.closeQuietly(is);
-        }
-        return version;
+        return APP_VERSION;
     }
     
     public static void deleteTempFiles() {
