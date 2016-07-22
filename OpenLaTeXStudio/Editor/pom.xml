@@ -4,7 +4,7 @@
     <parent>
         <groupId>openlatexstudio</groupId>
         <artifactId>OpenLaTeXStudio-parent</artifactId>
-        <version>1.4.0-SNAPSHOT</version>
+        <version>1.5.0-SNAPSHOT</version>
     </parent>
     <artifactId>Editor</artifactId>
     <packaging>nbm</packaging>
@@ -14,14 +14,14 @@
                 <directory>src/main/resources</directory>
                 <filtering>true</filtering>
                 <includes>
-                    <include>**/version.txt</include>
+                    <include>**/application.properties</include>
                 </includes>
             </resource>
             <resource>
                 <directory>src/main/resources</directory>
                 <filtering>false</filtering>
                 <excludes>
-                    <exclude>**/version.txt</exclude>
+                    <exclude>**/application.properties</exclude>
                 </excludes>
             </resource>
         </resources>
