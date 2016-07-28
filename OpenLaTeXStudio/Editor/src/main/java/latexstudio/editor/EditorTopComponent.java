@@ -430,6 +430,8 @@ public final class EditorTopComponent extends TopComponent {
         } catch (IOException | InterruptedException | NoSuchElementException | IllegalStateException ex) {
             LOGGER.log("Couldn't find LaTeX installed on your computer.");
             LOGGER.log("Go to Tools -> Options -> LaTeX to specify LaTeX directory.");
+            
+            ex.printStackTrace();
         }
     }
 }
