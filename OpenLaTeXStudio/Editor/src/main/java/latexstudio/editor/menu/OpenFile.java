@@ -7,17 +7,16 @@ package latexstudio.editor.menu;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
-import java.io.InputStream;
 import latexstudio.editor.EditorTopComponent;
+import latexstudio.editor.FileActions;
 import latexstudio.editor.TopComponentFactory;
 import latexstudio.editor.files.FileChooserService;
 import latexstudio.editor.files.FileChooserService.DialogType;
-import latexstudio.editor.files.FileService;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.awt.ActionRegistration;
 import org.openide.util.NbBundle.Messages;
+import static latexstudio.editor.util.ApplicationUtils.TEX_NAME;
 
 @ActionID(
         category = "File",
@@ -36,27 +35,21 @@ public final class OpenFile implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        File file = FileChooserService.getSelectedFile("tex", "TeX files", DialogType.OPEN);
-        if (file != null) {
-            openFile(etc, file);
+        FileActions fileAction = new FileActions();
+        
+        switch (etc.canOpen()) {
+            case SAVE_AND_OPEN:
+                fileAction.saveFile(FileChooserService.DialogType.SAVE);
+                fileAction.openFile(FileChooserService.getSelectedFile(TEX_NAME, "TeX files", DialogType.OPEN));
+                break;
+            
+            case OPEN:
+                fileAction.openFile(FileChooserService.getSelectedFile(TEX_NAME, "TeX files", DialogType.OPEN));
+                break;
+                
+            default:
+                //Do nothing
+                break;
         }
-    }
-
-    /**
-      * Opens file content in EditorTopComponent
-      *
-      * @param etc editor component, where you want to open specified file
-      * @param file file, that exists and isn't a folder
-     */
-    public void openFile(EditorTopComponent etc, File file) {
-        if (file != null && file.exists() && !file.isDirectory()) {
-            String content = FileService.readFromFile(file.getAbsolutePath());
-            etc.setEditorContent(content);
-            etc.setCurrentFile(file);
-        }
-    }
-
-    public void openFile(EditorTopComponent etc, InputStream file) {
-        etc.setEditorContent(FileService.readFromStream(file));
     }
 }
