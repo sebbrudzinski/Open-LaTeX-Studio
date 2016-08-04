@@ -5,14 +5,8 @@
  */
 package latexstudio.editor.util;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.URL;
-import java.util.regex.Pattern;
-import org.apache.commons.io.IOUtils;
 import org.openide.util.Exceptions;
 
 /**
@@ -29,6 +23,9 @@ public final class ApplicationUtils {
     private static final String PREVIEW_SOURCE_FILENAME = "preview.tex";
     private static final String PREVIEW_PDF_FILENAME = "preview.pdf";
     private static final String SETTINGS_FILENAME = "settings.properties";
+    public static final String TEX_NAME = "tex";
+    public static final String TEX_EXTENSION = ".tex";
+
     private static final String APP_PROPERTIES = "application.properties";
     private static final String APP_VERSION = PropertyService.
             readProperties(APP_PROPERTIES).getProperty("application.version");

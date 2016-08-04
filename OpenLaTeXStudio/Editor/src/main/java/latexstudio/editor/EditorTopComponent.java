@@ -14,7 +14,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
+import javax.swing.JOptionPane;
 import javax.swing.text.BadLocationException;
+import latexstudio.editor.files.FileService;
 import latexstudio.editor.remote.Cloud;
 import latexstudio.editor.remote.DbxState;
 import latexstudio.editor.remote.DbxUtil;
@@ -60,6 +62,8 @@ import org.openide.windows.TopComponent;
 public final class EditorTopComponent extends TopComponent {
 
     private boolean dirty = false;
+    private boolean modified = false;
+    private boolean previewDisplayed = true;
     private File currentFile;
     private DbxState dbxState;
 
@@ -77,27 +81,27 @@ public final class EditorTopComponent extends TopComponent {
         displayCloudStatus();
     }
 
-    @SettingListener( setting = ApplicationSettings.Setting.AUTOCOMPLETE_ENABLED )
-    public void setAutocompleteEnabled( boolean value ) {
-        if(autoCompletion != null) {
-            autoCompletion.setAutoActivationEnabled( value );
+    @SettingListener(setting = ApplicationSettings.Setting.AUTOCOMPLETE_ENABLED)
+    public void setAutocompleteEnabled(boolean value) {
+        if (autoCompletion != null) {
+            autoCompletion.setAutoActivationEnabled(value);
         }
     }
-    
-    @SettingListener( setting = ApplicationSettings.Setting.AUTOCOMPLETE_DELAY )
-    public void setAutocompleteDelay( int value ) {
-        if(autoCompletion != null) {
-            autoCompletion.setAutoActivationDelay( value );
+
+    @SettingListener(setting = ApplicationSettings.Setting.AUTOCOMPLETE_DELAY)
+    public void setAutocompleteDelay(int value) {
+        if (autoCompletion != null) {
+            autoCompletion.setAutoActivationDelay(value);
         }
     }
-    
-    @SettingListener( setting = ApplicationSettings.Setting.LINEWRAP_ENABLED )
-    public void setLinewrapEnabled( boolean value ) {
-        if(rSyntaxTextArea != null) {
-            rSyntaxTextArea.setLineWrap( value );
+
+    @SettingListener(setting = ApplicationSettings.Setting.LINEWRAP_ENABLED)
+    public void setLinewrapEnabled(boolean value) {
+        if (rSyntaxTextArea != null) {
+            rSyntaxTextArea.setLineWrap(value);
         }
     }
-    
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -116,6 +120,7 @@ public final class EditorTopComponent extends TopComponent {
             public void keyReleased(java.awt.event.KeyEvent evt) {
                 rSyntaxTextAreaKeyReleased(evt);
             }
+
             public void keyTyped(java.awt.event.KeyEvent evt) {
                 rSyntaxTextAreaKeyTyped(evt);
             }
@@ -127,31 +132,32 @@ public final class EditorTopComponent extends TopComponent {
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(rTextScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 709, Short.MAX_VALUE)
-                .addContainerGap())
+                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(rTextScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 709, Short.MAX_VALUE)
+                        .addContainerGap())
         );
         layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(rTextScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 546, Short.MAX_VALUE)
-                .addContainerGap())
+                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(rTextScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 546, Short.MAX_VALUE)
+                        .addContainerGap())
         );
     }// </editor-fold>                        
 
-    private void rSyntaxTextAreaKeyReleased(java.awt.event.KeyEvent evt) {                                            
+    private void rSyntaxTextAreaKeyReleased(java.awt.event.KeyEvent evt) {
         dirty = true;
-    }                                           
+        setModified(true);
+    }
 
-    private void rSyntaxTextAreaKeyTyped(java.awt.event.KeyEvent evt) {                                         
+    private void rSyntaxTextAreaKeyTyped(java.awt.event.KeyEvent evt) {
         if (currentFile == null || evt.isControlDown()) {
             return;
         }
         setDisplayName(currentFile.getName() + '*');
-    }                                        
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private org.fife.ui.rsyntaxtextarea.RSyntaxTextArea rSyntaxTextArea;
@@ -166,17 +172,24 @@ public final class EditorTopComponent extends TopComponent {
         autoCompletion.install(rSyntaxTextArea);
 
         ApplicationSettings.INSTANCE.registerSettingListeners(this);
-        
-        InputStream is = null;
-        try {
-            is = getClass().getResource("/openlatexstudio/welcome.tex").openStream();
-            String welcomeMessage = IOUtils.toString(is);
-            rSyntaxTextArea.setText(welcomeMessage);
-            setDirty(true);
-        } catch (IOException ex) {
-            Exceptions.printStackTrace(ex);
-        } finally {
-            IOUtils.closeQuietly(is);
+
+        String initFileDir = (String) ApplicationSettings.Setting.USER_LASTFILE.getValue();
+        File initFile = new File(initFileDir);
+        if (initFile.exists() && initFile.isFile()) {
+            String content = FileService.readFromFile(initFileDir);
+            setEditorContent(content);
+            setCurrentFile(initFile);
+        } else {
+            InputStream is = null;
+            try {
+                is = getClass().getResource("/openlatexstudio/welcome.tex").openStream();
+                String welcomeMessage = IOUtils.toString(is);
+                setEditorContent(welcomeMessage);
+            } catch (IOException ex) {
+                Exceptions.printStackTrace(ex);
+            } finally {
+                IOUtils.closeQuietly(is);
+            }
         }
     }
 
@@ -201,6 +214,22 @@ public final class EditorTopComponent extends TopComponent {
         this.dirty = dirty;
     }
 
+    public boolean isModified() {
+        return modified;
+    }
+
+    public void setModified(boolean modified) {
+        this.modified = modified;
+    }
+
+    public boolean isPreviewDisplayed() {
+        return previewDisplayed;
+    }
+
+    public void setPreviewDisplayed(boolean previewDisplayed) {
+        this.previewDisplayed = previewDisplayed;
+    }
+
     public void undoAction() {
         rSyntaxTextArea.undoLastAction();
     }
@@ -215,7 +244,12 @@ public final class EditorTopComponent extends TopComponent {
 
     public void setCurrentFile(File currentFile) {
         this.currentFile = currentFile;
-        setDisplayName(currentFile.getName());
+
+        if (currentFile != null) {
+            setDisplayName(currentFile.getName());
+            ApplicationSettings.Setting.USER_LASTFILE.setValue(currentFile.getAbsolutePath());
+            ApplicationSettings.INSTANCE.save();
+        }
     }
 
     public DbxState getDbxState() {
@@ -246,10 +280,10 @@ public final class EditorTopComponent extends TopComponent {
 
     public void commentOutText() {
         String highlightedTextArea = rSyntaxTextArea.getSelectedText();
-        
+
         if (highlightedTextArea != null) { // Some text is highlighted case
             highlightedTextArea = findStartSymbol();
-            
+
             if (highlightedTextArea.startsWith("%")) {
                 rSyntaxTextArea.replaceSelection(highlightedTextArea.replace("%", ""));
             } else {
@@ -258,7 +292,7 @@ public final class EditorTopComponent extends TopComponent {
                 for (int i = 0; i < array.length; i++) {
                     array[i] = (array[i].charAt(0) == '%') ? array[i] : "%" + array[i];
                     if (i != array.length - 1) {
-                         array[i] = array[i] + "\n";
+                        array[i] = array[i] + "\n";
                     }
                     commentedCodeBuilder.append(array[i]);
                 }
@@ -270,7 +304,7 @@ public final class EditorTopComponent extends TopComponent {
                 int currentCaretPosition = rSyntaxTextArea.getCaretPosition();
                 int lineStartPosition = currentCaretPosition - currentOffsetFromLineStart;
                 int lineLength = rSyntaxTextArea.getLineEndOffsetOfCurrentLine();
-                
+
                 String firstChar = rSyntaxTextArea.getText(lineStartPosition, lineLength - lineStartPosition);
                 if (firstChar.startsWith("%")) {
                     rSyntaxTextArea.replaceRange("", lineStartPosition, lineStartPosition + 1);
@@ -327,7 +361,7 @@ public final class EditorTopComponent extends TopComponent {
     }
 
     private void displayCloudStatus() {
-        
+
         boolean isConnected = false;
         String message;
         DbxAccountInfo info = null;
@@ -355,5 +389,22 @@ public final class EditorTopComponent extends TopComponent {
         }
 
         LOGGER.log(message);
+    }
+
+    public UnsavedWorkState canOpen() {
+
+        if (isModified() && !isPreviewDisplayed()) {
+            int userChoice = JOptionPane.showConfirmDialog(this, "This document has been modified. Do you want to save it first?", "Save document", JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
+            if (userChoice == JOptionPane.YES_OPTION) {
+                return UnsavedWorkState.SAVE_AND_OPEN;
+            } else if (userChoice == JOptionPane.NO_OPTION) {
+                return UnsavedWorkState.OPEN;
+            } else {
+                return UnsavedWorkState.CANCEL;
+            }
+
+        } else {
+            return UnsavedWorkState.OPEN;
+        }
     }
 }
