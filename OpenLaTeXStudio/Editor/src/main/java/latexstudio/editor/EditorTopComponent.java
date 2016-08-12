@@ -61,12 +61,7 @@ import org.openide.windows.TopComponent;
 })
 public final class EditorTopComponent extends TopComponent {
 
-    private boolean dirty = false;
-    private boolean modified = false;
-    private boolean previewDisplayed = true;
-    private File currentFile;
-    private DbxState dbxState;
-
+    private EditorState editorState = new EditorState();
     private AutoCompletion autoCompletion = null;
     private static final ApplicationLogger LOGGER = new ApplicationLogger("Cloud Support");
 
@@ -148,15 +143,15 @@ public final class EditorTopComponent extends TopComponent {
     }// </editor-fold>                        
 
     private void rSyntaxTextAreaKeyReleased(java.awt.event.KeyEvent evt) {
-        dirty = true;
+        editorState.setDirty(true);
         setModified(true);
     }
 
     private void rSyntaxTextAreaKeyTyped(java.awt.event.KeyEvent evt) {
-        if (currentFile == null || evt.isControlDown()) {
+        if (editorState.getCurrentFile() == null || evt.isControlDown()) {
             return;
         }
-        setDisplayName(currentFile.getName() + '*');
+        setDisplayName(editorState.getCurrentFile().getName() + '*');
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -203,31 +198,31 @@ public final class EditorTopComponent extends TopComponent {
 
     public void setEditorContent(String text) {
         rSyntaxTextArea.setText(text);
-        dirty = true;
+        editorState.setDirty(true);
     }
 
     public boolean isDirty() {
-        return dirty;
+        return editorState.isDirty();
     }
 
     public void setDirty(boolean dirty) {
-        this.dirty = dirty;
+        editorState.setDirty(dirty);
     }
 
     public boolean isModified() {
-        return modified;
+        return editorState.isModified();
     }
 
     public void setModified(boolean modified) {
-        this.modified = modified;
+        editorState.setModified(modified);
     }
 
     public boolean isPreviewDisplayed() {
-        return previewDisplayed;
+        return editorState.isPreviewDisplayed();
     }
 
     public void setPreviewDisplayed(boolean previewDisplayed) {
-        this.previewDisplayed = previewDisplayed;
+        editorState.setPreviewDisplayed(previewDisplayed);
     }
 
     public void undoAction() {
@@ -239,11 +234,11 @@ public final class EditorTopComponent extends TopComponent {
     }
 
     public File getCurrentFile() {
-        return currentFile;
+        return editorState.getCurrentFile();
     }
 
     public void setCurrentFile(File currentFile) {
-        this.currentFile = currentFile;
+        editorState.setCurrentFile(currentFile);
 
         if (currentFile != null) {
             setDisplayName(currentFile.getName());
@@ -253,11 +248,11 @@ public final class EditorTopComponent extends TopComponent {
     }
 
     public DbxState getDbxState() {
-        return dbxState;
+        return editorState.getDbxState();
     }
 
     public void setDbxState(DbxState dbxState) {
-        this.dbxState = dbxState;
+        editorState.setDbxState(dbxState);
     }
 
     private String findStartSymbol() {
