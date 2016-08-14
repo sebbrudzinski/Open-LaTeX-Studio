@@ -143,15 +143,15 @@ public final class EditorTopComponent extends TopComponent {
     }// </editor-fold>                        
 
     private void rSyntaxTextAreaKeyReleased(java.awt.event.KeyEvent evt) {
-        editorState.setDirty(true);
+        getEditorState().setDirty(true);
         setModified(true);
     }
 
     private void rSyntaxTextAreaKeyTyped(java.awt.event.KeyEvent evt) {
-        if (editorState.getCurrentFile() == null || evt.isControlDown()) {
+        if (getEditorState().getCurrentFile() == null || evt.isControlDown()) {
             return;
         }
-        setDisplayName(editorState.getCurrentFile().getName() + '*');
+        setDisplayName(getEditorState().getCurrentFile().getName() + '*');
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -198,31 +198,31 @@ public final class EditorTopComponent extends TopComponent {
 
     public void setEditorContent(String text) {
         rSyntaxTextArea.setText(text);
-        editorState.setDirty(true);
+        getEditorState().setDirty(true);
     }
 
     public boolean isDirty() {
-        return editorState.isDirty();
+        return getEditorState().isDirty();
     }
 
     public void setDirty(boolean dirty) {
-        editorState.setDirty(dirty);
+        getEditorState().setDirty(dirty);
     }
 
     public boolean isModified() {
-        return editorState.isModified();
+        return getEditorState().isModified();
     }
 
     public void setModified(boolean modified) {
-        editorState.setModified(modified);
+        getEditorState().setModified(modified);
     }
 
     public boolean isPreviewDisplayed() {
-        return editorState.isPreviewDisplayed();
+        return getEditorState().isPreviewDisplayed();
     }
 
     public void setPreviewDisplayed(boolean previewDisplayed) {
-        editorState.setPreviewDisplayed(previewDisplayed);
+        getEditorState().setPreviewDisplayed(previewDisplayed);
     }
 
     public void undoAction() {
@@ -234,11 +234,11 @@ public final class EditorTopComponent extends TopComponent {
     }
 
     public File getCurrentFile() {
-        return editorState.getCurrentFile();
+        return getEditorState().getCurrentFile();
     }
 
     public void setCurrentFile(File currentFile) {
-        editorState.setCurrentFile(currentFile);
+        getEditorState().setCurrentFile(currentFile);
 
         if (currentFile != null) {
             setDisplayName(currentFile.getName());
@@ -248,11 +248,11 @@ public final class EditorTopComponent extends TopComponent {
     }
 
     public DbxState getDbxState() {
-        return editorState.getDbxState();
+        return getEditorState().getDbxState();
     }
 
     public void setDbxState(DbxState dbxState) {
-        editorState.setDbxState(dbxState);
+        getEditorState().setDbxState(dbxState);
     }
 
     private String findStartSymbol() {
@@ -401,5 +401,9 @@ public final class EditorTopComponent extends TopComponent {
         } else {
             return UnsavedWorkState.OPEN;
         }
+    }
+    
+    public EditorState getEditorState() {
+        return editorState;
     }
 }
