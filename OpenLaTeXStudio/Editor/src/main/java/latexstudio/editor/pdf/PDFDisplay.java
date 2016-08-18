@@ -36,13 +36,10 @@ public class PDFDisplay {
         Image generatedImage = PDFPreviewBuilder.buildPDFPreview(selectedPage, viewZoom);
         
         if (generatedImage != null) {
-            try {
-                ImageIcon icon = new ImageIcon(generatedImage);
-                JLabel picLabel = new JLabel(icon);
-                pdfImagePanel.add(picLabel);
-            } catch (OutOfMemoryError oome) {
-                
-            }
+            ImageIcon icon = new ImageIcon(generatedImage);
+            JLabel picLabel = new JLabel(icon);
+            pdfImagePanel.add(picLabel);
+
         }
         
         PDFService.closeDocument();
