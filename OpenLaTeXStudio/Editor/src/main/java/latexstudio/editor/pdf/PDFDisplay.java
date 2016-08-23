@@ -39,6 +39,7 @@ public class PDFDisplay {
             ImageIcon icon = new ImageIcon(generatedImage);
             JLabel picLabel = new JLabel(icon);
             pdfImagePanel.add(picLabel);
+
         }
         
         PDFService.closeDocument();
