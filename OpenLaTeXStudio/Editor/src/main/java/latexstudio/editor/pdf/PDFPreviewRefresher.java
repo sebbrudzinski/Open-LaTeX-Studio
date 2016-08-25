@@ -6,6 +6,7 @@
 package latexstudio.editor.pdf;
 
 import java.awt.Point;
+import javax.swing.JButton;
 import latexstudio.editor.runtime.CommandLineExecutor;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -28,12 +29,23 @@ public class PDFPreviewRefresher implements Runnable {
     private final JLabel jLabel;
     private final EditorTopComponent etc;
     private final PDFDisplay pdfDisplay;
+    private final JButton previousButton;
+    private final JButton nextButton;
     
-    public PDFPreviewRefresher(JScrollPane jScrollPane, JLabel jLabel,EditorTopComponent etc, PDFDisplay pdfDisplay) {
+    public PDFPreviewRefresher(JScrollPane jScrollPane, JLabel jLabel,EditorTopComponent etc, PDFDisplay pdfDisplay, JButton previousButton, JButton nextButton) {
         this.jScrollPane = jScrollPane;
         this.jLabel = jLabel;
         this.etc = etc;
         this.pdfDisplay = pdfDisplay;
+        
+        previousButton.setEnabled(false);
+        if(pdfDisplay.getTotalPages()>1){
+            nextButton.setEnabled(true);
+        } else{
+            nextButton.setEnabled(false);
+        }
+        this.previousButton = previousButton;
+        this.nextButton = nextButton;
     }
 
     @Override
@@ -55,7 +67,7 @@ public class PDFPreviewRefresher implements Runnable {
     }
     
     private void drawPreview() {
-        JPanel pdfImagePanel = pdfDisplay.drawPreviewOnJPanel();
+        JPanel pdfImagePanel = pdfDisplay.drawPreviewOnJPanel(nextButton);
        
         if (pdfImagePanel != null) {
             JViewport vp = jScrollPane.getViewport();
