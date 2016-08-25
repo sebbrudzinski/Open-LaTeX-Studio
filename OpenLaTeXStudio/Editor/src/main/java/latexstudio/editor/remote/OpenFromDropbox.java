@@ -5,23 +5,13 @@
  */
 package latexstudio.editor.remote;
 
-import com.dropbox.core.DbxClient;
-import com.dropbox.core.DbxEntry;
-import com.dropbox.core.DbxException;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-import javax.swing.DefaultListSelectionModel;
-import javax.swing.JList;
-import javax.swing.JOptionPane;
+import latexstudio.editor.DbxFileActions;
 import latexstudio.editor.DropboxRevisionsTopComponent;
 import latexstudio.editor.EditorTopComponent;
 import latexstudio.editor.RevisionDisplayTopComponent;
 import latexstudio.editor.TopComponentFactory;
-import latexstudio.editor.files.FileService;
-import latexstudio.editor.util.ApplicationUtils;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.awt.ActionRegistration;
@@ -37,7 +27,7 @@ import org.openide.util.NbBundle.Messages;
 @ActionReference(path = "Menu/Remote", position = 3408)
 @Messages("CTL_OpenFromDropbox=Open from Dropbox")
 public final class OpenFromDropbox implements ActionListener {
-    
+
     private final EditorTopComponent etc = new TopComponentFactory<EditorTopComponent>()
             .getTopComponent(EditorTopComponent.class.getSimpleName());
     private final DropboxRevisionsTopComponent drtc = new TopComponentFactory<DropboxRevisionsTopComponent>()
@@ -47,42 +37,21 @@ public final class OpenFromDropbox implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        DbxClient client = DbxUtil.getDbxClient();
+        DbxFileActions dbxFileAction = new DbxFileActions();
         
-        if (client == null) {
-            return;
-        }
-        
-        List<DbxEntryDto> dbxEntries = new ArrayList<>();
-                             
-        try {
-            for (DbxEntry entry : client.searchFileAndFolderNames("/", ".tex")) {
-                dbxEntries.add(new DbxEntryDto(entry));
-            } 
-        } catch (DbxException ex) {
-            DbxUtil.showDbxAccessDeniedPrompt();
-            return; //No point continuing
-        }
-        
-        JList<DbxEntryDto> list = new JList(dbxEntries.toArray());
-        list.setSelectionMode(DefaultListSelectionModel.SINGLE_SELECTION);
-        int option = JOptionPane.showConfirmDialog(null, list, "Open file from Dropbox", JOptionPane.OK_CANCEL_OPTION);
-        
-        if (option == JOptionPane.OK_OPTION && !list.isSelectionEmpty()) {
-            DbxEntryDto entry = list.getSelectedValue();
-            String localPath = ApplicationUtils.getAppDirectory() + File.separator + entry.getName();
-            File outputFile = DbxUtil.downloadRemoteFile(entry, localPath);
-            
-            revtc.close();
+        switch (etc.canOpen()) {
+            case SAVE_AND_OPEN:
+                dbxFileAction.saveProgress(DbxUtil.getDbxClient(), drtc);
+                dbxFileAction.openFromDropbox(drtc, revtc);
+                break;
 
-            drtc.updateRevisionsList(entry.getPath());
-            drtc.open();
-            drtc.requestActive();
+            case OPEN:
+                dbxFileAction.openFromDropbox(drtc, revtc);
+                break;
 
-            String content = FileService.readFromFile(outputFile.getAbsolutePath());
-            etc.setEditorContent(content);
-            etc.setCurrentFile(outputFile); 
-            etc.setDbxState(new DbxState(entry.getPath(), entry.getRevision()));
+            default:
+                //Do nothing
+                break;
         }
     }
 }
