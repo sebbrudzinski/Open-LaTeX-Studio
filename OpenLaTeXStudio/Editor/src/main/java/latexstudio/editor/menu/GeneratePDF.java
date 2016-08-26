@@ -85,7 +85,7 @@ public final class GeneratePDF implements ActionListener {
             .withPathToSource(ApplicationUtils.getTempSourceFile())
             .withOutputDirectory(file.getParentFile().getAbsolutePath())
             .withJobname(filename)
-            .withWorkingFile(etc.getCurrentFile())
+            .withWorkingFile(etc.getEditorState().getCurrentFile())
             .withLatexPath( (String) ApplicationSettings.Setting.LATEX_PATH.getValue() )
             .withLogger(new ApplicationLogger("pdflatex")));  
     }

@@ -61,12 +61,7 @@ import org.openide.windows.TopComponent;
 })
 public final class EditorTopComponent extends TopComponent {
 
-    private boolean dirty = false;
-    private boolean modified = false;
-    private boolean previewDisplayed = true;
-    private File currentFile;
-    private DbxState dbxState;
-
+    private EditorState editorState = new EditorState();
     private AutoCompletion autoCompletion = null;
     private static final ApplicationLogger LOGGER = new ApplicationLogger("Cloud Support");
 
@@ -148,15 +143,15 @@ public final class EditorTopComponent extends TopComponent {
     }// </editor-fold>                        
 
     private void rSyntaxTextAreaKeyReleased(java.awt.event.KeyEvent evt) {
-        dirty = true;
-        setModified(true);
+        getEditorState().setDirty(true);
+        getEditorState().setModified(true);
     }
 
     private void rSyntaxTextAreaKeyTyped(java.awt.event.KeyEvent evt) {
-        if (currentFile == null || evt.isControlDown()) {
+        if (getEditorState().getCurrentFile() == null || evt.isControlDown()) {
             return;
         }
-        setDisplayName(currentFile.getName() + '*');
+        setDisplayName(getEditorState().getCurrentFile().getName() + '*');
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -203,31 +198,7 @@ public final class EditorTopComponent extends TopComponent {
 
     public void setEditorContent(String text) {
         rSyntaxTextArea.setText(text);
-        dirty = true;
-    }
-
-    public boolean isDirty() {
-        return dirty;
-    }
-
-    public void setDirty(boolean dirty) {
-        this.dirty = dirty;
-    }
-
-    public boolean isModified() {
-        return modified;
-    }
-
-    public void setModified(boolean modified) {
-        this.modified = modified;
-    }
-
-    public boolean isPreviewDisplayed() {
-        return previewDisplayed;
-    }
-
-    public void setPreviewDisplayed(boolean previewDisplayed) {
-        this.previewDisplayed = previewDisplayed;
+        getEditorState().setDirty(true);
     }
 
     public void undoAction() {
@@ -238,26 +209,14 @@ public final class EditorTopComponent extends TopComponent {
         rSyntaxTextArea.redoLastAction();
     }
 
-    public File getCurrentFile() {
-        return currentFile;
-    }
-
     public void setCurrentFile(File currentFile) {
-        this.currentFile = currentFile;
+        editorState.setCurrentFile(currentFile);
 
         if (currentFile != null) {
             setDisplayName(currentFile.getName());
             ApplicationSettings.Setting.USER_LASTFILE.setValue(currentFile.getAbsolutePath());
             ApplicationSettings.INSTANCE.save();
         }
-    }
-
-    public DbxState getDbxState() {
-        return dbxState;
-    }
-
-    public void setDbxState(DbxState dbxState) {
-        this.dbxState = dbxState;
     }
 
     private String findStartSymbol() {
@@ -393,7 +352,7 @@ public final class EditorTopComponent extends TopComponent {
 
     public UnsavedWorkState canOpen() {
 
-        if (isModified() && !isPreviewDisplayed()) {
+        if (getEditorState().isModified() && !getEditorState().isPreviewDisplayed()) {
             int userChoice = JOptionPane.showConfirmDialog(this, "This document has been modified. Do you want to save it first?", "Save document", JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
             if (userChoice == JOptionPane.YES_OPTION) {
                 return UnsavedWorkState.SAVE_AND_OPEN;
@@ -406,5 +365,9 @@ public final class EditorTopComponent extends TopComponent {
         } else {
             return UnsavedWorkState.OPEN;
         }
+    }
+    
+    public EditorState getEditorState() {
+        return editorState;
     }
 }

@@ -39,11 +39,11 @@ public class PDFPreviewRefresher implements Runnable {
     @Override
     public void run() {
         while(true) {
-            if (etc.isDirty()) {
+            if (etc.getEditorState().isDirty()) {
                 compileTemporaryFile();
                 pdfDisplay.updateTotalPages();
                 drawPreview();
-                etc.setDirty(false);
+                etc.getEditorState().setDirty(false);
             }
             
             try {
@@ -78,7 +78,7 @@ public class PDFPreviewRefresher implements Runnable {
                 .withPathToSource(ApplicationUtils.getTempSourceFile())
                 .withOutputDirectory(ApplicationUtils.getAppDirectory())
                 .withJobname("preview")
-                .withWorkingFile(etc.getCurrentFile())
+                .withWorkingFile(etc.getEditorState().getCurrentFile())
                 .withLatexPath( (String) ApplicationSettings.Setting.LATEX_PATH.getValue() )
         );
     }

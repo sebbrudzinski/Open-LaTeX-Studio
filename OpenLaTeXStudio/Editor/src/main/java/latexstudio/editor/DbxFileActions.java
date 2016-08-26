@@ -43,7 +43,7 @@ public class DbxFileActions {
      * @param drtc to be updated with a new entry (file history)
      */
     public void saveProgress(DbxClient client, DropboxRevisionsTopComponent drtc) {
-        DbxState dbxState = etc.getDbxState();
+        DbxState dbxState = etc.getEditorState().getDbxState();
 
         if (client == null) {
             return;
@@ -61,14 +61,14 @@ public class DbxFileActions {
                             "File updated in Dropbox",
                             JOptionPane.INFORMATION_MESSAGE);
                     drtc.updateRevisionsList(uploadedFile.path);
-                    etc.setDbxState(new DbxState(uploadedFile.path, uploadedFile.rev));
+                    etc.getEditorState().setDbxState(new DbxState(uploadedFile.path, uploadedFile.rev));
                 } catch (DbxException ex) {
                     DbxUtil.showDbxAccessDeniedPrompt();
                 } catch (IOException ex) {
                     Exceptions.printStackTrace(ex);
                 } finally {
                     IOUtils.closeQuietly(inputStream);
-                    etc.setModified(false);
+                    etc.getEditorState().setModified(false);
                 }
             } else {
                 JOptionPane.showMessageDialog(null, "No Dropbox file has been loaded.\n"
@@ -107,9 +107,9 @@ public class DbxFileActions {
                 String content = FileService.readFromFile(outputFile.getAbsolutePath());
                 etc.setEditorContent(content);
                 etc.setCurrentFile(outputFile);
-                etc.setDbxState(new DbxState(entry.getPath(), entry.getRevision()));
-                etc.setModified(false);
-                etc.setPreviewDisplayed(false);
+                etc.getEditorState().setDbxState(new DbxState(entry.getPath(), entry.getRevision()));
+                etc.getEditorState().setModified(false);
+                etc.getEditorState().setPreviewDisplayed(false);
             }
         } else{
             JOptionPane.showMessageDialog(etc, "No .tex files found!", "Error", JOptionPane.ERROR_MESSAGE);
