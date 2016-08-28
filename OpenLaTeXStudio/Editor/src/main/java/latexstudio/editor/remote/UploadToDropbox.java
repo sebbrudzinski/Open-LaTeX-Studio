@@ -26,6 +26,7 @@ import org.openide.awt.ActionReference;
 import org.openide.awt.ActionRegistration;
 import org.openide.util.Exceptions;
 import org.openide.util.NbBundle.Messages;
+import static latexstudio.editor.util.ApplicationUtils.TEX_EXTENSION;
 
 @ActionID(
         category = "Remote",
@@ -65,7 +66,7 @@ public final class UploadToDropbox implements ActionListener {
         String fileName = (String) JOptionPane.showInputDialog(null, "Please enter file name", "Upload file", 
                 JOptionPane.INFORMATION_MESSAGE, null, null, defaultFileName);
         if (fileName != null) {
-            fileName = fileName.endsWith(".tex") ? fileName : fileName.concat(".tex");
+            fileName = fileName.endsWith(TEX_EXTENSION) ? fileName : fileName.concat(TEX_EXTENSION);
             try {
                 DbxEntry.File uploadedFile = client.uploadFile("/OpenLaTeXStudio/" + fileName,
                     DbxWriteMode.add(), file.length(), inputStream);
