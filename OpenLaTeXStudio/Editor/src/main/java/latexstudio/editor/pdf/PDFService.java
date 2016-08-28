@@ -35,7 +35,7 @@ public final class PDFService {
                 pages = inputPDF.getNumberOfPages();
             }
         } catch (IOException ex) {
-            closeDocument();
+            // fallback to finally
         } finally {
             closeDocument();
         }
@@ -44,7 +44,7 @@ public final class PDFService {
     }
     
     public static PDDocument getPDDocument() {
-                PDPage page = null;
+        PDPage page = null;
         
         File pdfFile = null;
         try {

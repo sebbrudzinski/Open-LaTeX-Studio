@@ -23,7 +23,7 @@ public class PDFDisplay {
     public PDFDisplay() {
         this.selectedPage = 1;
         this.totalPages = 1;
-        this.viewZoom = 50;
+        this.viewZoom = 100;
     }
     
     public void updateTotalPages(){
@@ -39,7 +39,6 @@ public class PDFDisplay {
             ImageIcon icon = new ImageIcon(generatedImage);
             JLabel picLabel = new JLabel(icon);
             pdfImagePanel.add(picLabel);
-
         }
         
         PDFService.closeDocument();

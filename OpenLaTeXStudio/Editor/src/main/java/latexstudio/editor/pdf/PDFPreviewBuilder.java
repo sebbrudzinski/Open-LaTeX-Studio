@@ -28,7 +28,7 @@ public final class PDFPreviewBuilder {
         
         try (PDDocument pdDocument = PDFService.getPDDocument()) {
             PDFRenderer pdfRenderer = new PDFRenderer(pdDocument);
-            if (pdfRenderer != null && pdDocument.getNumberOfPages()>= page && page > 0){
+            if (pdDocument.getNumberOfPages() >= page && page > 0){
                 pageImage = pdfRenderer.renderImage(page - 1);
                 int width = (int) (newScale * pageImage.getWidth());
                 int height = (int) (newScale * pageImage.getHeight());
