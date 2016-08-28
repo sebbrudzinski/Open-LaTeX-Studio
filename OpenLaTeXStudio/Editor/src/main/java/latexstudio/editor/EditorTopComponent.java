@@ -18,7 +18,6 @@ import javax.swing.JOptionPane;
 import javax.swing.text.BadLocationException;
 import latexstudio.editor.files.FileService;
 import latexstudio.editor.remote.Cloud;
-import latexstudio.editor.remote.DbxState;
 import latexstudio.editor.remote.DbxUtil;
 import latexstudio.editor.settings.ApplicationSettings;
 import latexstudio.editor.settings.SettingListener;
@@ -61,7 +60,7 @@ import org.openide.windows.TopComponent;
 })
 public final class EditorTopComponent extends TopComponent {
 
-    private EditorState editorState = new EditorState();
+    private final EditorState editorState = new EditorState();
     private AutoCompletion autoCompletion = null;
     private static final ApplicationLogger LOGGER = new ApplicationLogger("Cloud Support");
 
@@ -112,6 +111,7 @@ public final class EditorTopComponent extends TopComponent {
         rSyntaxTextArea.setRows(5);
         rSyntaxTextArea.setSyntaxEditingStyle(org.openide.util.NbBundle.getMessage(EditorTopComponent.class, "EditorTopComponent.rSyntaxTextArea.syntaxEditingStyle")); // NOI18N
         rSyntaxTextArea.addKeyListener(new java.awt.event.KeyAdapter() {
+            @Override
             public void keyReleased(java.awt.event.KeyEvent evt) {
                 rSyntaxTextAreaKeyReleased(evt);
             }
