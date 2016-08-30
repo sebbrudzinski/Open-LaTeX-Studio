@@ -44,9 +44,9 @@ import org.openide.windows.TopComponent;
 })
 public final class PDFViewerTopComponent extends TopComponent {
     
-    private static final int DEFAULT_ZOOM = 50;
-    private static final int MIN_ZOOM = 25;
-    private static final int MAX_ZOOM = 400;
+    private static final int DEFAULT_ZOOM = 100;
+    private static final int MIN_ZOOM = 20;
+    private static final int MAX_ZOOM = 300;
     private static final int SPINNER_ZOOM_SIZE = 10;
     
     private final EditorTopComponent etc = new TopComponentFactory<EditorTopComponent>()

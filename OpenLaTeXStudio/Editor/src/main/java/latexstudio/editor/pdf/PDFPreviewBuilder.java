@@ -8,7 +8,8 @@ package latexstudio.editor.pdf;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-import org.apache.pdfbox.pdmodel.PDPage;
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.rendering.PDFRenderer;
 import org.openide.util.Exceptions;
 
 /**
@@ -16,26 +17,27 @@ import org.openide.util.Exceptions;
  * @author Sebastian
  */
 public final class PDFPreviewBuilder {
-    
     private static final int SCALE_TYPE = Image.SCALE_SMOOTH;
-
+    
     private PDFPreviewBuilder() {
     }
 
-    public static Image buildPDFPreview(PDPage pdfPage, int zoom) {
-        if (pdfPage == null) {
-            return null;
-        }
-
-        double newScale = ((double) zoom) / 100.0;
+    public static Image buildPDFPreview(int page, int zoom) {
+        float newScale = ((float) zoom) / 100.0f;
         BufferedImage pageImage = null;
-        try {
-            pageImage = pdfPage.convertToImage();
-            int width = (int) (newScale * pageImage.getWidth());
-            int height = (int) (newScale * pageImage.getHeight());
+        
+        try (PDDocument pdDocument = PDFService.getPDDocument()) {
+            PDFRenderer pdfRenderer = new PDFRenderer(pdDocument);
+            if (pdDocument.getNumberOfPages() >= page && page > 0){
+                pageImage = pdfRenderer.renderImage(page - 1);
+                int width = (int) (newScale * pageImage.getWidth());
+                int height = (int) (newScale * pageImage.getHeight());
             
-            return pageImage.getScaledInstance(width, height, SCALE_TYPE);
+                return pageImage.getScaledInstance(width, height, SCALE_TYPE);
+            }
             
+                        
+            return pageImage;
         } catch (IOException ex) {
             Exceptions.printStackTrace(ex);
         }

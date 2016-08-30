@@ -7,11 +7,10 @@ package latexstudio.editor.pdf;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.List;
 import latexstudio.editor.util.ApplicationUtils;
+import org.apache.commons.io.IOUtils;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
-import org.openide.util.Exceptions;
 
 /**
  * This class allows all kind of operations on the PDF files.
@@ -36,13 +35,15 @@ public final class PDFService {
                 pages = inputPDF.getNumberOfPages();
             }
         } catch (IOException ex) {
+            // fallback to finally
+        } finally {
             closeDocument();
         }
         
         return pages;
     }
-
-    public static PDPage getPDFPage(int number) {
+    
+    public static PDDocument getPDDocument() {
         PDPage page = null;
         
         File pdfFile = null;
@@ -50,25 +51,17 @@ public final class PDFService {
             pdfFile = new File(PDF_PATH);
             if (pdfFile.exists()) {
                 inputPDF = PDDocument.load(pdfFile);
-                List<PDPage> allPages = inputPDF.getDocumentCatalog().getAllPages();
-                if (allPages != null && !allPages.isEmpty() && allPages.size() >= number && number > 0) {
-                    page = allPages.get(number - 1);
-                }
             }
         } catch (IOException ex) {
             closeDocument();
         }
         
-        return page;
+        return inputPDF;
     }
     
     public static void closeDocument() {
         if (inputPDF != null) {
-            try {
-                inputPDF.close();
-            } catch (IOException ex) {
-                Exceptions.printStackTrace(ex);
-            }
+            IOUtils.closeQuietly(inputPDF);
         }
     }
 }

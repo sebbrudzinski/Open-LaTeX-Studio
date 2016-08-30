@@ -65,7 +65,7 @@ public class PDFPreviewRefresher implements Runnable {
 
         }
         
-        jLabel.setText("of "+pdfDisplay.getTotalPages());
+        jLabel.setText("of " + pdfDisplay.getTotalPages());
     }
 
     private void compileTemporaryFile() {        

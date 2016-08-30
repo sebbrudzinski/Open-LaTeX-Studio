@@ -14,7 +14,7 @@ import java.io.IOException;
 import java.util.Locale;
 import javax.swing.JOptionPane;
 import latexstudio.editor.settings.ApplicationSettings;
-import org.apache.pdfbox.io.IOUtils;
+import org.apache.commons.io.IOUtils;
 import org.openide.util.Exceptions;
 
 /**
