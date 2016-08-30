@@ -14,6 +14,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.util.NoSuchElementException;
+import java.util.Scanner;
 import javax.swing.JOptionPane;
 import javax.swing.text.BadLocationException;
 import latexstudio.editor.files.FileService;
@@ -172,6 +174,10 @@ public final class EditorTopComponent extends TopComponent {
         autoCompletion.install(rSyntaxTextArea);
 
         ApplicationSettings.INSTANCE.registerSettingListeners(this);
+
+        if (ApplicationSettings.Setting.LATEX_PATH.getValue().equals("")) {
+            autoDiscoverLaTeXPath();
+        }
 
         String initFileDir = (String) ApplicationSettings.Setting.USER_LASTFILE.getValue();
         File initFile = new File(initFileDir);
@@ -405,6 +411,27 @@ public final class EditorTopComponent extends TopComponent {
 
         } else {
             return UnsavedWorkState.OPEN;
+        }
+    }
+
+    private void autoDiscoverLaTeXPath() {
+        try {
+            String command = (ApplicationUtils.isWindows() ? "where " : "which ") + ApplicationUtils.TEX_NAME;
+            Process p = Runtime.getRuntime().exec(command);
+            p.waitFor();
+
+            File path = new File(new Scanner(p.getInputStream()).nextLine());
+
+            if (path.exists() && path.isFile() && path.canExecute()) {
+                ApplicationSettings.Setting.LATEX_PATH.setValue(path.getParent());
+
+                ApplicationSettings.INSTANCE.save();
+            }
+        } catch (IOException | InterruptedException | NoSuchElementException | IllegalStateException ex) {
+            LOGGER.log("Couldn't find LaTeX installed on your computer.");
+            LOGGER.log("Go to Tools -> Options -> LaTeX to specify LaTeX directory.");
+            
+            ex.printStackTrace();
         }
     }
 }
