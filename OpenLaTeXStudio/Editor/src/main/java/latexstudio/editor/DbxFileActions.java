@@ -33,6 +33,8 @@ public class DbxFileActions {
 
     private final EditorTopComponent etc = new TopComponentFactory<EditorTopComponent>()
             .getTopComponent(EditorTopComponent.class.getSimpleName());
+    
+    private static final ApplicationLogger LOGGER = new ApplicationLogger("Cloud Support");
 
     public DbxFileActions() {
     }
@@ -42,7 +44,7 @@ public class DbxFileActions {
      *
      * @param drtc to be updated with a new entry (file history)
      */
-    public void saveProgress(DbxClient client, DropboxRevisionsTopComponent drtc) {
+    public void saveProgress(DbxClient client, DropboxRevisionsTopComponent drtc, boolean isDialogMsg) {
         DbxState dbxState = etc.getDbxState();
 
         if (client == null) {
@@ -56,10 +58,15 @@ public class DbxFileActions {
                 try {
                     DbxEntry.File uploadedFile = client.uploadFile(dbxState.getPath(),
                             DbxWriteMode.update(dbxState.getRevision()), file.length(), inputStream);
-                    JOptionPane.showMessageDialog(null,
-                            "Successfuly updated file " + uploadedFile.name + " (" + uploadedFile.humanSize + ")",
-                            "File updated in Dropbox",
-                            JOptionPane.INFORMATION_MESSAGE);
+                    
+                    if(isDialogMsg)
+                        JOptionPane.showMessageDialog(null,
+                                "Successfuly updated file " + uploadedFile.name + " (" + uploadedFile.humanSize + ")",
+                                "File updated in Dropbox",
+                                JOptionPane.INFORMATION_MESSAGE);
+                    else
+                        LOGGER.log("Successfuly updated file " + uploadedFile.name + " (" + uploadedFile.humanSize + ")");
+                    
                     drtc.updateRevisionsList(uploadedFile.path);
                     etc.setDbxState(new DbxState(uploadedFile.path, uploadedFile.rev));
                 } catch (DbxException ex) {
@@ -71,8 +78,11 @@ public class DbxFileActions {
                     etc.setModified(false);
                 }
             } else {
-                JOptionPane.showMessageDialog(null, "No Dropbox file has been loaded.\n"
-                        + "You must open Dropbox file, before you save it.", "Cannot save progress", JOptionPane.WARNING_MESSAGE);
+                if(isDialogMsg)
+                    JOptionPane.showMessageDialog(null, "No Dropbox file has been loaded.\n"
+                            + "You must open Dropbox file, before you save it.", "Cannot save progress", JOptionPane.WARNING_MESSAGE);
+                else
+                    LOGGER.log("No Dropbox file has been loaded. You must open Dropbox file, before you save it.");
             }
         } catch (IOException ex) {
             Exceptions.printStackTrace(ex);

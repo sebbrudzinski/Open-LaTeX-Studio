@@ -34,6 +34,6 @@ public final class SaveProgress implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        new DbxFileActions().saveProgress(DbxUtil.getDbxClient(), drtc);
+        new DbxFileActions().saveProgress(DbxUtil.getDbxClient(), drtc, true);
     }
 }
