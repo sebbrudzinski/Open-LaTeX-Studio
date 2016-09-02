@@ -41,7 +41,7 @@ public final class OpenFromDropbox implements ActionListener {
         
         switch (etc.canOpen()) {
             case SAVE_AND_OPEN:
-                dbxFileAction.saveProgress(DbxUtil.getDbxClient(), drtc);
+                dbxFileAction.saveProgress(DbxUtil.getDbxClient(), drtc, true);
                 dbxFileAction.openFromDropbox(drtc, revtc);
                 break;
 
