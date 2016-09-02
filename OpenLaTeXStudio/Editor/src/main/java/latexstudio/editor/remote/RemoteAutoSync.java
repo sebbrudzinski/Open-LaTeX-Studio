@@ -31,8 +31,8 @@ public final class RemoteAutoSync implements ActionListener {
             .getTopComponent(EditorTopComponent.class.getSimpleName());
     private static final ApplicationLogger LOGGER = new ApplicationLogger("Cloud Support");
     
-    private DbxAutoSync AutoSyncThread = null;
-    private String SyncPeriod = "0";
+    private DbxAutoSync autoSyncThread = null;
+    private String syncPeriod = "0";
     
     @Override
     public void actionPerformed(ActionEvent e) {        
@@ -45,7 +45,7 @@ public final class RemoteAutoSync implements ActionListener {
         }
         
         String[] periodOptions = {"Disable", "1", "3", "5", "10"};                
-        SyncPeriod = (String) JOptionPane.showInputDialog(
+        syncPeriod = (String) JOptionPane.showInputDialog(
                 null,
                 "Select the auto sync period (in min)",
                 "Period of Dropbox Remote Sync",
@@ -55,24 +55,24 @@ public final class RemoteAutoSync implements ActionListener {
                 periodOptions[0]
         );                                
         
-        LOGGER.log("You set your interval of Dropbox auto sync as: " + SyncPeriod);
+        LOGGER.log("You set your interval of Dropbox auto sync as: " + syncPeriod);
         
-        if(SyncPeriod == null)
-            return;               
+        if(syncPeriod == null) {
+            return;             
+        }
         
-        if(!SyncPeriod.startsWith("Disable")) {
-            if(AutoSyncThread == null){
-                AutoSyncThread = new DbxAutoSync(Integer.valueOf(SyncPeriod));
-                AutoSyncThread.start();
-            }
-            else {
-               AutoSyncThread.setInterval(Integer.valueOf(SyncPeriod));
+        if(!syncPeriod.startsWith("Disable")) {
+            if(autoSyncThread == null) {
+                autoSyncThread = new DbxAutoSync(Integer.valueOf(syncPeriod));
+                autoSyncThread.start();
+            } else {
+               autoSyncThread.setInterval(Integer.valueOf(syncPeriod));
             }
         } else {
-            if(AutoSyncThread != null){
-               AutoSyncThread.setInterval(0);
-               AutoSyncThread.interrupt();
-               AutoSyncThread = null;
+            if(autoSyncThread != null){
+               autoSyncThread.setInterval(0);
+               autoSyncThread.interrupt();
+               autoSyncThread = null;
             }
         }
     }

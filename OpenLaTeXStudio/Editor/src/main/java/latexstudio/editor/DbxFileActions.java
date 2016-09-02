@@ -59,13 +59,14 @@ public class DbxFileActions {
                     DbxEntry.File uploadedFile = client.uploadFile(dbxState.getPath(),
                             DbxWriteMode.update(dbxState.getRevision()), file.length(), inputStream);
                     
-                    if(isDialogMsg)
+                    if(isDialogMsg) {
                         JOptionPane.showMessageDialog(null,
                                 "Successfuly updated file " + uploadedFile.name + " (" + uploadedFile.humanSize + ")",
                                 "File updated in Dropbox",
                                 JOptionPane.INFORMATION_MESSAGE);
-                    else
+                    } else {
                         LOGGER.log("Successfuly updated file " + uploadedFile.name + " (" + uploadedFile.humanSize + ")");
+                    }
                     
                     drtc.updateRevisionsList(uploadedFile.path);
                     etc.setDbxState(new DbxState(uploadedFile.path, uploadedFile.rev));
@@ -78,11 +79,12 @@ public class DbxFileActions {
                     etc.setModified(false);
                 }
             } else {
-                if(isDialogMsg)
+                if(isDialogMsg) {
                     JOptionPane.showMessageDialog(null, "No Dropbox file has been loaded.\n"
                             + "You must open Dropbox file, before you save it.", "Cannot save progress", JOptionPane.WARNING_MESSAGE);
-                else
+                } else {
                     LOGGER.log("No Dropbox file has been loaded. You must open Dropbox file, before you save it.");
+                }
             }
         } catch (IOException ex) {
             Exceptions.printStackTrace(ex);
