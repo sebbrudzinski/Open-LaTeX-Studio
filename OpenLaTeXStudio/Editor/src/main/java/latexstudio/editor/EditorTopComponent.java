@@ -143,15 +143,15 @@ public final class EditorTopComponent extends TopComponent {
     }// </editor-fold>                        
 
     private void rSyntaxTextAreaKeyReleased(java.awt.event.KeyEvent evt) {
-        getEditorState().setDirty(true);
-        getEditorState().setModified(true);
+        editorState.setDirty(true);
+        editorState.setModified(true);
     }
 
     private void rSyntaxTextAreaKeyTyped(java.awt.event.KeyEvent evt) {
-        if (getEditorState().getCurrentFile() == null || evt.isControlDown()) {
+        if (editorState.getCurrentFile() == null || evt.isControlDown()) {
             return;
         }
-        setDisplayName(getEditorState().getCurrentFile().getName() + '*');
+        setDisplayName(editorState.getCurrentFile().getName() + '*');
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -198,7 +198,7 @@ public final class EditorTopComponent extends TopComponent {
 
     public void setEditorContent(String text) {
         rSyntaxTextArea.setText(text);
-        getEditorState().setDirty(true);
+        editorState.setDirty(true);
     }
 
     public void undoAction() {
@@ -352,7 +352,7 @@ public final class EditorTopComponent extends TopComponent {
 
     public UnsavedWorkState canOpen() {
 
-        if (getEditorState().isModified() && !getEditorState().isPreviewDisplayed()) {
+        if (editorState.isModified() && !editorState.isPreviewDisplayed()) {
             int userChoice = JOptionPane.showConfirmDialog(this, "This document has been modified. Do you want to save it first?", "Save document", JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
             if (userChoice == JOptionPane.YES_OPTION) {
                 return UnsavedWorkState.SAVE_AND_OPEN;
