@@ -62,7 +62,7 @@ public final class UploadToDropbox implements ActionListener {
             Exceptions.printStackTrace(ex);
         }
         
-        String defaultFileName = etc.getCurrentFile() == null ? "welcome.tex" : etc.getCurrentFile().getName();
+        String defaultFileName = etc.getEditorState().getCurrentFile() == null ? "welcome.tex" : etc.getEditorState().getCurrentFile().getName();
         String fileName = (String) JOptionPane.showInputDialog(null, "Please enter file name", "Upload file", 
                 JOptionPane.INFORMATION_MESSAGE, null, null, defaultFileName);
         if (fileName != null) {

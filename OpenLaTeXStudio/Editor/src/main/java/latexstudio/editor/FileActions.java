@@ -35,8 +35,8 @@ public class FileActions {
             String content = FileService.readFromFile(file.getAbsolutePath());
             etc.setEditorContent(content);
             etc.setCurrentFile(file);
-            etc.setModified(false);
-            etc.setPreviewDisplayed(false);
+            etc.getEditorState().setModified(false);
+            etc.getEditorState().setPreviewDisplayed(false);
         }
     }
 
@@ -48,14 +48,14 @@ public class FileActions {
     public void saveFile(FileChooserService.DialogType dialogType) {
         if (dialogType == FileChooserService.DialogType.SAVE || dialogType == FileChooserService.DialogType.SAVEAS) {
             String content = etc.getEditorContent();
-            File file = FileChooserService.getFileWithConfirmation(etc.getCurrentFile(), TEX_NAME, "TeX files", dialogType, true);
+            File file = FileChooserService.getFileWithConfirmation(etc.getEditorState().getCurrentFile(), TEX_NAME, "TeX files", dialogType, true);
 
             if (file != null) {
                 FileService.writeToFile(file.getAbsolutePath(), content);
                 LOGGER.log("Saving file " + file.getAbsolutePath());
                 etc.setCurrentFile(file);
-                etc.setModified(false);
-                etc.setPreviewDisplayed(false);
+                etc.getEditorState().setModified(false);
+                etc.getEditorState().setPreviewDisplayed(false);
             }
         }
     }
