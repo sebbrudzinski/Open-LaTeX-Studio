@@ -38,7 +38,7 @@ public final class Redo implements ActionListener {
         EditorTopComponent etc = (EditorTopComponent) tc;
 
         etc.redoAction();
-        etc.setDirty(true);
+        etc.getEditorState().setDirty(true);
     }
 
 }
