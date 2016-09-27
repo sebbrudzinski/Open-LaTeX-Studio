@@ -44,8 +44,8 @@ public class DbxFileActions {
      *
      * @param drtc to be updated with a new entry (file history)
      */
-    public void saveProgress(DbxClient client, DropboxRevisionsTopComponent drtc, boolean isDialogMsg) {
-        DbxState dbxState = etc.getDbxState();
+    public void saveProgress(DbxClient client, DropboxRevisionsTopComponent drtc) {
+        DbxState dbxState = etc.getEditorState().getDbxState();
 
         if (client == null) {
             return;
@@ -59,32 +59,24 @@ public class DbxFileActions {
                     DbxEntry.File uploadedFile = client.uploadFile(dbxState.getPath(),
                             DbxWriteMode.update(dbxState.getRevision()), file.length(), inputStream);
                     
-                    if(isDialogMsg) {
-                        JOptionPane.showMessageDialog(null,
+                    JOptionPane.showMessageDialog(null,
                                 "Successfuly updated file " + uploadedFile.name + " (" + uploadedFile.humanSize + ")",
                                 "File updated in Dropbox",
                                 JOptionPane.INFORMATION_MESSAGE);
-                    } else {
-                        LOGGER.log("Successfuly updated file " + uploadedFile.name + " (" + uploadedFile.humanSize + ")");
-                    }
                     
                     drtc.updateRevisionsList(uploadedFile.path);
-                    etc.setDbxState(new DbxState(uploadedFile.path, uploadedFile.rev));
+                    etc.getEditorState().setDbxState(new DbxState(uploadedFile.path, uploadedFile.rev));
                 } catch (DbxException ex) {
                     DbxUtil.showDbxAccessDeniedPrompt();
                 } catch (IOException ex) {
                     Exceptions.printStackTrace(ex);
                 } finally {
                     IOUtils.closeQuietly(inputStream);
-                    etc.setModified(false);
+                    etc.getEditorState().setModified(false);
                 }
             } else {
-                if(isDialogMsg) {
-                    JOptionPane.showMessageDialog(null, "No Dropbox file has been loaded.\n"
+                JOptionPane.showMessageDialog(null, "No Dropbox file has been loaded.\n"
                             + "You must open Dropbox file, before you save it.", "Cannot save progress", JOptionPane.WARNING_MESSAGE);
-                } else {
-                    LOGGER.log("No Dropbox file has been loaded. You must open Dropbox file, before you save it.");
-                }
             }
         } catch (IOException ex) {
             Exceptions.printStackTrace(ex);
@@ -119,9 +111,9 @@ public class DbxFileActions {
                 String content = FileService.readFromFile(outputFile.getAbsolutePath());
                 etc.setEditorContent(content);
                 etc.setCurrentFile(outputFile);
-                etc.setDbxState(new DbxState(entry.getPath(), entry.getRevision()));
-                etc.setModified(false);
-                etc.setPreviewDisplayed(false);
+                etc.getEditorState().setDbxState(new DbxState(entry.getPath(), entry.getRevision()));
+                etc.getEditorState().setModified(false);
+                etc.getEditorState().setPreviewDisplayed(false);
             }
         } else{
             JOptionPane.showMessageDialog(etc, "No .tex files found!", "Error", JOptionPane.ERROR_MESSAGE);
