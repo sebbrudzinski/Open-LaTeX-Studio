@@ -1,7 +1,7 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+/* 
+ * Copyright (c) 2016 White Hsu
+ * 
+ * See the file LICENSE for copying permission.
  */
 package latexstudio.editor.remote;
 
@@ -31,7 +31,8 @@ public final class RemoteAutoSync implements ActionListener {
             .getTopComponent(EditorTopComponent.class.getSimpleName());
     private static final ApplicationLogger LOGGER = new ApplicationLogger("Cloud Support");
     
-    private DbxAutoSync autoSyncThread = null;
+    private Thread autoSyncThread = null;
+    private DbxAutoSync dbxAutoSyncObj = null;
     private String syncPeriod = "0";
     
     @Override
@@ -44,7 +45,7 @@ public final class RemoteAutoSync implements ActionListener {
            return; 
         }
         
-        String[] periodOptions = {"Disable", "1", "3", "5", "10"};                
+        String[] periodOptions = {"Disable", "1 minute", "3 minutes", "5 minutes", "10 minutes"};                
         syncPeriod = (String) JOptionPane.showInputDialog(
                 null,
                 "Select the auto sync period (in min)",
@@ -54,7 +55,7 @@ public final class RemoteAutoSync implements ActionListener {
                 periodOptions,
                 periodOptions[0]
         );                                
-        
+
         LOGGER.log("You set your interval of Dropbox auto sync as: " + syncPeriod);
         
         if(syncPeriod == null) {
@@ -62,19 +63,21 @@ public final class RemoteAutoSync implements ActionListener {
         }
         
         if(!syncPeriod.startsWith("Disable")) {
+            syncPeriod = syncPeriod.substring(0, syncPeriod.indexOf(" "));                        
             if(autoSyncThread == null) {
-                autoSyncThread = new DbxAutoSync(Integer.valueOf(syncPeriod));
+                dbxAutoSyncObj = new DbxAutoSync(Integer.valueOf(syncPeriod));
+                autoSyncThread = new Thread(dbxAutoSyncObj);
                 autoSyncThread.start();
             } else {
-               autoSyncThread.setInterval(Integer.valueOf(syncPeriod));
+               dbxAutoSyncObj.setInterval(Integer.valueOf(syncPeriod));
             }
-        } else {
+        } else {            
             if(autoSyncThread != null){
-               autoSyncThread.setInterval(0);
+               dbxAutoSyncObj.setInterval(0);
                autoSyncThread.interrupt();
                autoSyncThread = null;
             }
-        }
+        }                
     }
 }
 

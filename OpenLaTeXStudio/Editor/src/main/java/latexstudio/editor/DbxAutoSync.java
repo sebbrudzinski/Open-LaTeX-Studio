@@ -1,7 +1,7 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+/* 
+ * Copyright (c) 2016 White Hsu
+ * 
+ * See the file LICENSE for copying permission.
  */
 package latexstudio.editor;
 
@@ -13,20 +13,18 @@ import latexstudio.editor.remote.DbxUtil;
  *
  * @author White Hsu
  */
-public class DbxAutoSync extends Thread {
-
+public class DbxAutoSync implements Runnable {
+    
     private final DropboxRevisionsTopComponent drtc = new TopComponentFactory<DropboxRevisionsTopComponent>()
             .getTopComponent(DropboxRevisionsTopComponent.class.getSimpleName());    
     
     private int interval;  
     
     public DbxAutoSync() {
-        super();
-        this.interval = 1;
+        this(1);
     }
     
     public DbxAutoSync(int val) {
-        super();
         this.interval = val;
     }
 
