@@ -44,7 +44,7 @@ public class DbxFileActions {
      *
      * @param drtc to be updated with a new entry (file history)
      */
-    public void saveProgress(DbxClient client, DropboxRevisionsTopComponent drtc) {
+    public void saveProgress(DbxClient client, DropboxRevisionsTopComponent drtc, boolean isDialogMsg) {
         DbxState dbxState = etc.getEditorState().getDbxState();
 
         if (client == null) {
@@ -59,10 +59,14 @@ public class DbxFileActions {
                     DbxEntry.File uploadedFile = client.uploadFile(dbxState.getPath(),
                             DbxWriteMode.update(dbxState.getRevision()), file.length(), inputStream);
                     
-                    JOptionPane.showMessageDialog(null,
+                    if(isDialogMsg) {
+                        JOptionPane.showMessageDialog(null,
                                 "Successfuly updated file " + uploadedFile.name + " (" + uploadedFile.humanSize + ")",
                                 "File updated in Dropbox",
                                 JOptionPane.INFORMATION_MESSAGE);
+                    } else {
+                        LOGGER.log("Successfuly updated file " + uploadedFile.name + " (" + uploadedFile.humanSize + ")");
+                    }
                     
                     drtc.updateRevisionsList(uploadedFile.path);
                     etc.getEditorState().setDbxState(new DbxState(uploadedFile.path, uploadedFile.rev));
@@ -75,8 +79,12 @@ public class DbxFileActions {
                     etc.getEditorState().setModified(false);
                 }
             } else {
-                JOptionPane.showMessageDialog(null, "No Dropbox file has been loaded.\n"
+                if(isDialogMsg) {
+                    JOptionPane.showMessageDialog(null, "No Dropbox file has been loaded.\n"
                             + "You must open Dropbox file, before you save it.", "Cannot save progress", JOptionPane.WARNING_MESSAGE);
+                } else {
+                    LOGGER.log("No Dropbox file has been loaded. You must open Dropbox file, before you save it.");
+                }
             }
         } catch (IOException ex) {
             Exceptions.printStackTrace(ex);

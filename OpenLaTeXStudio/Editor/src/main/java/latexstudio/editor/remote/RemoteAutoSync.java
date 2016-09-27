@@ -37,7 +37,7 @@ public final class RemoteAutoSync implements ActionListener {
     
     @Override
     public void actionPerformed(ActionEvent e) {        
-        DbxState dbxState = etc.getDbxState();
+        DbxState dbxState = etc.getEditorState().getDbxState();       
         
         if(Cloud.getInstance().getStatus() != Cloud.Status.DBX_CONNECTED || dbxState == null) {
             JOptionPane.showMessageDialog(null, "No Dropbox file has been loaded.\n"
