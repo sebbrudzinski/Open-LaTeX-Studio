@@ -40,7 +40,7 @@ public final class RemoteAutoSync implements ActionListener {
         
         private final int period;
         
-        private SyncPeriod(int periodInt) {
+        SyncPeriod(int periodInt) {
             this.period = periodInt;
         }
 
