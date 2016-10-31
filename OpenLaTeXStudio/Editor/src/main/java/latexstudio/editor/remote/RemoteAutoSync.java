@@ -31,9 +31,45 @@ public final class RemoteAutoSync implements ActionListener {
             .getTopComponent(EditorTopComponent.class.getSimpleName());
     private static final ApplicationLogger LOGGER = new ApplicationLogger("Cloud Support");
     
+    public enum SyncPeriod {
+        Disable(0),
+        OneMinute(1),
+        ThreeMinutes(3),
+        FiveMinutes(5),
+        TenMinutes(10);
+        
+        private final int period;
+        
+        private SyncPeriod(int periodInt) {
+            this.period = periodInt;
+        }
+
+        public int getPeriod() {
+            return period;
+        }
+        
+        @Override
+        public String toString() {
+            switch(this) {
+                case Disable:
+                    return "Disable";
+                case OneMinute:
+                    return "1 Minute";
+                case ThreeMinutes:
+                    return "3 Minutes";
+                case FiveMinutes:
+                    return "5 Minutes";
+                case TenMinutes:
+                    return "10 Minutes";
+                default:
+                    return null;
+            }
+        }
+    }
+    
     private Thread autoSyncThread = null;
     private DbxAutoSync dbxAutoSyncObj = null;
-    private String syncPeriod = "0";
+    private SyncPeriod syncPeriodEnum = SyncPeriod.Disable;
     
     @Override
     public void actionPerformed(ActionEvent e) {        
@@ -45,35 +81,41 @@ public final class RemoteAutoSync implements ActionListener {
            return; 
         }
         
-        String[] periodOptions = {"Disable", "1 minute", "3 minutes", "5 minutes", "10 minutes"};                
-        syncPeriod = (String) JOptionPane.showInputDialog(
+        SyncPeriod[] periodOptions = {
+            SyncPeriod.Disable,
+            SyncPeriod.OneMinute, 
+            SyncPeriod.ThreeMinutes, 
+            SyncPeriod.FiveMinutes, 
+            SyncPeriod.TenMinutes
+        };                
+        
+        syncPeriodEnum = (SyncPeriod) JOptionPane.showInputDialog(
                 null,
-                "Select the auto sync period (in min)",
+                "Select the auto sync period (in minute)",
                 "Period of Dropbox Remote Sync",
                 JOptionPane.QUESTION_MESSAGE,
                 null,
                 periodOptions,
                 periodOptions[0]
-        );                                
-
-        LOGGER.log("You set your interval of Dropbox auto sync as: " + syncPeriod);
+        );                                        
         
-        if(syncPeriod == null) {
+        if(syncPeriodEnum == null) {
             return;             
         }
         
-        if(!syncPeriod.startsWith("Disable")) {
-            syncPeriod = syncPeriod.substring(0, syncPeriod.indexOf(" "));                        
+        LOGGER.log("You set your interval of Dropbox auto sync as: " + syncPeriodEnum.toString());
+        
+        if(syncPeriodEnum != SyncPeriod.Disable) {                  
             if(autoSyncThread == null) {
-                dbxAutoSyncObj = new DbxAutoSync(Integer.valueOf(syncPeriod));
+                dbxAutoSyncObj = new DbxAutoSync(syncPeriodEnum.getPeriod());
                 autoSyncThread = new Thread(dbxAutoSyncObj);
                 autoSyncThread.start();
             } else {
-               dbxAutoSyncObj.setInterval(Integer.valueOf(syncPeriod));
+               dbxAutoSyncObj.setInterval(syncPeriodEnum.getPeriod());
             }
         } else {            
             if(autoSyncThread != null){
-               dbxAutoSyncObj.setInterval(0);
+               dbxAutoSyncObj.setInterval(SyncPeriod.Disable.getPeriod());
                autoSyncThread.interrupt();
                autoSyncThread = null;
             }

@@ -17,7 +17,7 @@ public class DbxAutoSync implements Runnable {
     
     private final DropboxRevisionsTopComponent drtc = new TopComponentFactory<DropboxRevisionsTopComponent>()
             .getTopComponent(DropboxRevisionsTopComponent.class.getSimpleName());    
-    
+    private static final ApplicationLogger LOGGER = new ApplicationLogger("Cloud Support");
     private int interval;  
     
     public DbxAutoSync() {
@@ -50,6 +50,7 @@ public class DbxAutoSync implements Runnable {
                 }); 
                 
             } catch (InterruptedException ex) {
+                LOGGER.log("You change the setting of remote auto sync.");
                 break;
             } 
         }
