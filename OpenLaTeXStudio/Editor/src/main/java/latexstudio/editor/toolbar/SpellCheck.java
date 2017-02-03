@@ -7,16 +7,8 @@ package latexstudio.editor.toolbar;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
 import javax.swing.text.BadLocationException;
 import latexstudio.editor.EditorTopComponent;
-import org.languagetool.JLanguageTool;
-import org.languagetool.language.AmericanEnglish;
-import org.languagetool.rules.Rule;
-import org.languagetool.rules.RuleMatch;
-import org.languagetool.rules.spelling.SpellingCheckRule;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.awt.ActionReferences;

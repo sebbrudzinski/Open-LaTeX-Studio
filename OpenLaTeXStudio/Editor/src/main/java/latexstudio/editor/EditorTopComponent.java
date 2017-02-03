@@ -317,8 +317,7 @@ public final class EditorTopComponent extends TopComponent {
                         for (RuleMatch match : matches) {
                             highlighter.addHighlight(match.getFromPos(), match.getToPos(), painter);   
                         }                        
-                }
-                else {  //If highlight is already enabled before clicking
+                } else {  //If highlight is already enabled before clicking
                     Highlighter.Highlight[] highlighters = highlighter.getHighlights();                
                     for (int i = 0; i < highlighters.length; i++) {
                         //Remove the spelling check highlights
