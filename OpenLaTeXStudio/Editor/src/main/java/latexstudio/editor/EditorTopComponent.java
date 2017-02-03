@@ -8,14 +8,20 @@ package latexstudio.editor;
 import com.dropbox.core.DbxAccountInfo;
 import com.dropbox.core.DbxClient;
 import com.dropbox.core.DbxException;
+import java.awt.Color;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.util.Arrays;
+import java.util.List;
 import javax.swing.JOptionPane;
 import javax.swing.text.BadLocationException;
+import javax.swing.text.DefaultHighlighter;
+import javax.swing.text.Document;
+import javax.swing.text.Highlighter;
 import latexstudio.editor.files.FileService;
 import latexstudio.editor.remote.Cloud;
 import latexstudio.editor.remote.DbxUtil;
@@ -27,6 +33,11 @@ import org.fife.ui.autocomplete.AutoCompletion;
 import org.fife.ui.autocomplete.BasicCompletion;
 import org.fife.ui.autocomplete.CompletionProvider;
 import org.fife.ui.autocomplete.DefaultCompletionProvider;
+import org.languagetool.JLanguageTool;
+import org.languagetool.language.AmericanEnglish;
+import org.languagetool.rules.Rule;
+import org.languagetool.rules.RuleMatch;
+import org.languagetool.rules.spelling.SpellingCheckRule;
 import org.netbeans.api.settings.ConvertAsProperties;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
@@ -275,6 +286,52 @@ public final class EditorTopComponent extends TopComponent {
             }
         }
 
+    }
+    
+    public void spellCheckAllText() throws BadLocationException {     
+        Document doc = rSyntaxTextArea.getDocument();   
+        if (doc != null) {                                                
+            String editorText = rSyntaxTextArea.getText(0, doc.getLength());            
+            if (editorText != null) {  
+                Highlighter highlighter = rSyntaxTextArea.getHighlighter();
+                Highlighter.HighlightPainter painter = new DefaultHighlighter.DefaultHighlightPainter(Color.PINK);  //Default color is: PINK
+
+                JLanguageTool langTool = new JLanguageTool(new AmericanEnglish());  //Default language is: American English
+                for (Rule rule : langTool.getAllActiveRules()) {
+                    if (rule instanceof SpellingCheckRule) {
+                        ((SpellingCheckRule)rule).acceptPhrases(Arrays.asList("tex", "Tex", "TEX", "documentclass", "maketitle"));  //Accept some TEX terms
+                    }
+                }
+                
+                boolean highlighted = getEditorState().isHighlighted();
+                if(!highlighted) {  //If highlight isn't enabled before clicking
+                        List<RuleMatch> matches = null;  
+
+                        try {
+                            matches = langTool.check(editorText);
+                        } catch (IOException ex) {
+                            Exceptions.printStackTrace(ex);
+                        }
+
+                        //Highlight the spelling check results
+                        for (RuleMatch match : matches) {
+                            highlighter.addHighlight(match.getFromPos(), match.getToPos(), painter);   
+                        }                        
+                }
+                else {  //If highlight is already enabled before clicking
+                    Highlighter.Highlight[] highlighters = highlighter.getHighlights();                
+                    for (int i = 0; i < highlighters.length; i++) {
+                        //Remove the spelling check highlights
+                        if (highlighters[i].getPainter() instanceof DefaultHighlighter.DefaultHighlightPainter) {
+                            highlighter.removeHighlight(highlighters[i]);
+                        }
+                    }
+                }
+                
+                //Update highlighted status
+                getEditorState().setHighlighted(!highlighted);
+            }
+        }        
     }
 
     void writeProperties(java.util.Properties p) {
