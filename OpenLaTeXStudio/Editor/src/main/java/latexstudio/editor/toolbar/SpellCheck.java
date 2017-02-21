@@ -9,14 +9,13 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.text.BadLocationException;
 import latexstudio.editor.EditorTopComponent;
+import latexstudio.editor.TopComponentFactory;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.awt.ActionReferences;
 import org.openide.awt.ActionRegistration;
 import org.openide.util.Exceptions;
 import org.openide.util.NbBundle.Messages;
-import org.openide.windows.TopComponent;
-import org.openide.windows.WindowManager;
 
 @ActionID(
         category = "Edit",
@@ -33,10 +32,11 @@ import org.openide.windows.WindowManager;
 @Messages("CTL_SpellCheck=Spell Check")
 public final class SpellCheck implements ActionListener {
 
+    private final EditorTopComponent etc = new TopComponentFactory<EditorTopComponent>()
+            .getTopComponent(EditorTopComponent.class.getSimpleName());
+    
     @Override
-    public void actionPerformed(ActionEvent e) {
-        TopComponent tc = WindowManager.getDefault().findTopComponent("EditorTopComponent");
-        EditorTopComponent etc = (EditorTopComponent) tc;        
+    public void actionPerformed(ActionEvent e) {    
         
         try {
             etc.spellCheckAllText();
