@@ -36,14 +36,11 @@ public final class SpellCheck implements ActionListener {
             .getTopComponent(EditorTopComponent.class.getSimpleName());
     
     @Override
-    public void actionPerformed(ActionEvent e) {    
-        
+    public void actionPerformed(ActionEvent e) {            
         try {
             etc.spellCheckAllText();
         } catch (BadLocationException ex) {
             Exceptions.printStackTrace(ex);
-        }      
-        
-        etc.getEditorState().setDirty(true);        
+        }          
     }
 }
