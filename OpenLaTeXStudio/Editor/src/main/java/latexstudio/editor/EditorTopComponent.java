@@ -8,14 +8,21 @@ package latexstudio.editor;
 import com.dropbox.core.DbxAccountInfo;
 import com.dropbox.core.DbxClient;
 import com.dropbox.core.DbxException;
+import java.awt.Color;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import javax.swing.JOptionPane;
 import javax.swing.text.BadLocationException;
+import javax.swing.text.DefaultHighlighter;
+import javax.swing.text.Document;
+import javax.swing.text.Highlighter;
 import latexstudio.editor.files.FileService;
 import latexstudio.editor.remote.Cloud;
 import latexstudio.editor.remote.DbxUtil;
@@ -27,6 +34,11 @@ import org.fife.ui.autocomplete.AutoCompletion;
 import org.fife.ui.autocomplete.BasicCompletion;
 import org.fife.ui.autocomplete.CompletionProvider;
 import org.fife.ui.autocomplete.DefaultCompletionProvider;
+import org.languagetool.JLanguageTool;
+import org.languagetool.language.AmericanEnglish;
+import org.languagetool.rules.Rule;
+import org.languagetool.rules.RuleMatch;
+import org.languagetool.rules.spelling.SpellingCheckRule;
 import org.netbeans.api.settings.ConvertAsProperties;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
@@ -63,6 +75,8 @@ public final class EditorTopComponent extends TopComponent {
     private final EditorState editorState = new EditorState();
     private AutoCompletion autoCompletion = null;
     private static final ApplicationLogger LOGGER = new ApplicationLogger("Cloud Support");
+    private JLanguageTool langTool = null;
+    private Highlighter.HighlightPainter painter = null;
 
     public EditorTopComponent() {
         initComponents();
@@ -73,6 +87,7 @@ public final class EditorTopComponent extends TopComponent {
         putClientProperty(TopComponent.PROP_UNDOCKING_DISABLED, Boolean.TRUE);
 
         displayCloudStatus();
+        setupSpellCheckTool();
     }
 
     @SettingListener(setting = ApplicationSettings.Setting.AUTOCOMPLETE_ENABLED)
@@ -276,6 +291,35 @@ public final class EditorTopComponent extends TopComponent {
         }
 
     }
+    
+    public void spellCheckAllText() throws BadLocationException {     
+        Document doc = rSyntaxTextArea.getDocument();   
+        if (doc != null) {                                                
+            String editorText = rSyntaxTextArea.getText(0, doc.getLength());            
+            if (editorText != null) {  
+                Highlighter highlighter = rSyntaxTextArea.getHighlighter();                
+                boolean highlighted = getEditorState().isHighlighted();
+                if(!highlighted) {  //If highlight isn't enabled before clicking
+                        List<RuleMatch> matches = null;  
+                        try {
+                            matches = langTool.check(editorText);
+                        } catch (IOException ex) {
+                            Exceptions.printStackTrace(ex);
+                        }
+
+                        //Highlight the spelling check results
+                        for (RuleMatch match : matches) {
+                            highlighter.addHighlight(match.getFromPos(), match.getToPos(), painter);   
+                        }                        
+                } else {  //If highlight is already enabled before clicking
+                    highlighter.removeAllHighlights();
+                }
+                
+                //Update highlighted status
+                getEditorState().setHighlighted(!highlighted);
+            }
+        }        
+    }
 
     void writeProperties(java.util.Properties p) {
         // better to version settings since initial version as advocated at
@@ -348,6 +392,40 @@ public final class EditorTopComponent extends TopComponent {
         }
 
         LOGGER.log(message);
+    }
+    
+    private void setupSpellCheckTool() {     
+        painter = new DefaultHighlighter.DefaultHighlightPainter(Color.PINK);  //Default color is: PINK
+        langTool = new JLanguageTool(new AmericanEnglish());    //Default Language is: American English
+        for (Rule rule : langTool.getAllActiveRules()) {
+            if (rule instanceof SpellingCheckRule) {
+                ((SpellingCheckRule)rule).acceptPhrases(getLatexTerms());  //Accept LaText Terms from tex.cwl
+                ((SpellingCheckRule)rule).acceptPhrases(Arrays.asList("documentclass", "maketitle", "tex", "TEX", "Tex"));  //Accept some TEX terms not contained in tex.cwl
+            }
+        }
+    }
+    
+    private List<String> getLatexTerms() {
+        List latexTerms = new ArrayList<>();
+        InputStream is = null;
+        URL latexTermsResource;
+        try {
+            latexTermsResource = getClass().getResource("/openlatexstudio/tex.cwl");
+            is = latexTermsResource.openStream();
+            BufferedReader br = new BufferedReader(new InputStreamReader(is));
+            String line;
+            while ((line = br.readLine()) != null) {
+                if (!line.startsWith("#")) {
+                    latexTerms.add(line.substring(1));  //LanguageTool cannot recognize string starts with "\"
+                }
+            }
+        } catch (IOException ex) {
+            Exceptions.printStackTrace(ex);
+        } finally {
+            IOUtils.closeQuietly(is);
+        }
+        
+        return latexTerms;
     }
 
     public UnsavedWorkState canOpen() {
