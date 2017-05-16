@@ -7,14 +7,12 @@ package latexstudio.editor.toolbar;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import javax.swing.text.BadLocationException;
 import latexstudio.editor.EditorTopComponent;
 import latexstudio.editor.TopComponentFactory;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.awt.ActionReferences;
 import org.openide.awt.ActionRegistration;
-import org.openide.util.Exceptions;
 import org.openide.util.NbBundle.Messages;
 
 @ActionID(
@@ -37,10 +35,11 @@ public final class SpellCheck implements ActionListener {
     
     @Override
     public void actionPerformed(ActionEvent e) {            
-        try {
-            etc.spellCheckAllText();
-        } catch (BadLocationException ex) {
-            Exceptions.printStackTrace(ex);
-        }          
+            if(etc.autoCheckThread == null) {
+                etc.autoCheckThread = new Thread(new SpellCheckService(etc));
+                etc.autoCheckThread.start();
+            } else {
+                etc.getEditorState().setDirty(true);
+            }        
     }
 }
