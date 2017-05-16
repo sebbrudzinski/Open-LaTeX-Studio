@@ -35,9 +35,9 @@ public final class SpellCheck implements ActionListener {
     
     @Override
     public void actionPerformed(ActionEvent e) {            
-            if(etc.autoCheckThread == null) {
-                etc.autoCheckThread = new Thread(new SpellCheckService(etc));
-                etc.autoCheckThread.start();
+            if(etc.getAutoCheckThread() == null) {
+                etc.setAutoCheckThread(new Thread(new SpellCheckService(etc)));
+                etc.getAutoCheckThread().start();
             } else {
                 etc.getEditorState().setDirty(true);
             }        

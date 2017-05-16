@@ -78,7 +78,7 @@ public final class EditorTopComponent extends TopComponent {
     private static final ApplicationLogger LOGGER = new ApplicationLogger("Cloud Support");
     private JLanguageTool langTool = null;
     private Highlighter.HighlightPainter painter = null;
-    public Thread autoCheckThread = null;
+    private Thread autoCheckThread = null;
 
     public EditorTopComponent() {
         initComponents();
@@ -217,6 +217,14 @@ public final class EditorTopComponent extends TopComponent {
         rSyntaxTextArea.setText(text);
         editorState.setDirty(true);
     }
+
+    public Thread getAutoCheckThread() {
+        return autoCheckThread;
+    }
+
+    public void setAutoCheckThread(Thread autoCheckThread) {
+        this.autoCheckThread = autoCheckThread;
+    }        
 
     public void undoAction() {
         rSyntaxTextArea.undoLastAction();
