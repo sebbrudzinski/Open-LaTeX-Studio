@@ -54,21 +54,23 @@ public final class SpellCheck implements ActionListener {
             etc.getEditorState().setDirty(true);
         }
 
-        JButton SpecllCheckButton = getToolbarSpecllCheckButton();
-        JMenuItem SpecllCheckMenuItem = getMenuBarSpecllCheckMenuItem();
+        JButton specllCheckButton = getToolbarSpecllCheckButton();
+        JMenuItem specllCheckMenuItem = getMenuBarSpecllCheckMenuItem();
         if(etc.getEditorState().isHighlighted()) {
-            if(SpecllCheckButton != null)
-                SpecllCheckButton.setBorder(BorderFactory.createLoweredBevelBorder());
-            if(SpecllCheckMenuItem != null) {
-                SpecllCheckMenuItem.setBorder(BorderFactory.createLoweredBevelBorder());
-                SpecllCheckMenuItem.setBorderPainted(true); //Border will not change without paint
+            if(specllCheckButton != null) {
+                specllCheckButton.setBorder(BorderFactory.createLoweredBevelBorder());
+            }
+            if(specllCheckMenuItem != null) {
+                specllCheckMenuItem.setBorder(BorderFactory.createLoweredBevelBorder());
+                specllCheckMenuItem.setBorderPainted(true); //Border will not change without paint
             }            
         } else {
-            if(SpecllCheckButton != null)
-                SpecllCheckButton.setBorder(BorderFactory.createEmptyBorder());
-            if(SpecllCheckMenuItem != null) {
-                SpecllCheckMenuItem.setBorder(BorderFactory.createEmptyBorder());
-                SpecllCheckMenuItem.setBorderPainted(true); //Border will not change without paint
+            if(specllCheckButton != null) {
+                specllCheckButton.setBorder(BorderFactory.createEmptyBorder());
+            }
+            if(specllCheckMenuItem != null) {
+                specllCheckMenuItem.setBorder(BorderFactory.createEmptyBorder());
+                specllCheckMenuItem.setBorderPainted(true); //Border will not change without paint
             }            
         }
     }

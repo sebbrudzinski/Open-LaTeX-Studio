@@ -77,7 +77,7 @@ public final class EditorTopComponent extends TopComponent {
     private static final ApplicationLogger LOGGER = new ApplicationLogger("Cloud Support");
     private JLanguageTool langTool = null;
     private Highlighter.HighlightPainter painter = null;
-    private boolean SpellCheckStatusChange = true;
+    private boolean spellCheckStatusChange = true;
     private Thread autoCheckThread = null;
 
     public EditorTopComponent() {
@@ -251,11 +251,11 @@ public final class EditorTopComponent extends TopComponent {
     }
 
     public boolean isSpellCheckStatusChange() {
-        return SpellCheckStatusChange;
+        return spellCheckStatusChange;
     }
 
-    public void setSpellCheckStatusChange(boolean SpellCheckStatusChange) {
-        this.SpellCheckStatusChange = SpellCheckStatusChange;
+    public void setSpellCheckStatusChange(boolean spellCheckStatusChange) {
+        this.spellCheckStatusChange = spellCheckStatusChange;
     }
 
     public void undoAction() {
