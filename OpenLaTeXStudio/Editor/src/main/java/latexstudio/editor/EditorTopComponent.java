@@ -21,7 +21,6 @@ import java.util.List;
 import javax.swing.JOptionPane;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.DefaultHighlighter;
-import javax.swing.text.Document;
 import javax.swing.text.Highlighter;
 import latexstudio.editor.files.FileService;
 import latexstudio.editor.remote.Cloud;
@@ -35,10 +34,10 @@ import org.fife.ui.autocomplete.AutoCompletion;
 import org.fife.ui.autocomplete.BasicCompletion;
 import org.fife.ui.autocomplete.CompletionProvider;
 import org.fife.ui.autocomplete.DefaultCompletionProvider;
+import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 import org.languagetool.JLanguageTool;
 import org.languagetool.language.AmericanEnglish;
 import org.languagetool.rules.Rule;
-import org.languagetool.rules.RuleMatch;
 import org.languagetool.rules.spelling.SpellingCheckRule;
 import org.netbeans.api.settings.ConvertAsProperties;
 import org.openide.awt.ActionID;
@@ -78,6 +77,7 @@ public final class EditorTopComponent extends TopComponent {
     private static final ApplicationLogger LOGGER = new ApplicationLogger("Cloud Support");
     private JLanguageTool langTool = null;
     private Highlighter.HighlightPainter painter = null;
+    private boolean SpellCheckStatusChange = true;
     private Thread autoCheckThread = null;
 
     public EditorTopComponent() {
@@ -224,7 +224,39 @@ public final class EditorTopComponent extends TopComponent {
 
     public void setAutoCheckThread(Thread autoCheckThread) {
         this.autoCheckThread = autoCheckThread;
-    }        
+    }  
+    
+    public RSyntaxTextArea getrSyntaxTextArea() {
+        return rSyntaxTextArea;
+    }
+
+    public void setrSyntaxTextArea(RSyntaxTextArea rSyntaxTextArea) {
+        this.rSyntaxTextArea = rSyntaxTextArea;
+    }
+
+    public JLanguageTool getLangTool() {
+        return langTool;
+    }
+
+    public void setLangTool(JLanguageTool langTool) {
+        this.langTool = langTool;
+    }
+
+    public Highlighter.HighlightPainter getPainter() {
+        return painter;
+    }
+
+    public void setPainter(Highlighter.HighlightPainter painter) {
+        this.painter = painter;
+    }
+
+    public boolean isSpellCheckStatusChange() {
+        return SpellCheckStatusChange;
+    }
+
+    public void setSpellCheckStatusChange(boolean SpellCheckStatusChange) {
+        this.SpellCheckStatusChange = SpellCheckStatusChange;
+    }
 
     public void undoAction() {
         rSyntaxTextArea.undoLastAction();
@@ -300,35 +332,6 @@ public final class EditorTopComponent extends TopComponent {
             }
         }
 
-    }
-    
-    public void spellCheckAllText() throws BadLocationException {     
-        Document doc = rSyntaxTextArea.getDocument();   
-        if (doc != null) {                                                
-            String editorText = rSyntaxTextArea.getText(0, doc.getLength());            
-            if (editorText != null) {  
-                Highlighter highlighter = rSyntaxTextArea.getHighlighter();                
-                boolean highlighted = getEditorState().isHighlighted();
-                if(!highlighted) {  //If highlight isn't enabled before clicking
-                        List<RuleMatch> matches = null;  
-                        try {
-                            matches = langTool.check(editorText);
-                        } catch (IOException ex) {
-                            Exceptions.printStackTrace(ex);
-                        }
-
-                        //Highlight the spelling check results
-                        for (RuleMatch match : matches) {
-                            highlighter.addHighlight(match.getFromPos(), match.getToPos(), painter);   
-                        }                        
-                } else {  //If highlight is already enabled before clicking
-                    highlighter.removeAllHighlights();
-                }
-                
-                //Update highlighted status
-                getEditorState().setHighlighted(!highlighted);
-            }
-        }        
     }
 
     void writeProperties(java.util.Properties p) {
