@@ -5,25 +5,22 @@
  */
 package latexstudio.editor.toolbar;
 
-import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
-import javax.swing.JRootPane;
-import javax.swing.SwingUtilities;
 import latexstudio.editor.EditorTopComponent;
 import latexstudio.editor.TopComponentFactory;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.awt.ActionReferences;
 import org.openide.awt.ActionRegistration;
-import org.openide.awt.Toolbar;
-import org.openide.awt.ToolbarPool;
+import org.openide.util.ImageUtilities;
 import org.openide.util.NbBundle.Messages;
+import org.openide.util.actions.Presenter;
 
 @ActionID(
         category = "Edit",
@@ -38,13 +35,17 @@ import org.openide.util.NbBundle.Messages;
     @ActionReference(path = "Toolbars/Comment", position = 3433)
 })
 @Messages("CTL_SpellCheck=Spell Check")
-public final class SpellCheck implements ActionListener {
-
-    private final EditorTopComponent etc = new TopComponentFactory<EditorTopComponent>()
-            .getTopComponent(EditorTopComponent.class.getSimpleName());
-
+public final class SpellCheck extends AbstractAction implements Presenter.Menu, Presenter.Toolbar, ActionListener {    
+    
+    private static final String SPELL_CHECK_TEXT = "Spell Check";
+    private static JMenuItem specllCheckMenuItem;
+    private static JButton specllCheckButton;
+    
     @Override
-    public void actionPerformed(ActionEvent e) {
+    public void actionPerformed(ActionEvent e) {                
+        EditorTopComponent etc = new TopComponentFactory<EditorTopComponent>()
+            .getTopComponent(EditorTopComponent.class.getSimpleName());                
+        
         etc.getEditorState().setHighlighted(!etc.getEditorState().isHighlighted());
         
         if(etc.getAutoCheckThread() == null) {
@@ -54,8 +55,6 @@ public final class SpellCheck implements ActionListener {
             etc.getEditorState().setDirty(true);
         }
 
-        JButton specllCheckButton = getToolbarSpecllCheckButton();
-        JMenuItem specllCheckMenuItem = getMenuBarSpecllCheckMenuItem();
         if(etc.getEditorState().isHighlighted()) {
             if(specllCheckButton != null) {
                 specllCheckButton.setBorder(BorderFactory.createLoweredBevelBorder());
@@ -75,38 +74,19 @@ public final class SpellCheck implements ActionListener {
         }
     }
 
-    public JButton getToolbarSpecllCheckButton() {
-        Toolbar[] toolbars = ToolbarPool.getDefault().getToolbars();
-        for(Toolbar toolbar : toolbars) {
-            if(toolbar.getDisplayName().trim().startsWith("Comment")) {
-                for(Component component : toolbar.getComponents()) {
-                    if(component.getClass().toString().contains("Button") &&
-                            ((JButton) component).getToolTipText().contains("Spell Check")) {
-                        return (JButton) component;
-                    }
-                }
-            }
-        }
-
-        return null;
+    @Override
+    public JMenuItem getMenuPresenter() {
+       specllCheckMenuItem = new JMenuItem(SPELL_CHECK_TEXT, new ImageIcon(ImageUtilities.loadImage("openlatexstudio/icons/spellcheck.png")));
+       specllCheckMenuItem.addActionListener(this);
+       
+       return specllCheckMenuItem; 
     }
-
-    public JMenuItem getMenuBarSpecllCheckMenuItem() {
-        JRootPane rp = (JRootPane) SwingUtilities.getRootPane(etc);
-        JMenuBar menubar = rp.getJMenuBar();
-        Component[] comps = menubar.getComponents();
-        for(Component comp : comps) {
-            if(comp.getName().trim().contains("Edit")) {
-                JMenu menu = (JMenu) comp;
-                for(int i = 0; i < menu.getItemCount(); i++) {
-                    if(menu.getMenuComponent(i).getClass().toString().trim().contains("MenuItem") &&
-                            ((JMenuItem) menu.getMenuComponent(i)).getText().trim().contains("Spell Check")) {
-                        return (JMenuItem) menu.getMenuComponent(i);
-                    }
-                }
-            }
-        }
-
-        return null;
+    
+    @Override
+    public JButton getToolbarPresenter() {
+       specllCheckButton = new JButton(new ImageIcon(ImageUtilities.loadImage("openlatexstudio/icons/spellcheck24.png")));
+       specllCheckButton.addActionListener(this);
+       
+       return specllCheckButton; 
     }
 }
