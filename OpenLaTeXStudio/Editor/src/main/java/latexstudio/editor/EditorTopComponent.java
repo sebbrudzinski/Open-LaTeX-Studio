@@ -21,23 +21,23 @@ import java.util.List;
 import javax.swing.JOptionPane;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.DefaultHighlighter;
-import javax.swing.text.Document;
 import javax.swing.text.Highlighter;
 import latexstudio.editor.files.FileService;
 import latexstudio.editor.remote.Cloud;
 import latexstudio.editor.remote.DbxUtil;
 import latexstudio.editor.settings.ApplicationSettings;
 import latexstudio.editor.settings.SettingListener;
+import latexstudio.editor.toolbar.SpellCheckService;
 import latexstudio.editor.util.ApplicationUtils;
 import org.apache.commons.io.IOUtils;
 import org.fife.ui.autocomplete.AutoCompletion;
 import org.fife.ui.autocomplete.BasicCompletion;
 import org.fife.ui.autocomplete.CompletionProvider;
 import org.fife.ui.autocomplete.DefaultCompletionProvider;
+import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 import org.languagetool.JLanguageTool;
 import org.languagetool.language.AmericanEnglish;
 import org.languagetool.rules.Rule;
-import org.languagetool.rules.RuleMatch;
 import org.languagetool.rules.spelling.SpellingCheckRule;
 import org.netbeans.api.settings.ConvertAsProperties;
 import org.openide.awt.ActionID;
@@ -77,6 +77,8 @@ public final class EditorTopComponent extends TopComponent {
     private static final ApplicationLogger LOGGER = new ApplicationLogger("Cloud Support");
     private JLanguageTool langTool = null;
     private Highlighter.HighlightPainter painter = null;
+    private boolean spellCheckStatusChange = true;
+    private Thread autoCheckThread = null;
 
     public EditorTopComponent() {
         initComponents();
@@ -216,6 +218,46 @@ public final class EditorTopComponent extends TopComponent {
         editorState.setDirty(true);
     }
 
+    public Thread getAutoCheckThread() {
+        return autoCheckThread;
+    }
+
+    public void setAutoCheckThread(Thread autoCheckThread) {
+        this.autoCheckThread = autoCheckThread;
+    }  
+    
+    public RSyntaxTextArea getrSyntaxTextArea() {
+        return rSyntaxTextArea;
+    }
+
+    public void setrSyntaxTextArea(RSyntaxTextArea rSyntaxTextArea) {
+        this.rSyntaxTextArea = rSyntaxTextArea;
+    }
+
+    public JLanguageTool getLangTool() {
+        return langTool;
+    }
+
+    public void setLangTool(JLanguageTool langTool) {
+        this.langTool = langTool;
+    }
+
+    public Highlighter.HighlightPainter getPainter() {
+        return painter;
+    }
+
+    public void setPainter(Highlighter.HighlightPainter painter) {
+        this.painter = painter;
+    }
+
+    public boolean isSpellCheckStatusChange() {
+        return spellCheckStatusChange;
+    }
+
+    public void setSpellCheckStatusChange(boolean spellCheckStatusChange) {
+        this.spellCheckStatusChange = spellCheckStatusChange;
+    }
+
     public void undoAction() {
         rSyntaxTextArea.undoLastAction();
     }
@@ -290,35 +332,6 @@ public final class EditorTopComponent extends TopComponent {
             }
         }
 
-    }
-    
-    public void spellCheckAllText() throws BadLocationException {     
-        Document doc = rSyntaxTextArea.getDocument();   
-        if (doc != null) {                                                
-            String editorText = rSyntaxTextArea.getText(0, doc.getLength());            
-            if (editorText != null) {  
-                Highlighter highlighter = rSyntaxTextArea.getHighlighter();                
-                boolean highlighted = getEditorState().isHighlighted();
-                if(!highlighted) {  //If highlight isn't enabled before clicking
-                        List<RuleMatch> matches = null;  
-                        try {
-                            matches = langTool.check(editorText);
-                        } catch (IOException ex) {
-                            Exceptions.printStackTrace(ex);
-                        }
-
-                        //Highlight the spelling check results
-                        for (RuleMatch match : matches) {
-                            highlighter.addHighlight(match.getFromPos(), match.getToPos(), painter);   
-                        }                        
-                } else {  //If highlight is already enabled before clicking
-                    highlighter.removeAllHighlights();
-                }
-                
-                //Update highlighted status
-                getEditorState().setHighlighted(!highlighted);
-            }
-        }        
     }
 
     void writeProperties(java.util.Properties p) {
@@ -403,6 +416,9 @@ public final class EditorTopComponent extends TopComponent {
                 ((SpellingCheckRule)rule).acceptPhrases(Arrays.asList("documentclass", "maketitle", "tex", "TEX", "Tex"));  //Accept some TEX terms not contained in tex.cwl
             }
         }
+        
+        autoCheckThread = new Thread(new SpellCheckService(this));
+        autoCheckThread.start();
     }
     
     private List<String> getLatexTerms() {
