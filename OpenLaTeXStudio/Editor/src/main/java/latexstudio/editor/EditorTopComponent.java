@@ -5,9 +5,8 @@
  */
 package latexstudio.editor;
 
-import com.dropbox.core.DbxAccountInfo;
-import com.dropbox.core.DbxClient;
 import com.dropbox.core.DbxException;
+import com.dropbox.core.v2.DbxClientV2;
 import java.awt.Color;
 import java.io.BufferedReader;
 import java.io.File;
@@ -377,33 +376,22 @@ public final class EditorTopComponent extends TopComponent {
     }
 
     private void displayCloudStatus() {
-
-        boolean isConnected = false;
-        String message;
-        DbxAccountInfo info = null;
+        String message = "Working locally.";
+        String displayName;
 
         // Check Dropbox connection
-        DbxClient client = DbxUtil.getDbxClient();
-        if (client != null) {
-            String userToken = client.getAccessToken();
-            if (userToken != null && !userToken.isEmpty()) {
-                try {
-                    info = client.getAccountInfo();
-                    isConnected = true;
-                } catch (DbxException ex) {
-                    // simply stay working locally.
-                }
+        DbxClientV2 client = DbxUtil.getDbxClient();
+        if (client != null) {  
+            try {
+                displayName = client.users().getCurrentAccount().getName().getDisplayName();
+                message = "Connected to Dropbox account as " + displayName + ".";
+                Cloud.getInstance().setStatus(Cloud.Status.DBX_CONNECTED, " (" + displayName + ")");
+            } catch (DbxException ex) {
+                // simply stay working locally.
+                Cloud.getInstance().setStatus(Cloud.Status.DISCONNECTED);
             }
         }
-
-        if (isConnected) {
-            message = "Connected to Dropbox account as " + info.displayName + ".";
-            Cloud.getInstance().setStatus(Cloud.Status.DBX_CONNECTED, " (" + info.displayName + ")");
-        } else {
-            message = "Working locally.";
-            Cloud.getInstance().setStatus(Cloud.Status.DISCONNECTED);
-        }
-
+        
         LOGGER.log(message);
     }
     

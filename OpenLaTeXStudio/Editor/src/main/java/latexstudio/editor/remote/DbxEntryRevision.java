@@ -5,8 +5,9 @@
  */
 package latexstudio.editor.remote;
 
-import com.dropbox.core.DbxEntry;
+import com.dropbox.core.v2.files.FileMetadata;
 import java.util.Date;
+import org.apache.commons.io.FileUtils;
 
 /**
  *
@@ -19,12 +20,12 @@ public class DbxEntryRevision {
     private Date lastModified;
     private String revision;
     
-    public DbxEntryRevision(DbxEntry entry) {
-        name = entry.name;
-        path = entry.path;
-        humanSize = entry.asFile().humanSize;
-        lastModified = entry.asFile().lastModified;
-        revision = entry.asFile().rev;
+    public DbxEntryRevision(FileMetadata metadata) {
+        name = metadata.getName();
+        path = metadata.getPathDisplay();
+        humanSize = FileUtils.byteCountToDisplaySize(metadata.getSize());
+        lastModified = metadata.getServerModified();
+        revision = metadata.getRev();
     }
 
     public String getName() {

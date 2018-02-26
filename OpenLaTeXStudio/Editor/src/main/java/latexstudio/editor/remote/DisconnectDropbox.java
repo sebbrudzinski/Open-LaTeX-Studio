@@ -5,8 +5,8 @@
  */
 package latexstudio.editor.remote;
 
-import com.dropbox.core.DbxClient;
 import com.dropbox.core.DbxException;
+import com.dropbox.core.v2.DbxClientV2;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import latexstudio.editor.ApplicationLogger;
@@ -42,37 +42,29 @@ public final class DisconnectDropbox implements ActionListener {
         Cloud.Status currentCloudStatus = Cloud.getInstance().getStatus();
         Cloud.getInstance().setStatus(Cloud.Status.CONNECTING);
 
-        DbxClient client = DbxUtil.getDbxClient();
+        DbxClientV2 client = DbxUtil.getDbxClient();
 
         if (client == null) {
             LOGGER.log("Dropbox account already disconnected.");
             Cloud.getInstance().setStatus(Cloud.Status.DISCONNECTED);
             return;
         }
+        
+        try {
+            client.auth().tokenRevoke();
 
-        String userToken = client.getAccessToken();
+            drtc.updateRevisionsList(null);
+            drtc.close();
+            revtc.close();
 
-        if (userToken != null && !userToken.isEmpty()) {
-            try {
-
-                client.disableAccessToken();
-
-                drtc.updateRevisionsList(null);
-                drtc.close();
-                revtc.close();
-
-                ApplicationSettings.Setting.DROPBOX_TOKEN.setValue("");
-                ApplicationSettings.INSTANCE.save();
-                LOGGER.log("Successfully disconnected from Dropbox account.");
-                Cloud.getInstance().setStatus(Cloud.Status.DISCONNECTED);
-
-            } catch (DbxException ex) {
-                DbxUtil.showDbxAccessDeniedPrompt();
-                Cloud.getInstance().setStatus(currentCloudStatus);
-            }
-        } else {
-            LOGGER.log("Dropbox account already disconnected.");
+            ApplicationSettings.Setting.DROPBOX_TOKEN.setValue("");
+            ApplicationSettings.INSTANCE.save();
+            LOGGER.log("Successfully disconnected from Dropbox account.");
             Cloud.getInstance().setStatus(Cloud.Status.DISCONNECTED);
+
+        } catch (DbxException ex) {
+            DbxUtil.showDbxAccessDeniedPrompt();
+            Cloud.getInstance().setStatus(currentCloudStatus);
         }
     }
 }

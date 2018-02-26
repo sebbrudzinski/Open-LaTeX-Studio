@@ -5,9 +5,11 @@
  */
 package latexstudio.editor.remote;
 
-import com.dropbox.core.DbxClient;
+import com.dropbox.core.v2.DbxClientV2;
+import com.dropbox.core.DbxDownloader;
 import com.dropbox.core.DbxException;
 import com.dropbox.core.DbxRequestConfig;
+import com.dropbox.core.v2.files.FileMetadata;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -26,7 +28,7 @@ public final class DbxUtil {
     private DbxUtil() {
     }
 
-    public static DbxClient getDbxClient() {
+    public static DbxClientV2 getDbxClient() {
         String accessToken = (String) ApplicationSettings.Setting.DROPBOX_TOKEN.getValue();
         if (accessToken == null) {
             JOptionPane.showMessageDialog(null, 
@@ -36,23 +38,33 @@ public final class DbxUtil {
             );
             return null;
         }
-        return new DbxClient(getDbxConfig(), accessToken); 
+        return new DbxClientV2(getDbxConfig(), accessToken); 
     }
     
     public static DbxRequestConfig getDbxConfig() {
-        return new DbxRequestConfig("Open LaTex Studio",
-            Locale.getDefault().toString());
+        return DbxRequestConfig
+                .newBuilder("Open LaTex Studio")
+                .withUserLocale(Locale.getDefault().toString())
+                .build();
     }
     
     public static File downloadRemoteFile(DbxEntryDto remoteEntry, String localPath) {
-        DbxClient client = getDbxClient();
+        return downloadRemoteFile(remoteEntry.getRevision(), localPath);
+    }
+    
+    public static File downloadRemoteFile(FileMetadata metadata, String localPath) {
+        return downloadRemoteFile(metadata.getRev(), localPath);
+    }
+    
+    private static File downloadRemoteFile(String revision, String localPath) {
+        DbxClientV2 client = getDbxClient();
         
         FileOutputStream outputStream = null;
         File outputFile = new File(localPath);
         
         try {
             outputStream = new FileOutputStream(outputFile);
-            client.getFile(remoteEntry.getPath(), remoteEntry.getRevision(), outputStream);
+            client.files().download(localPath, revision).download(outputStream);
         } catch (DbxException | IOException ex) {
             Exceptions.printStackTrace(ex);
         } finally {
