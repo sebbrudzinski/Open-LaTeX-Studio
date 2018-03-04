@@ -10,6 +10,7 @@ import com.dropbox.core.v2.DbxClientV2;
 import com.dropbox.core.v2.files.FileMetadata;
 import com.dropbox.core.v2.files.ListFolderResult;
 import com.dropbox.core.v2.files.Metadata;
+import com.dropbox.core.v2.files.WriteMode;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -60,6 +61,7 @@ public class DbxFileActions {
                 try {
                     FileMetadata metadata = client.files()
                         .uploadBuilder(dbxState.getPath())
+                        .withMode(WriteMode.OVERWRITE)
                         .uploadAndFinish(inputStream);
                     String humanSize = FileUtils.byteCountToDisplaySize(metadata.getSize());
                     

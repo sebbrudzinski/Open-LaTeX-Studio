@@ -6,7 +6,6 @@
 package latexstudio.editor.remote;
 
 import com.dropbox.core.v2.DbxClientV2;
-import com.dropbox.core.DbxDownloader;
 import com.dropbox.core.DbxException;
 import com.dropbox.core.DbxRequestConfig;
 import com.dropbox.core.v2.files.FileMetadata;
