@@ -17,7 +17,7 @@ public class EditorState {
     private boolean dirty;
     private boolean modified;
     private boolean previewDisplayed;
-    private boolean highlighted;   
+    private boolean spellCheckActive;   
     private File currentFile;
     private DbxState dbxState;
     
@@ -25,7 +25,7 @@ public class EditorState {
         dirty = false;
         modified = false;
         previewDisplayed = true;
-        highlighted = false;
+        spellCheckActive = false;
     }
 
     public boolean isDirty() {
@@ -40,8 +40,8 @@ public class EditorState {
         return previewDisplayed;
     }
            
-    public boolean isHighlighted() {
-        return highlighted;
+    public boolean isSpellCheckActive() {
+        return spellCheckActive;
     }
 
     public File getCurrentFile() {
@@ -64,8 +64,8 @@ public class EditorState {
         this.previewDisplayed = previewDisplayed;
     }
 
-    public void setHighlighted(boolean highlighted) {
-        this.highlighted = highlighted;
+    public void setSpellCheckActive(boolean spellCheckActive) {
+        this.spellCheckActive = spellCheckActive;
     }
 
     public void setCurrentFile(File currentFile) {
