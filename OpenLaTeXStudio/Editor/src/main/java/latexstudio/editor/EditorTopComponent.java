@@ -27,7 +27,6 @@ import latexstudio.editor.remote.Cloud;
 import latexstudio.editor.remote.DbxUtil;
 import latexstudio.editor.settings.ApplicationSettings;
 import latexstudio.editor.settings.SettingListener;
-import latexstudio.editor.toolbar.SpellCheckService;
 import latexstudio.editor.util.ApplicationUtils;
 import org.apache.commons.io.IOUtils;
 import org.fife.ui.autocomplete.AutoCompletion;
@@ -416,9 +415,6 @@ public final class EditorTopComponent extends TopComponent {
                 ((SpellingCheckRule)rule).acceptPhrases(Arrays.asList("documentclass", "maketitle", "tex", "TEX", "Tex"));  //Accept some TEX terms not contained in tex.cwl
             }
         }
-        
-        autoCheckThread = new Thread(new SpellCheckService(this));
-        autoCheckThread.start();
     }
     
     private List<String> getLatexTerms() {

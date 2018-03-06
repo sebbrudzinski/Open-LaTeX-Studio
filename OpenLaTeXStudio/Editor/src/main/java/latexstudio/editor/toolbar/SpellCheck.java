@@ -46,16 +46,10 @@ public final class SpellCheck extends AbstractAction implements Presenter.Menu, 
         EditorTopComponent etc = new TopComponentFactory<EditorTopComponent>()
             .getTopComponent(EditorTopComponent.class.getSimpleName());                
         
-        etc.getEditorState().setHighlighted(!etc.getEditorState().isHighlighted());
-        
-        if(etc.getAutoCheckThread() == null) {
-            etc.setAutoCheckThread(new Thread(new SpellCheckService(etc)));
-            etc.getAutoCheckThread().start();
-        } else {
-            etc.getEditorState().setDirty(true);
-        }
+        etc.getEditorState().setSpellCheckActive(!etc.getEditorState().isSpellCheckActive());
+        etc.getEditorState().setDirty(true);
 
-        if(etc.getEditorState().isHighlighted()) {
+        if(etc.getEditorState().isSpellCheckActive()) {
             if(specllCheckButton != null) {
                 specllCheckButton.setBorder(BorderFactory.createLoweredBevelBorder());
             }
