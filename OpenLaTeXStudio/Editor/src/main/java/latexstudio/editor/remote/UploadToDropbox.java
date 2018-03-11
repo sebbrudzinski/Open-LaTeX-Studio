@@ -8,6 +8,7 @@ package latexstudio.editor.remote;
 import com.dropbox.core.DbxException;
 import com.dropbox.core.v2.DbxClientV2;
 import com.dropbox.core.v2.files.FileMetadata;
+import com.dropbox.core.v2.files.WriteMode;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -51,7 +52,7 @@ public final class UploadToDropbox implements ActionListener {
         if (client == null) {
             return;
         }
-
+        
         String sourceFileName = ApplicationUtils.getTempSourceFile();
         File file = new File(sourceFileName);
         
@@ -70,6 +71,7 @@ public final class UploadToDropbox implements ActionListener {
             try {
                 FileMetadata metadata = client.files()
                         .uploadBuilder("/OpenLaTeXStudio/" + fileName)
+                        .withMode(WriteMode.OVERWRITE)
                         .uploadAndFinish(inputStream);
                 String humanSize = FileUtils.byteCountToDisplaySize(metadata.getSize());
                 JOptionPane.showMessageDialog(null, 
