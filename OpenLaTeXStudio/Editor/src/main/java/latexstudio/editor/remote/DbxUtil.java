@@ -48,14 +48,14 @@ public final class DbxUtil {
     }
     
     public static File downloadRemoteFile(DbxEntryDto remoteEntry, String localPath) {
-        return downloadRemoteFile(remoteEntry.getRevision(), localPath);
+        return downloadRemoteFile(remoteEntry.getRevision(), remoteEntry.getPath(), localPath);
     }
     
     public static File downloadRemoteFile(FileMetadata metadata, String localPath) {
-        return downloadRemoteFile(metadata.getRev(), localPath);
+        return downloadRemoteFile(metadata.getRev(), metadata.getPathDisplay(), localPath);
     }
     
-    private static File downloadRemoteFile(String revision, String localPath) {
+    private static File downloadRemoteFile(String revision, String remotePath, String localPath) {
         DbxClientV2 client = getDbxClient();
         
         FileOutputStream outputStream = null;
@@ -63,7 +63,7 @@ public final class DbxUtil {
         
         try {
             outputStream = new FileOutputStream(outputFile);
-            client.files().download(localPath, revision).download(outputStream);
+            client.files().download(remotePath, revision).download(outputStream);
         } catch (DbxException | IOException ex) {
             Exceptions.printStackTrace(ex);
         } finally {
