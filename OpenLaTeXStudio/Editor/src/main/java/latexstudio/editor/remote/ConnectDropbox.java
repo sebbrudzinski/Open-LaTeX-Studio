@@ -5,12 +5,11 @@
  */
 package latexstudio.editor.remote;
 
-import com.dropbox.core.DbxAccountInfo;
 import com.dropbox.core.DbxAppInfo;
 import com.dropbox.core.DbxAuthFinish;
-import com.dropbox.core.DbxClient;
 import com.dropbox.core.DbxException;
 import com.dropbox.core.DbxWebAuthNoRedirect;
+import com.dropbox.core.v2.DbxClientV2;
 import java.awt.Desktop;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -95,18 +94,16 @@ public final class ConnectDropbox implements ActionListener {
         if (userToken != null && !userToken.isEmpty()) {
             try {
                 DbxAuthFinish authFinish = webAuth.finish(userToken);
-                userToken = authFinish.accessToken;
+                userToken = authFinish.getAccessToken();
                 
                 ApplicationSettings.Setting.DROPBOX_TOKEN.setValue(userToken);
                 ApplicationSettings.INSTANCE.save();
 
                 // getting dbx client displayName
-                DbxClient client = DbxUtil.getDbxClient();
-                DbxAccountInfo info = null;
+                DbxClientV2 client = DbxUtil.getDbxClient();
                 String additional = "";
                 if(client != null) {
-                    info = client.getAccountInfo();
-                    additional = " (" + info.displayName + ")";
+                    additional = " (" + client.users().getCurrentAccount().getName().getDisplayName() + ")";
                 }
                 
                 LOGGER.log("Successfully connected application with Dropbox account.");

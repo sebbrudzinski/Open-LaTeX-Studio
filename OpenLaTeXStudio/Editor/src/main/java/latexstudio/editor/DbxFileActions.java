@@ -5,10 +5,12 @@
  */
 package latexstudio.editor;
 
-import com.dropbox.core.DbxClient;
-import com.dropbox.core.DbxEntry;
 import com.dropbox.core.DbxException;
-import com.dropbox.core.DbxWriteMode;
+import com.dropbox.core.v2.DbxClientV2;
+import com.dropbox.core.v2.files.FileMetadata;
+import com.dropbox.core.v2.files.ListFolderResult;
+import com.dropbox.core.v2.files.Metadata;
+import com.dropbox.core.v2.files.WriteMode;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -23,6 +25,7 @@ import latexstudio.editor.remote.DbxState;
 import latexstudio.editor.remote.DbxUtil;
 import latexstudio.editor.util.ApplicationUtils;
 import static latexstudio.editor.util.ApplicationUtils.TEX_EXTENSION;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.openide.util.Exceptions;
 
@@ -44,7 +47,7 @@ public class DbxFileActions {
      *
      * @param drtc to be updated with a new entry (file history)
      */
-    public void saveProgress(DbxClient client, DropboxRevisionsTopComponent drtc, boolean isDialogMsg) {
+    public void saveProgress(DbxClientV2 client, DropboxRevisionsTopComponent drtc, boolean isDialogMsg) {
         DbxState dbxState = etc.getEditorState().getDbxState();
 
         if (client == null) {
@@ -56,20 +59,23 @@ public class DbxFileActions {
         try (FileInputStream inputStream = new FileInputStream(file)) {
             if (dbxState != null) {
                 try {
-                    DbxEntry.File uploadedFile = client.uploadFile(dbxState.getPath(),
-                            DbxWriteMode.update(dbxState.getRevision()), file.length(), inputStream);
+                    FileMetadata metadata = client.files()
+                        .uploadBuilder(dbxState.getPath())
+                        .withMode(WriteMode.OVERWRITE)
+                        .uploadAndFinish(inputStream);
+                    String humanSize = FileUtils.byteCountToDisplaySize(metadata.getSize());
                     
                     if(isDialogMsg) {
                         JOptionPane.showMessageDialog(null,
-                                "Successfuly updated file " + uploadedFile.name + " (" + uploadedFile.humanSize + ")",
+                                "Successfuly updated file " + metadata.getName() + " (" + humanSize + ")",
                                 "File updated in Dropbox",
                                 JOptionPane.INFORMATION_MESSAGE);
                     } else {
-                        LOGGER.log("Successfuly updated file " + uploadedFile.name + " (" + uploadedFile.humanSize + ")");
+                        LOGGER.log("Successfuly updated file " + metadata.getName() + " (" + humanSize + ")");
                     }
                     
-                    drtc.updateRevisionsList(uploadedFile.path);
-                    etc.getEditorState().setDbxState(new DbxState(uploadedFile.path, uploadedFile.rev));
+                    drtc.updateRevisionsList(metadata.getPathDisplay());
+                    etc.getEditorState().setDbxState(new DbxState(metadata.getPathDisplay(), metadata.getRev()));
                 } catch (DbxException ex) {
                     DbxUtil.showDbxAccessDeniedPrompt();
                 } catch (IOException ex) {
@@ -131,7 +137,7 @@ public class DbxFileActions {
     /**
      * @return List with user's files or empty List if error occurs
      */
-    public List<DbxEntryDto> getDbxTexEntries(DbxClient client) {
+    public List<DbxEntryDto> getDbxTexEntries(DbxClientV2 client) {
         List<DbxEntryDto> dbxEntries = new ArrayList<>();
 
         if (client == null) {
@@ -139,8 +145,22 @@ public class DbxFileActions {
         }
 
         try {
-            for (DbxEntry entry : client.searchFileAndFolderNames("/", TEX_EXTENSION)) {
-                dbxEntries.add(new DbxEntryDto(entry));
+            ListFolderResult result = client.files().listFolderBuilder("").withRecursive(true).start();
+            while (true) {
+                for (Metadata metadata : result.getEntries()) {
+                    if (metadata instanceof FileMetadata) {
+                        String name = metadata.getName();
+                        if (name.endsWith(TEX_EXTENSION)) {
+                            dbxEntries.add(new DbxEntryDto((FileMetadata) metadata));
+                        }
+                    }
+                }
+
+                if (!result.getHasMore()) {
+                    break;
+                }
+
+                result = client.files().listFolderContinue(result.getCursor());
             }
         } catch (DbxException ex) {
             DbxUtil.showDbxAccessDeniedPrompt();

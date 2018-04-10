@@ -5,12 +5,11 @@
  */
 package latexstudio.editor;
 
-import com.dropbox.core.DbxClient;
-import com.dropbox.core.DbxEntry;
 import com.dropbox.core.DbxException;
+import com.dropbox.core.v2.DbxClientV2;
+import com.dropbox.core.v2.files.FileMetadata;
 import java.io.File;
 import java.io.IOException;
-import latexstudio.editor.remote.DbxEntryDto;
 import latexstudio.editor.remote.DbxState;
 import latexstudio.editor.remote.DbxUtil;
 import latexstudio.editor.util.ApplicationUtils;
@@ -69,7 +68,7 @@ public final class RevisionDisplayTopComponent extends TopComponent {
 
         jScrollPane1 = new javax.swing.JScrollPane();
         rSyntaxTextArea = new org.fife.ui.rsyntaxtextarea.RSyntaxTextArea();
-        jButton1 = new javax.swing.JButton();
+        restoreThisRevisionButton = new javax.swing.JButton();
 
         rSyntaxTextArea.setEditable(false);
         rSyntaxTextArea.setBackground(new java.awt.Color(204, 204, 204));
@@ -78,10 +77,10 @@ public final class RevisionDisplayTopComponent extends TopComponent {
         rSyntaxTextArea.setSyntaxEditingStyle(org.openide.util.NbBundle.getMessage(RevisionDisplayTopComponent.class, "RevisionDisplayTopComponent.rSyntaxTextArea.syntaxEditingStyle")); // NOI18N
         jScrollPane1.setViewportView(rSyntaxTextArea);
 
-        org.openide.awt.Mnemonics.setLocalizedText(jButton1, org.openide.util.NbBundle.getMessage(RevisionDisplayTopComponent.class, "RevisionDisplayTopComponent.jButton1.text")); // NOI18N
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        org.openide.awt.Mnemonics.setLocalizedText(restoreThisRevisionButton, org.openide.util.NbBundle.getMessage(RevisionDisplayTopComponent.class, "RevisionDisplayTopComponent.restoreThisRevisionButton.text")); // NOI18N
+        restoreThisRevisionButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                restoreThisRevisionButtonActionPerformed(evt);
             }
         });
 
@@ -95,7 +94,7 @@ public final class RevisionDisplayTopComponent extends TopComponent {
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 380, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 170, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(restoreThisRevisionButton, javax.swing.GroupLayout.PREFERRED_SIZE, 170, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -104,13 +103,13 @@ public final class RevisionDisplayTopComponent extends TopComponent {
                 .addContainerGap()
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 249, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButton1)
+                .addComponent(restoreThisRevisionButton)
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        DbxClient client = DbxUtil.getDbxClient();
+    private void restoreThisRevisionButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_restoreThisRevisionButtonActionPerformed
+        DbxClientV2 client = DbxUtil.getDbxClient();
         
         if (client == null) {
             return;
@@ -118,8 +117,8 @@ public final class RevisionDisplayTopComponent extends TopComponent {
 
         if (displayedRevision != null) {
             try {
-                DbxEntry.File restoredFile = client.restoreFile(displayedRevision.getPath(), displayedRevision.getRevision());
-                File restored = DbxUtil.downloadRemoteFile(new DbxEntryDto(restoredFile), ApplicationUtils.getTempSourceFile());
+                FileMetadata restoredFileMetadata = client.files().restore(displayedRevision.getPath(), displayedRevision.getRevision());
+                File restored = DbxUtil.downloadRemoteFile(restoredFileMetadata, ApplicationUtils.getTempSourceFile());
                 etc.setEditorContent(FileUtils.readFileToString(restored));
                 etc.requestActive();
             } catch (DbxException e) {
@@ -128,12 +127,12 @@ public final class RevisionDisplayTopComponent extends TopComponent {
                 Exceptions.printStackTrace(e);
             }
         }
-    }//GEN-LAST:event_jButton1ActionPerformed
+    }//GEN-LAST:event_restoreThisRevisionButtonActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
     private javax.swing.JScrollPane jScrollPane1;
     private org.fife.ui.rsyntaxtextarea.RSyntaxTextArea rSyntaxTextArea;
+    private javax.swing.JButton restoreThisRevisionButton;
     // End of variables declaration//GEN-END:variables
     @Override
     public void componentOpened() {

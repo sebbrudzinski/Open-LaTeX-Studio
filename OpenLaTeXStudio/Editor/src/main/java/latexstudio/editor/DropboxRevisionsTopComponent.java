@@ -5,9 +5,10 @@
  */
 package latexstudio.editor;
 
-import com.dropbox.core.DbxClient;
-import com.dropbox.core.DbxEntry;
+import com.dropbox.core.DbxDownloader;
 import com.dropbox.core.DbxException;
+import com.dropbox.core.v2.DbxClientV2;
+import com.dropbox.core.v2.files.FileMetadata;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
@@ -135,7 +136,7 @@ public final class DropboxRevisionsTopComponent extends TopComponent {
 
     private void loadRevision(String revisionNumber) {
         DbxEntryRevision entry = null;
-        DbxClient client = DbxUtil.getDbxClient();
+        DbxClientV2 client = DbxUtil.getDbxClient();
         for (int i = 0; i < dlm.size(); i++) {
             if (revisionNumber.equals(dlm.get(i).getRevision())) {
                 entry = dlm.get(i);
@@ -150,7 +151,9 @@ public final class DropboxRevisionsTopComponent extends TopComponent {
 
             try {
                 outputStream = new FileOutputStream(outputFile);
-                client.getFile(entry.getPath(), entry.getRevision(), outputStream);
+                DbxDownloader<FileMetadata> downloader = client.files().download(entry.getPath(), entry.getRevision());
+                downloader.download(outputStream);
+                
                 LOGGER.log("Loaded revision " + entry.getRevision() + " from Dropbox");
             } catch (DbxException e) {
                 DbxUtil.showDbxAccessDeniedPrompt();
@@ -214,12 +217,12 @@ public final class DropboxRevisionsTopComponent extends TopComponent {
     }
 
     public void updateRevisionsList(String path) {
-        DbxClient client = DbxUtil.getDbxClient();
-        List<DbxEntry.File> entries = null;
+        DbxClientV2 client = DbxUtil.getDbxClient();
+        List<FileMetadata> entries = null;
 
         if (path != null) {
             try {
-                entries = client.getRevisions(path);
+                entries = client.files().listRevisions(path).getEntries();
             } catch (DbxException ex) {
                 DbxUtil.showDbxAccessDeniedPrompt();
             }
@@ -238,9 +241,10 @@ public final class DropboxRevisionsTopComponent extends TopComponent {
         model.addColumn(REVIEW_COLUMN_NAME);
 
         if (entries != null && entries.size() > 0) {
-            for (DbxEntry.File dbxEntry : entries) {
-                dlm.addElement(new DbxEntryRevision(dbxEntry));
-                model.addRow(new Object[]{dbxEntry.rev, dbxEntry.lastModified, dbxEntry.humanSize, REVIEW_BUTTON_LABEL});
+            for (FileMetadata metadata : entries) {
+                dlm.addElement(new DbxEntryRevision(metadata));
+                String humanSize = FileUtils.byteCountToDisplaySize(metadata.getSize());
+                model.addRow(new Object[]{metadata.getRev(), metadata.getServerModified(), humanSize, REVIEW_BUTTON_LABEL});
             }
         }
 
