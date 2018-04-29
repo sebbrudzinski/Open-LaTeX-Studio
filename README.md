@@ -2,7 +2,7 @@ Open LaTeX Studio
 =================
 Open LaTeX Studio is an open source initiative, to create LaTeX editor, that supports remote collaboration between users. Unlike other dedicated services that allow project sharing, there will be no need to purchase any plans in order to obtain the space or allow more people to work on a document, since users will be able to store their projects on any, free cloud storage solution (for example Dropbox, Google drive). The GUI of the editor will be built using the NetBeans Platform framework, which will make the usage of the editor very simple and intuitive.
 
-![Application screenshot](http://sebbrudzinski.github.io/Open-LaTeX-Studio/images/main_window.jpg)
+![Application screenshot](http://sebbrudzinski.github.io/Open-LaTeX-Studio/images/open-latex-studio-intro.png)
 
 Get in touch
 ------------
