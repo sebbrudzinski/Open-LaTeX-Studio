@@ -59,6 +59,9 @@
                 <artifactId>nbm-maven-plugin</artifactId>
                 <configuration>
                     <etcConfFile>src/main/build/launcher.conf</etcConfFile>
+                    <installerOsMacosx>false</installerOsMacosx>
+                    <installerOsSolaris>false</installerOsSolaris>
+                    <installerLicenseFile>../../LICENSE</installerLicenseFile>
                 </configuration>
             </plugin>
             
