@@ -156,7 +156,7 @@
     </modules>
 
     <properties>
-        <netbeans.version>RELEASE81</netbeans.version>
+        <netbeans.version>RELEASE82</netbeans.version>
         <brandingToken>openlatexstudio</brandingToken>
     </properties>
 </project>
